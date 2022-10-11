@@ -24,5 +24,9 @@ public class Constants {
 
     public static final int commandInputBufferTime = 150;
 
+    //The buffer time for repeated texted inputs i.e. tank building
     public static final int commandTextedInputBufferTime = 30;
+
+    //the buffer time for moving the cursor to scroll map
+    public static final int commandCursorLineBufferTime = 10;
 }

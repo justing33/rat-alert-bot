@@ -1,6 +1,7 @@
 package GameEngine;
 
 import GameEngine.GameActions.BuildCommands.BuildCommands;
+import GameEngine.GameActions.ScreenCommands.ScreenCommands;
 
 import java.awt.*;
 
@@ -10,7 +11,7 @@ public class Game {
 
     private Robot controller = new Robot();
     static BuildCommands buildCommands = new BuildCommands();
-
+    static ScreenCommands screenCommands = new ScreenCommands();
     public Game() throws AWTException {}
 
     public static void startSovietGame() throws InterruptedException {
@@ -20,11 +21,16 @@ public class Game {
     public static void startAlliesGame() throws InterruptedException {
         buildCommands.deployMCV();
         buildCommands.buildPowerPlant();
+        screenCommands.moveScreenDownRight();
         buildCommands.buildRefinery();
         buildCommands.buildWarFactory();
         buildCommands.buildLightTanks();
         buildCommands.buildSecondWarFactory();
         buildCommands.sellConYard();
+
+
+
+
         //TODO: Testing
 //        try {
 //            readMoneyAmount();
