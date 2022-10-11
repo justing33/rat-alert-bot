@@ -16,7 +16,13 @@ public class Constants {
 
     //The time it takes for the MCV to complete deploying before another input can be sent
     public static final int mcvDeployingTime = 1000; //TODO: Revisit these build times to see if can optimize further
-    public static final int powerPlantBuildTime = 8100;
+    public static final int powerPlantBuildTime = 6500;
     //The input buffer time in-between commands
-    public static final int commandInputBufferTime = 200;
+    public static final int refineryBuildTime = 32000;
+
+    public static final int warFactoryBuildTime = 32000;
+
+    public static final int commandInputBufferTime = 150;
+
+    public static final int commandTextedInputBufferTime = 30;
 }

@@ -20,7 +20,11 @@ public class Game {
     public static void startAlliesGame() throws InterruptedException {
         buildCommands.deployMCV();
         buildCommands.buildPowerPlant();
-
+        buildCommands.buildRefinery();
+        buildCommands.buildWarFactory();
+        buildCommands.buildLightTanks();
+        buildCommands.buildSecondWarFactory();
+        buildCommands.sellConYard();
         //TODO: Testing
 //        try {
 //            readMoneyAmount();

@@ -25,6 +25,7 @@ public class BuildCommands {
         controller.keyRelease(VK_BACK_SLASH);
         Thread.sleep(mcvDeployingTime);
         controller.keyPress(VK_H);
+        controller.keyRelease(VK_H);
         Thread.sleep(commandInputBufferTime);
     }
 
@@ -35,17 +36,140 @@ public class BuildCommands {
     public void buildPowerPlant() throws InterruptedException {
         try {
             //Initiate building power plant
+            controller.keyPress(VK_H);
+            controller.keyRelease(VK_H);
+            Thread.sleep(commandInputBufferTime);
             controller.keyPress(VK_D);
             controller.keyRelease(VK_D);
             //Wait for the power plant to build
             Thread.sleep(powerPlantBuildTime);
             //Select power plant to be placed
             controller.keyPress(VK_D);
-            placeBuildingDownAtCoordinates(middleXScreenPos, middleYScreenPos + (MCV_VERT_SIZE / 2));
+            controller.keyRelease(VK_D);
+            placeBuildingDownAtCoordinates(middleXScreenPos + 64, middleYScreenPos + (MCV_VERT_SIZE / 2));
+
         } catch (Exception e){
             e.printStackTrace();
         }
     }
+
+    public void buildRefinery() throws InterruptedException {
+        try {
+            //Initiate building power plant
+            controller.keyPress(VK_H);
+            controller.keyRelease(VK_H);
+            Thread.sleep(commandInputBufferTime);
+            controller.keyPress(VK_M);
+            controller.keyRelease(VK_M);
+            //Wait for the power plant to build
+            Thread.sleep(refineryBuildTime);
+            //Select ore refinery to be placed
+            controller.keyPress(VK_M);
+            controller.keyRelease(VK_M);
+            placeBuildingDownAtCoordinates(middleXScreenPos + 256, middleYScreenPos + (MCV_VERT_SIZE / 2));
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void buildWarFactory() throws InterruptedException {
+        try {
+            Thread.sleep(commandInputBufferTime);
+            controller.keyPress(VK_F);
+            controller.keyRelease(VK_F);
+            //Wait for the war factoryt to build
+            Thread.sleep(warFactoryBuildTime);
+            //Initiate building war factory
+            controller.keyPress(VK_H);
+            controller.keyRelease(VK_H);
+            Thread.sleep(commandInputBufferTime);
+            //Select war factory to be placed
+            controller.keyPress(VK_F);
+            controller.keyRelease(VK_F);
+            placeBuildingDownAtCoordinates(middleXScreenPos + 256, middleYScreenPos + (MCV_VERT_SIZE / 2) - 320);
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    public void buildSecondWarFactory() throws InterruptedException {
+        try {
+            Thread.sleep(commandInputBufferTime);
+            controller.keyPress(VK_F);
+            controller.keyRelease(VK_F);
+            //Wait for the war factoryt to build
+            Thread.sleep(warFactoryBuildTime);
+            //Initiate building war factory
+            controller.keyPress(VK_H);
+            controller.keyRelease(VK_H);
+            Thread.sleep(commandInputBufferTime);
+            //Select war factory to be placed
+            controller.keyPress(VK_F);
+            controller.keyRelease(VK_F);
+            placeBuildingDownAtCoordinates(middleXScreenPos + 512, middleYScreenPos + (MCV_VERT_SIZE / 2) - 192);
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    public void sellConYard() throws InterruptedException {
+        try {
+            Thread.sleep(commandInputBufferTime);
+            controller.keyPress(VK_H);
+            controller.keyRelease(VK_H);
+            Thread.sleep(commandInputBufferTime);
+            controller.keyPress(VK_SHIFT);
+            Thread.sleep(commandInputBufferTime);
+            //Select the sell cursor
+            controller.keyPress(VK_S);
+            controller.keyRelease(VK_S);
+            //Move the mouse to the location to sell building
+            controller.mouseMove(middleXScreenPos, middleYScreenPos + (MCV_VERT_SIZE / 2) - 128 );
+            Thread.sleep(commandInputBufferTime);
+            //Try to place it
+            leftMouseClick();
+            Thread.sleep(commandInputBufferTime);
+            controller.keyRelease(VK_SHIFT);
+
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    public void buildLightTanks() throws InterruptedException {
+        try {
+            placeBuildingDownAtCoordinates(middleXScreenPos + 256, middleYScreenPos + (MCV_VERT_SIZE / 2) - 320);
+            Thread.sleep(commandInputBufferTime);
+            Thread.sleep(commandInputBufferTime);
+            controller.keyPress(VK_R);
+            controller.keyRelease(VK_R);
+            Thread.sleep(commandInputBufferTime);
+            controller.keyPress(VK_SHIFT);
+            for (int i = 0; i < 20; i++) {
+                Thread.sleep(commandTextedInputBufferTime);
+                controller.keyPress(VK_L);
+                controller.keyRelease(VK_L);
+            }
+            controller.keyRelease(VK_SHIFT);
+            Thread.sleep(commandInputBufferTime);
+            controller.keyPress(VK_W);
+            controller.keyRelease(VK_W);
+
+
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
 
     /***
      * Attempts to place a building down at the specified screen coordinates
@@ -105,7 +229,7 @@ public class BuildCommands {
          * outline is still there.
          * //TODO: This is going to be problematic logic when we play on a snow map so may need to reconsider approach
          */
-        int color = screen.getRaster().getDataBuffer().getElem(((int)mousePointerLocation.getY() * PLAYABLE_SCREEN_WIDTH_1920x1080) + (int)mousePointerLocation.getX() + 5);
+        int color = screen.getRaster().getDataBuffer().getElem((((int)mousePointerLocation.getY() + 2 ) * PLAYABLE_SCREEN_WIDTH_1920x1080) + (int)mousePointerLocation.getX() + 5);
         System.out.println("Pixel color: " + color);
         //determine individual colors
         int blue = color & 0xff;
