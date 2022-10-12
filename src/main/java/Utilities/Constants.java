@@ -38,4 +38,16 @@ public class Constants {
     public static final int commandCursorLineBufferTime = 10;
     //The buffer time the cursor need to stay right mouse pressed to scroll map
     public static final int commandCursorPauseBufferTime = 1000;
+
+    //MAPS INFO
+    public enum MAP {
+        CANYON,
+        KEEP_OFF_THE_GRASS,
+        TOURNAMENT_ARENA,
+        TOURNAMENT_ORE_RIFT,
+        ARENA_VALLEY_EXTREME_MEGA,
+        BULLSEYE,
+        NORTH_BY_NORTHWEST,
+        PATH_BEYOND
+    }
 }

@@ -1,31 +1,44 @@
 package GameEngine;
 
-import GameEngine.GameActions.BuildCommands.BuildCommands;
-import GameEngine.GameActions.ScreenCommands.ScreenCommands;
+import GameEngine.Builds.ArenaValleyAllies;
+import Utilities.Constants;
 
-import static Utilities.Constants.MCV_VERT_SIZE;
-import static Utilities.Controller.*;
 import static java.lang.System.exit;
 
 public class Game {
 
-    static BuildCommands buildCommands = new BuildCommands();
-    static ScreenCommands screenCommands = new ScreenCommands();
-
-    public static void startSovietGame() throws InterruptedException {
-        //TODO: Implement me..
+    public static void startSovietGame(Constants.MAP map) throws InterruptedException {
+        //TODO: Implement me!
         exit(0);
     }
 
-    public static void startAlliesGame() throws InterruptedException {
-        buildCommands.deployMCV();
-        buildCommands.buildPowerPlant(middleXScreenPos + 64, middleYScreenPos + (MCV_VERT_SIZE / 2));
-        buildCommands.buildRefinery(middleXScreenPos + 256, middleYScreenPos + (MCV_VERT_SIZE / 2));
-        buildCommands.buildWarFactory(middleXScreenPos + 256, middleYScreenPos + (MCV_VERT_SIZE / 2) - 320);
-        buildCommands.buildLightTanks();
-        buildCommands.buildWarFactory(middleXScreenPos + 512, middleYScreenPos + (MCV_VERT_SIZE / 2) - 192);
-        buildCommands.sellConYard();
-        screenCommands.moveScreenDownRight();
-
+    public static void startAlliesGame(Constants.MAP map) throws InterruptedException {
+        if (Constants.MAP.ARENA_VALLEY_EXTREME_MEGA == map) {
+            ArenaValleyAllies.topLeft2WFSellBuild();
+        } else if (Constants.MAP.BULLSEYE == map){
+            //TODO: Implement me!
+            exit(0);
+        } else if (Constants.MAP.CANYON == map){
+            //TODO: Implement me!
+            exit(0);
+        } else if (Constants.MAP.KEEP_OFF_THE_GRASS == map){
+            //TODO: Implement me!
+            exit(0);
+        } else if (Constants.MAP.NORTH_BY_NORTHWEST == map){
+            //TODO: Implement me!
+            exit(0);
+        } else if (Constants.MAP.PATH_BEYOND == map){
+            //TODO: Implement me!
+            exit(0);
+        } else if (Constants.MAP.TOURNAMENT_ARENA == map){
+            //TODO: Implement me!
+            exit(0);
+        } else if (Constants.MAP.TOURNAMENT_ORE_RIFT == map) {
+            //TODO: Implement me!
+            exit(0);
+        } else {
+            System.out.println("Could not determine the map, exiting now..");
+            exit(0);
+        }
     }
 }

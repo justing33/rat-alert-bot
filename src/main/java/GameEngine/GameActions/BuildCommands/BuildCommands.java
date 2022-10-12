@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Random;
 
+import static GameEngine.GameActions.ScreenCommands.ScreenCommands.selectSellCursor;
 import static Utilities.Constants.*;
 import static Utilities.Controller.*;
 import static java.awt.event.KeyEvent.*;
@@ -103,19 +104,13 @@ public class BuildCommands {
             controller.keyPress(VK_H);
             controller.keyRelease(VK_H);
             Thread.sleep(commandInputBufferTime);
-            controller.keyPress(VK_SHIFT);
-            Thread.sleep(commandInputBufferTime);
-            //Select the sell cursor
-            controller.keyPress(VK_S);
-            controller.keyRelease(VK_S);
+            selectSellCursor();
             //Move the mouse to the location to sell building
             controller.mouseMove(middleXScreenPos, middleYScreenPos + (MCV_VERT_SIZE / 2) - 128 );
             Thread.sleep(commandInputBufferTime);
             //Try to place it
             leftMouseClick();
-            Thread.sleep(commandInputBufferTime);
-            controller.keyRelease(VK_SHIFT);
-
+            rightMouseClick();
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -167,7 +162,7 @@ public class BuildCommands {
 
         //Determine if the building was placed successfully or not
         boolean placed = isBuildingPlaced(gameScreenBuffer);
-        System.out.println("Placed? " + placed);
+        System.out.println("Placed building? " + placed);
 
         //if not placed, then pick a random new mouse coordinate to try to place the building again
         if (!placed){

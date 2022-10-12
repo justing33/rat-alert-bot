@@ -2,6 +2,8 @@ package GameEngine.GameActions.ScreenCommands;
 
 import static Utilities.Constants.*;
 import static Utilities.Controller.*;
+import static java.awt.event.KeyEvent.VK_S;
+import static java.awt.event.KeyEvent.VK_SHIFT;
 
 
 public class ScreenCommands {
@@ -32,6 +34,20 @@ public class ScreenCommands {
         for( int i = 0; i < steps ; i++) {
             Thread.sleep(commandCursorLineBufferTime);
             controller.mouseMove(start_x + ((i * length_x )/ steps) , start_y + ((i * length_y) / steps));
+        }
+    }
+
+    public static void selectSellCursor(){
+        try {
+            controller.keyPress(VK_SHIFT);
+            Thread.sleep(commandInputBufferTime);
+            controller.keyPress(VK_S);
+            controller.keyRelease(VK_S);
+            controller.keyRelease(VK_SHIFT);
+            Thread.sleep(commandInputBufferTime);
+
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 

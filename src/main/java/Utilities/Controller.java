@@ -83,7 +83,7 @@ public class Controller {
             middleXScreenPos = 1484 / 2;
             middleYScreenPos = screenHeight / 2;
         } else {
-            //TODO: Add more res in, fail until then
+            //TODO: Add more resolutions in, fail until then..
             exit(0);
         }
     }
@@ -92,5 +92,20 @@ public class Controller {
         controller.mousePress(LEFT_MOUSE_CLICK);
         controller.mouseRelease(LEFT_MOUSE_CLICK);
         Thread.sleep(commandInputBufferTime);
+    }
+
+    public static void rightMouseClick() throws InterruptedException {
+        controller.mousePress(RIGHT_MOUSE_CLICK);
+        controller.mouseRelease(RIGHT_MOUSE_CLICK);
+        Thread.sleep(commandInputBufferTime);
+    }
+
+    /***
+     *
+     * @return An enum denoting the map that is being played in the quickplay ladder match
+     */
+    public static Constants.MAP determineMap(){
+        //TODO: Hardcoded for now, needs logic to determine map later..
+        return MAP.ARENA_VALLEY_EXTREME_MEGA;
     }
 }
