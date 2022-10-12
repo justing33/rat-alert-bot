@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Random;
 
+import static GameEngine.GameActions.ScreenCommands.ScreenCommands.selectSellCursor;
 import static Utilities.Constants.*;
 import static Utilities.Controller.*;
 import static java.awt.event.KeyEvent.*;
@@ -13,27 +14,29 @@ public class BuildCommands {
 
     /***
      * Auto deploys the starting MCV
-     * @throws InterruptedException
      */
-    public void deployMCV() throws InterruptedException {
-        //select MCV
-        controller.keyPress(VK_A); //key down
-        controller.keyRelease(VK_A); //key up
-        Thread.sleep(commandInputBufferTime);
-        //Deploy button
-        controller.keyPress(VK_BACK_SLASH);
-        controller.keyRelease(VK_BACK_SLASH);
-        Thread.sleep(mcvDeployingTime);
-        controller.keyPress(VK_H);
-        controller.keyRelease(VK_H);
-        Thread.sleep(commandInputBufferTime);
+    public void deployMCV() {
+        try {
+            //select MCV
+            controller.keyPress(VK_A); //key down
+            controller.keyRelease(VK_A); //key up
+            Thread.sleep(commandInputBufferTime);
+            //Deploy button
+            controller.keyPress(VK_BACK_SLASH);
+            controller.keyRelease(VK_BACK_SLASH);
+            Thread.sleep(mcvDeployingTime);
+            controller.keyPress(VK_H);
+            controller.keyRelease(VK_H);
+            Thread.sleep(commandInputBufferTime);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /***
      * Builds a small power plant
-     * @throws InterruptedException
      */
-    public void buildPowerPlant() throws InterruptedException {
+    public void buildPowerPlant(int xCoords, int yCoords) {
         try {
             //Initiate building power plant
             controller.keyPress(VK_H);
@@ -46,14 +49,14 @@ public class BuildCommands {
             //Select power plant to be placed
             controller.keyPress(VK_D);
             controller.keyRelease(VK_D);
-            placeBuildingDownAtCoordinates(middleXScreenPos + 64, middleYScreenPos + (MCV_VERT_SIZE / 2));
+            placeBuildingDownAtCoordinates(xCoords, yCoords);
 
         } catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    public void buildRefinery() throws InterruptedException {
+    public void buildRefinery(int xCoord, int yCoord) {
         try {
             //Initiate building power plant
             controller.keyPress(VK_H);
@@ -66,14 +69,14 @@ public class BuildCommands {
             //Select ore refinery to be placed
             controller.keyPress(VK_M);
             controller.keyRelease(VK_M);
-            placeBuildingDownAtCoordinates(middleXScreenPos + 256, middleYScreenPos + (MCV_VERT_SIZE / 2));
+            placeBuildingDownAtCoordinates(xCoord, yCoord);
 
         } catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    public void buildWarFactory() throws InterruptedException {
+    public void buildWarFactory(int xCoordinate, int yCoordinate) {
         try {
             Thread.sleep(commandInputBufferTime);
             controller.keyPress(VK_F);
@@ -87,69 +90,37 @@ public class BuildCommands {
             //Select war factory to be placed
             controller.keyPress(VK_F);
             controller.keyRelease(VK_F);
-            placeBuildingDownAtCoordinates(middleXScreenPos + 256, middleYScreenPos + (MCV_VERT_SIZE / 2) - 320);
+            placeBuildingDownAtCoordinates(xCoordinate, yCoordinate);
+            Thread.sleep(commandInputBufferTime);
 
         } catch (Exception e){
             e.printStackTrace();
         }
-
     }
 
-    public void buildSecondWarFactory() throws InterruptedException {
-        try {
-            Thread.sleep(commandInputBufferTime);
-            controller.keyPress(VK_F);
-            controller.keyRelease(VK_F);
-            //Wait for the war factoryt to build
-            Thread.sleep(warFactoryBuildTime);
-            //Initiate building war factory
-            controller.keyPress(VK_H);
-            controller.keyRelease(VK_H);
-            Thread.sleep(commandInputBufferTime);
-            //Select war factory to be placed
-            controller.keyPress(VK_F);
-            controller.keyRelease(VK_F);
-            placeBuildingDownAtCoordinates(middleXScreenPos + 512, middleYScreenPos + (MCV_VERT_SIZE / 2) - 192);
-
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-
-    }
-
-    public void sellConYard() throws InterruptedException {
+    public void sellConYard() {
         try {
             Thread.sleep(commandInputBufferTime);
             controller.keyPress(VK_H);
             controller.keyRelease(VK_H);
             Thread.sleep(commandInputBufferTime);
-            controller.keyPress(VK_SHIFT);
-            Thread.sleep(commandInputBufferTime);
-            //Select the sell cursor
-            controller.keyPress(VK_S);
-            controller.keyRelease(VK_S);
+            selectSellCursor();
             //Move the mouse to the location to sell building
             controller.mouseMove(middleXScreenPos, middleYScreenPos + (MCV_VERT_SIZE / 2) - 128 );
             Thread.sleep(commandInputBufferTime);
             //Try to place it
             leftMouseClick();
-            Thread.sleep(commandInputBufferTime);
-            controller.keyRelease(VK_SHIFT);
-
-
+            rightMouseClick();
         } catch (Exception e){
             e.printStackTrace();
         }
 
     }
 
-    public void buildLightTanks() throws InterruptedException {
+    public void buildLightTanks() {
         try {
-            placeBuildingDownAtCoordinates(middleXScreenPos + 256, middleYScreenPos + (MCV_VERT_SIZE / 2) - 320);
-            Thread.sleep(commandInputBufferTime);
-            Thread.sleep(commandInputBufferTime);
-            controller.keyPress(VK_R);
-            controller.keyRelease(VK_R);
+            controller.keyPress(SELECT_VEHICLE_MENU);
+            controller.keyRelease(SELECT_VEHICLE_MENU);
             Thread.sleep(commandInputBufferTime);
             controller.keyPress(VK_SHIFT);
             for (int i = 0; i < 20; i++) {
@@ -161,8 +132,6 @@ public class BuildCommands {
             Thread.sleep(commandInputBufferTime);
             controller.keyPress(VK_W);
             controller.keyRelease(VK_W);
-
-
 
         } catch (Exception e){
             e.printStackTrace();
@@ -193,7 +162,7 @@ public class BuildCommands {
 
         //Determine if the building was placed successfully or not
         boolean placed = isBuildingPlaced(gameScreenBuffer);
-        System.out.println("Placed? " + placed);
+        System.out.println("Placed building? " + placed);
 
         //if not placed, then pick a random new mouse coordinate to try to place the building again
         if (!placed){
@@ -230,12 +199,12 @@ public class BuildCommands {
          * //TODO: This is going to be problematic logic when we play on a snow map so may need to reconsider approach
          */
         int color = screen.getRaster().getDataBuffer().getElem((((int)mousePointerLocation.getY() + 5 ) * PLAYABLE_SCREEN_WIDTH_1920x1080) + (int)mousePointerLocation.getX() + 2);
-        System.out.println("Pixel color: " + color);
+        System.out.println("Pixel color (integer value): " + color);
         //determine individual colors
         int blue = color & 0xff;
         int green = (color & 0xff00) >> 8;
         int red = (color & 0xff0000) >> 16;
-        System.out.println("red: " + red + " green: " + green + " blue: " + blue);
+        System.out.println("Pixel RGB color values => red: " + red + " green: " + green + " blue: " + blue);
         //If all pixel values are atleast 240 return false meaning the building was not placed
         return red >= 240 && green >= 240 && blue >= 240 ? false : true;
     }
