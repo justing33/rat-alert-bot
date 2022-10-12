@@ -21,12 +21,12 @@ public class Game {
     public static void startAlliesGame() throws InterruptedException {
         buildCommands.deployMCV();
         buildCommands.buildPowerPlant();
-        screenCommands.moveScreenDownRight();
         buildCommands.buildRefinery();
         buildCommands.buildWarFactory();
         buildCommands.buildLightTanks();
         buildCommands.buildSecondWarFactory();
         buildCommands.sellConYard();
+        screenCommands.moveScreenDownRight();
 
 
 

@@ -229,7 +229,7 @@ public class BuildCommands {
          * outline is still there.
          * //TODO: This is going to be problematic logic when we play on a snow map so may need to reconsider approach
          */
-        int color = screen.getRaster().getDataBuffer().getElem((((int)mousePointerLocation.getY() + 2 ) * PLAYABLE_SCREEN_WIDTH_1920x1080) + (int)mousePointerLocation.getX() + 5);
+        int color = screen.getRaster().getDataBuffer().getElem((((int)mousePointerLocation.getY() + 5 ) * PLAYABLE_SCREEN_WIDTH_1920x1080) + (int)mousePointerLocation.getX() + 2);
         System.out.println("Pixel color: " + color);
         //determine individual colors
         int blue = color & 0xff;

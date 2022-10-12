@@ -29,4 +29,6 @@ public class Constants {
 
     //the buffer time for moving the cursor to scroll map
     public static final int commandCursorLineBufferTime = 10;
+    //the buffer time the cursor need to stay rightmouse pressed to scroll map
+    public static final int commandCursorPauseBufferTime = 1000;
 }
