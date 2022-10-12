@@ -46,7 +46,6 @@ public class Controller {
 
     public static String readMoneyAmount() throws IOException {
         BufferedImage moneyScreenCapture = controller.createScreenCapture(new Rectangle(1663,13,92,34));
-//        BufferedImage screenImage = controller.createScreenCapture(findScreenResolution());
         File outputfile = new File(".\\money.png");
         ImageIO.write(moneyScreenCapture, "png", outputfile);
         File imageFile = new File(".\\money.png");
@@ -89,10 +88,9 @@ public class Controller {
         }
     }
 
-
     public static void leftMouseClick() throws InterruptedException {
-        controller.mousePress(LEFT_CLICK);
-        controller.mouseRelease(LEFT_CLICK);
+        controller.mousePress(LEFT_MOUSE_CLICK);
+        controller.mouseRelease(LEFT_MOUSE_CLICK);
         Thread.sleep(commandInputBufferTime);
     }
 }

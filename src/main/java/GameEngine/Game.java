@@ -3,39 +3,29 @@ package GameEngine;
 import GameEngine.GameActions.BuildCommands.BuildCommands;
 import GameEngine.GameActions.ScreenCommands.ScreenCommands;
 
-import java.awt.*;
-
-import static Utilities.Controller.readMoneyAmount;
+import static Utilities.Constants.MCV_VERT_SIZE;
+import static Utilities.Controller.*;
+import static java.lang.System.exit;
 
 public class Game {
 
-    private Robot controller = new Robot();
     static BuildCommands buildCommands = new BuildCommands();
     static ScreenCommands screenCommands = new ScreenCommands();
-    public Game() throws AWTException {}
 
     public static void startSovietGame() throws InterruptedException {
         //TODO: Implement me..
+        exit(0);
     }
 
     public static void startAlliesGame() throws InterruptedException {
         buildCommands.deployMCV();
-        buildCommands.buildPowerPlant();
-        buildCommands.buildRefinery();
-        buildCommands.buildWarFactory();
+        buildCommands.buildPowerPlant(middleXScreenPos + 64, middleYScreenPos + (MCV_VERT_SIZE / 2));
+        buildCommands.buildRefinery(middleXScreenPos + 256, middleYScreenPos + (MCV_VERT_SIZE / 2));
+        buildCommands.buildWarFactory(middleXScreenPos + 256, middleYScreenPos + (MCV_VERT_SIZE / 2) - 320);
         buildCommands.buildLightTanks();
-        buildCommands.buildSecondWarFactory();
+        buildCommands.buildWarFactory(middleXScreenPos + 512, middleYScreenPos + (MCV_VERT_SIZE / 2) - 192);
         buildCommands.sellConYard();
         screenCommands.moveScreenDownRight();
 
-
-
-
-        //TODO: Testing
-//        try {
-//            readMoneyAmount();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
     }
 }
