@@ -1,40 +1,33 @@
 package GameEngine.GameActions.ScreenCommands;
 
-import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.Random;
-
 import static Utilities.Constants.*;
 import static Utilities.Controller.*;
-import static java.awt.event.KeyEvent.*;
+import static java.awt.event.KeyEvent.VK_S;
+import static java.awt.event.KeyEvent.VK_SHIFT;
 
 
 public class ScreenCommands {
-    public void moveScreenDownRight() throws InterruptedException {
+
+    public void moveScreenDownRight() {
         try {
             //Initiate cursor position
             int cursor_x = 100;
             int cursor_y = 100;
             controller.mouseMove(cursor_x, cursor_y);
-            controller.mousePress(BUTTON2_DOWN_MASK);
+            controller.mousePress(RIGHT_MOUSE_CLICK);
 
             Thread.sleep(commandInputBufferTime);
-            mouseLineMove(cursor_x, cursor_y, 300, 300);
+            mouseLineMove(cursor_x, cursor_y, 600, 600);
+            Thread.sleep(commandCursorPauseBufferTime);
 
-
-             controller.mouseRelease(BUTTON2_DOWN_MASK);
-
+            controller.mouseRelease(RIGHT_MOUSE_CLICK);
 
         } catch (Exception e){
             e.printStackTrace();
         }
     }
 
-
-
-    private void mouseLineMove(int start_x, int start_y, int length_x, int length_y) throws InterruptedException, IOException {
+    private void mouseLineMove(int start_x, int start_y, int length_x, int length_y) throws InterruptedException {
         System.out.println("Trying to move mouse in a line X=> " + length_x + " Y=> " + length_y);
 
         int steps = 20;
@@ -44,6 +37,18 @@ public class ScreenCommands {
         }
     }
 
+    public static void selectSellCursor(){
+        try {
+            controller.keyPress(VK_SHIFT);
+            Thread.sleep(commandInputBufferTime);
+            controller.keyPress(VK_S);
+            controller.keyRelease(VK_S);
+            controller.keyRelease(VK_SHIFT);
+            Thread.sleep(commandInputBufferTime);
 
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
 }
