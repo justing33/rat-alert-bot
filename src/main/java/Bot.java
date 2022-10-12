@@ -1,3 +1,5 @@
+import Utilities.Constants;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -5,8 +7,7 @@ import javax.swing.*;
 import static GameEngine.Game.startAlliesGame;
 import static GameEngine.Game.startSovietGame;
 import static Utilities.Constants.*;
-import static Utilities.Controller.altTabIntoGame;
-import static Utilities.Controller.findScreenResolution;
+import static Utilities.Controller.*;
 
 public class Bot extends Frame implements ActionListener {
     static JFrame frame;
@@ -43,10 +44,10 @@ public class Bot extends Frame implements ActionListener {
 
             switch(event.getActionCommand()){
                 case SOVIETS:
-                    startSovietGame();
+                    startSovietGame(determineMap());
                     break;
                 case ALLIES:
-                    startAlliesGame();
+                    startAlliesGame(determineMap());
                     break;
             }
         } catch (InterruptedException e) {
