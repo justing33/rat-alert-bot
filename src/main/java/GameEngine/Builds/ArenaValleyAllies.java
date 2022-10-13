@@ -4,6 +4,7 @@ import GameEngine.GameActions.BuildCommands.BuildCommands;
 import GameEngine.GameActions.ScreenCommands.ScreenCommands;
 
 import static Utilities.Constants.MCV_VERT_SIZE;
+import static Utilities.Constants.commandTextedInputBufferTime;
 import static Utilities.Controller.middleXScreenPos;
 import static Utilities.Controller.middleYScreenPos;
 
@@ -20,6 +21,15 @@ public class ArenaValleyAllies {
         buildCommands.buildLightTanks();
         buildCommands.buildWarFactory(middleXScreenPos + 550, middleYScreenPos + (MCV_VERT_SIZE / 2) - 60);
         buildCommands.sellConYard();
+        screenCommands.waitForTanks();
         screenCommands.moveScreenDownRight();
+        screenCommands.cursorGQScreen();
+        screenCommands.cursorGQScreen();
+        screenCommands.cursorGQScreen();
+        screenCommands.cursorGQScreen();
+        screenCommands.cursorGQScreen();
+        screenCommands.cursorGQScreen();
+        screenCommands.cursorGQScreen();
+        screenCommands.cursorGQScreen();
     }
 }

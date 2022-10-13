@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Random;
 
-import static GameEngine.GameActions.ScreenCommands.ScreenCommands.selectSellCursor;
+
 import static Utilities.Constants.*;
 import static Utilities.Controller.*;
 import static java.awt.event.KeyEvent.*;
@@ -49,6 +49,7 @@ public class BuildCommands {
             //Select power plant to be placed
             controller.keyPress(VK_D);
             controller.keyRelease(VK_D);
+            Thread.sleep(commandInputBufferTime);
             placeBuildingDownAtCoordinates(xCoords, yCoords);
 
         } catch (Exception e){
@@ -69,6 +70,7 @@ public class BuildCommands {
             //Select ore refinery to be placed
             controller.keyPress(VK_M);
             controller.keyRelease(VK_M);
+            Thread.sleep(commandInputBufferTime);
             placeBuildingDownAtCoordinates(xCoord, yCoord);
 
         } catch (Exception e){
@@ -90,6 +92,7 @@ public class BuildCommands {
             //Select war factory to be placed
             controller.keyPress(VK_F);
             controller.keyRelease(VK_F);
+            Thread.sleep(commandInputBufferTime);
             placeBuildingDownAtCoordinates(xCoordinate, yCoordinate);
             Thread.sleep(commandInputBufferTime);
 
@@ -104,17 +107,34 @@ public class BuildCommands {
             controller.keyPress(VK_H);
             controller.keyRelease(VK_H);
             Thread.sleep(commandInputBufferTime);
-            selectSellCursor();
+            toggleSellCursor();
             //Move the mouse to the location to sell building
             controller.mouseMove(middleXScreenPos, middleYScreenPos + (MCV_VERT_SIZE / 2) - 128 );
             Thread.sleep(commandInputBufferTime);
-            //Try to place it
+            //Try to sell it
             leftMouseClick();
-            rightMouseClick();
+            Thread.sleep(commandInputBufferTime);
+            toggleSellCursor();
+            Thread.sleep(5000);
+
         } catch (Exception e){
             e.printStackTrace();
         }
 
+    }
+
+    public static void toggleSellCursor(){
+        try {
+            controller.keyPress(VK_SHIFT);
+            Thread.sleep(commandInputBufferTime);
+            controller.keyPress(VK_S);
+            controller.keyRelease(VK_S);
+            controller.keyRelease(VK_SHIFT);
+            Thread.sleep(commandInputBufferTime);
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void buildLightTanks() {
@@ -156,7 +176,9 @@ public class BuildCommands {
         //Try to place it
         leftMouseClick();
         Thread.sleep(commandInputBufferTime);
-
+        //Try to place it
+        leftMouseClick();
+        Thread.sleep(commandInputBufferTime);
         //Capture the game screen
         BufferedImage gameScreenBuffer = capturePlayableGameScreen();
 
