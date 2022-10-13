@@ -12,7 +12,7 @@ public class Game {
     }
 
     public static void startAlliesGame(String map) throws InterruptedException {
-        if ("ARENA VALLEY MEGA (EXTREME)".equals(map)) {
+        if ("ARENA VALLEY EXTREME (MEGA)".equals(map)) {
             ArenaValleyAllies.topLeft2WFSellBuild();
         } else if ("BULLSEYE".equals(map)){
             //TODO: Implement me!

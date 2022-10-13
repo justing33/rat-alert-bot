@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+import static GameEngine.Game.startAlliesGame;
+import static GameEngine.Game.startSovietGame;
 import static Utilities.Constants.*;
 import static Utilities.Controller.*;
 
@@ -49,19 +51,18 @@ public class Bot extends Frame implements ActionListener {
 //            startQuickmatchMatch(); //careful uncommenting this..
 
             //TODO: Testing out identifying the map
-            String map = identifyQuickmatchMap();
-            System.out.println("map => " + map);
+//            String map = identifyQuickmatchMap();
+//            System.out.println("map => " + map);
 
-//
-//            switch(event.getActionCommand()){
-//                case SOVIETS:
-//                    startSovietGame(determineMap());
-//                    break;
-//                case ALLIES:
-//                    startAlliesGame(determineMap());
-//                    break;
-//            }
-        } catch (InterruptedException | IOException e) {
+            switch(event.getActionCommand()){
+                case SOVIETS:
+                    startSovietGame("ARENA VALLEY EXTREME (MEGA)");
+                    break;
+                case ALLIES:
+                    startAlliesGame("ARENA VALLEY EXTREME (MEGA)");
+                    break;
+            }
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 

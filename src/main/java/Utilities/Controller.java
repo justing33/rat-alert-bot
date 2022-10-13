@@ -13,11 +13,14 @@ import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static Utilities.Constants.LEFT_MOUSE_CLICK;
 import static Utilities.Constants.PLAYABLE_SCREEN_HEIGHT_1920x1080;
 import static Utilities.Constants.PLAYABLE_SCREEN_WIDTH_1920x1080;
 import static Utilities.Constants.RIGHT_MOUSE_CLICK;
+import static Utilities.Constants.arenaValleyExtremeMegaMapCode;
 import static Utilities.Constants.commandInputBufferTime;
 import static Utilities.Constants.menuScreenChangeBufferTime;
 import static Utilities.Constants.quickmatchMapList;
@@ -116,40 +119,47 @@ public class Controller {
 
     /***
      * This method determines what quickmatch map is being played on.
-     * It takes a screen capture of a designated section of the screen where the name of the map
-     * is displayed and uses the Tesseract image -> text recognition library to determine this.
-     * On 1920x1080 resolution, the start location of the rectangle is x:514 and y:374
-     * with the rectangle itself being width:368px and height:30px
+     * It takes a screen capture of a row of pixels on map preview screen
+     * and compares that list of pixels to predefined map lists that are
+     * keys to identify the map.  This is all hardcoded values.
      */
-    public static String identifyQuickmatchMap() throws IOException {
-        //Constantly check for the map name to be available once the quick match 'search opponent' button is selected
-        boolean foundMapName = false;
+    public static String midentifyQuickmatchMap() throws IOException, InterruptedException {
+        boolean pixelIsGolden = true;
 
-//        List<MAP> listOfQuickmatchMaps = Arrays.asList(MAP.);
-        String mapName = null;
-
-//        for (MAP m : listOfQuickmatchMaps){
-//            System.out.println(m.toString());
-//        }
-
-        while(!foundMapName) {
-            BufferedImage moneyScreenCapture = controller.createScreenCapture(new Rectangle(514, 374, 368, 30));
-            File outputfile = new File(".\\map_name.png");
-            ImageIO.write(moneyScreenCapture, "png", outputfile);
-            File imageFile = new File(".\\map_name.png");
-            ITesseract instance = new Tesseract();
-            try {
-                mapName = instance.doOCR(imageFile);
-                System.out.println(mapName);
-            } catch (TesseractException e) {
-                e.printStackTrace();
-            }
-
-            if (quickmatchMapList.contains(mapName)){
-                foundMapName = true;
+        //Keep checking for the screen to change by observing a single pixel color
+        while(pixelIsGolden) {
+            //Single pixel in the golden/bronze circle in the top left of the QM screen
+            BufferedImage quickmatchScreenCapture = controller.createScreenCapture(new Rectangle(310, 113, 1, 1));
+            int goldishPixelColor = quickmatchScreenCapture.getRaster().getDataBuffer().getElem(0);
+            int blue = goldishPixelColor & 0xff;
+            int green = (goldishPixelColor & 0xff00) >> 8;
+            int red = (goldishPixelColor & 0xff0000) >> 16;
+            //Hardcoded values looking for
+            if (goldishPixelColor != -1317558 && red != 235 && green != 229 && blue != 74) {
+                pixelIsGolden = false;
             }
         }
-        return mapName;
+
+        //Give some time for the screen to change to map preview screen
+        Thread.sleep(3000); //TODO: this is variable and needs to be guestimated..?
+
+        //Single line of pixels from the preview map screen used as a key to determine the map
+        BufferedImage lineOfMapPixelsScreenCapture = controller.createScreenCapture(new Rectangle(510, 490, 369, 1));
+        List<Integer> someMapKey = new ArrayList<>();
+
+        //Fill the temp list with pixel values
+        for (int c= 0; c < 369; c++){
+            someMapKey.add(lineOfMapPixelsScreenCapture.getRaster().getDataBuffer().getElem(c));
+        }
+        //Compare to the predefined map lists
+        if (someMapKey.equals(arenaValleyExtremeMegaMapCode)){
+            return "ARENA VALLEY EXTREME (MEGA)";
+        } else {
+            //TODO: This..
+            exit(0);
+        }
+
+        return null;
     }
 
     public static void leftMouseClick() throws InterruptedException {
@@ -162,15 +172,6 @@ public class Controller {
         controller.mousePress(RIGHT_MOUSE_CLICK);
         controller.mouseRelease(RIGHT_MOUSE_CLICK);
         Thread.sleep(commandInputBufferTime);
-    }
-
-    /***
-     *
-     * @return An enum denoting the map that is being played in the quickplay ladder match
-     */
-    public static String determineMap(){
-        //TODO: Hardcoded for now, needs logic to determine map later..
-        return "ARENA VALLEY EXTREME (MEGA)";
     }
 
     public static void startQuickmatchMatch() throws InterruptedException {
