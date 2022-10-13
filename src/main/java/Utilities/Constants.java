@@ -36,8 +36,22 @@ public class Constants {
     public static final int commandTextedInputBufferTime = 30;
     //The buffer time for moving the cursor to scroll map
     public static final int commandCursorLineBufferTime = 10;
-    //The buffer time the cursor need to stay right mouse pressed to scroll map
+    //The buffer time the cursor needs to stay right mouse pressed to scroll map
     public static final int commandCursorPauseBufferTime = 1000;
+
+    // The buffer time in between moving the cursor for GQ positions
+    public static final int commandGQCursorPauseBufferTime = 150;
+
+    //The directions that the GQ will scan the screen
+    public static final int [] arrayGQx = {0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+    public static final int [] arrayGQy = {1, 1, 1, 1, 0,-1,-1,-1,-1, 0, 1, 1, 1, 1, 0,-1,-1,-1,-1, 0};
+    //The size of the jumps in pixels while GQing
+    public static final int commandCursorGQJumpPixels = 64;
+    //The number of the jumps while GQing
+    public static final int commandCursorGQNumberofJumps = 3;
+    //The buffer time enough tanks to be built for an effective first strike
+    public static final int commandWaitForTanksTime = 30000;
+
 
     //MAPS INFO
     public enum MAP {

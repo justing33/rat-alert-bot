@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Random;
 
-import static GameEngine.GameActions.ScreenCommands.ScreenCommands.selectSellCursor;
+
 import static Utilities.Constants.*;
 import static Utilities.Controller.*;
 import static java.awt.event.KeyEvent.*;
@@ -104,17 +104,34 @@ public class BuildCommands {
             controller.keyPress(VK_H);
             controller.keyRelease(VK_H);
             Thread.sleep(commandInputBufferTime);
-            selectSellCursor();
+            toggleSellCursor();
             //Move the mouse to the location to sell building
             controller.mouseMove(middleXScreenPos, middleYScreenPos + (MCV_VERT_SIZE / 2) - 128 );
             Thread.sleep(commandInputBufferTime);
-            //Try to place it
+            //Try to sell it
             leftMouseClick();
-            rightMouseClick();
+            Thread.sleep(commandInputBufferTime);
+            toggleSellCursor();
+            Thread.sleep(5000);
+
         } catch (Exception e){
             e.printStackTrace();
         }
 
+    }
+
+    public static void toggleSellCursor(){
+        try {
+            controller.keyPress(VK_SHIFT);
+            Thread.sleep(commandInputBufferTime);
+            controller.keyPress(VK_S);
+            controller.keyRelease(VK_S);
+            controller.keyRelease(VK_SHIFT);
+            Thread.sleep(commandInputBufferTime);
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void buildLightTanks() {
