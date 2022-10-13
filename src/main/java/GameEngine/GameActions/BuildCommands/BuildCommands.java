@@ -49,6 +49,7 @@ public class BuildCommands {
             //Select power plant to be placed
             controller.keyPress(VK_D);
             controller.keyRelease(VK_D);
+            Thread.sleep(commandInputBufferTime);
             placeBuildingDownAtCoordinates(xCoords, yCoords);
 
         } catch (Exception e){
@@ -69,6 +70,7 @@ public class BuildCommands {
             //Select ore refinery to be placed
             controller.keyPress(VK_M);
             controller.keyRelease(VK_M);
+            Thread.sleep(commandInputBufferTime);
             placeBuildingDownAtCoordinates(xCoord, yCoord);
 
         } catch (Exception e){
@@ -90,6 +92,7 @@ public class BuildCommands {
             //Select war factory to be placed
             controller.keyPress(VK_F);
             controller.keyRelease(VK_F);
+            Thread.sleep(commandInputBufferTime);
             placeBuildingDownAtCoordinates(xCoordinate, yCoordinate);
             Thread.sleep(commandInputBufferTime);
 
@@ -173,7 +176,9 @@ public class BuildCommands {
         //Try to place it
         leftMouseClick();
         Thread.sleep(commandInputBufferTime);
-
+        //Try to place it
+        leftMouseClick();
+        Thread.sleep(commandInputBufferTime);
         //Capture the game screen
         BufferedImage gameScreenBuffer = capturePlayableGameScreen();
 
