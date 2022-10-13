@@ -1,14 +1,36 @@
 package GameEngine.GameActions.BuildCommands;
 
-import java.awt.*;
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Random;
 
 import static GameEngine.GameActions.ScreenCommands.ScreenCommands.selectSellCursor;
-import static Utilities.Constants.*;
-import static Utilities.Controller.*;
-import static java.awt.event.KeyEvent.*;
+import static Utilities.Constants.MCV_VERT_SIZE;
+import static Utilities.Constants.PLAYABLE_SCREEN_WIDTH_1920x1080;
+import static Utilities.Constants.SELECT_VEHICLE_MENU;
+import static Utilities.Constants.commandInputBufferTime;
+import static Utilities.Constants.commandTextedInputBufferTime;
+import static Utilities.Constants.mcvDeployingTime;
+import static Utilities.Constants.powerPlantBuildTime;
+import static Utilities.Constants.refineryBuildTime;
+import static Utilities.Constants.warFactoryBuildTime;
+import static Utilities.Controller.capturePlayableGameScreen;
+import static Utilities.Controller.controller;
+import static Utilities.Controller.leftMouseClick;
+import static Utilities.Controller.middleXScreenPos;
+import static Utilities.Controller.middleYScreenPos;
+import static Utilities.Controller.rightMouseClick;
+import static java.awt.event.KeyEvent.VK_A;
+import static java.awt.event.KeyEvent.VK_BACK_SLASH;
+import static java.awt.event.KeyEvent.VK_D;
+import static java.awt.event.KeyEvent.VK_F;
+import static java.awt.event.KeyEvent.VK_H;
+import static java.awt.event.KeyEvent.VK_L;
+import static java.awt.event.KeyEvent.VK_M;
+import static java.awt.event.KeyEvent.VK_SHIFT;
+import static java.awt.event.KeyEvent.VK_W;
 
 public class BuildCommands {
 

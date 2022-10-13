@@ -5,12 +5,22 @@ import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.AWTException;
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import static Utilities.Constants.*;
+import static Utilities.Constants.LEFT_MOUSE_CLICK;
+import static Utilities.Constants.PLAYABLE_SCREEN_HEIGHT_1920x1080;
+import static Utilities.Constants.PLAYABLE_SCREEN_WIDTH_1920x1080;
+import static Utilities.Constants.RIGHT_MOUSE_CLICK;
+import static Utilities.Constants.commandInputBufferTime;
+import static Utilities.Constants.menuScreenChangeBufferTime;
+import static Utilities.Constants.quickmatchMapList;
 import static java.awt.event.KeyEvent.VK_ALT;
 import static java.awt.event.KeyEvent.VK_TAB;
 import static java.lang.System.exit;
@@ -44,6 +54,22 @@ public class Controller {
         Thread.sleep(commandInputBufferTime);
     }
 
+    public static void selectQuickmatch() throws InterruptedException {
+        //Select skirmish & online button location on Red Alert main menu
+        controller.mouseMove(960,540);
+        leftMouseClick();
+        Thread.sleep(menuScreenChangeBufferTime);
+        //Select the quickmatch button
+        controller.mouseMove(860,215);
+        leftMouseClick();
+    }
+
+    public static void selectFaction() throws InterruptedException {
+        //TODO: Hardcode England for now to test light tank build.. randomize faction later?
+        selectNewEnglandFaction();
+        Thread.sleep(menuScreenChangeBufferTime);
+    }
+
     public static String readMoneyAmount() throws IOException {
         BufferedImage moneyScreenCapture = controller.createScreenCapture(new Rectangle(1663,13,92,34));
         File outputfile = new File(".\\money.png");
@@ -59,7 +85,7 @@ public class Controller {
         return result;
     }
 
-    public static BufferedImage capturePlayableGameScreen() throws IOException {
+    public static BufferedImage capturePlayableGameScreen() {
         //Grab the screen not including the side buildings/units bar
         Rectangle playableScreenRect = new Rectangle(0,0,PLAYABLE_SCREEN_WIDTH_1920x1080, PLAYABLE_SCREEN_HEIGHT_1920x1080);
         BufferedImage gameScreenBuffer = controller.createScreenCapture(playableScreenRect);
@@ -88,6 +114,44 @@ public class Controller {
         }
     }
 
+    /***
+     * This method determines what quickmatch map is being played on.
+     * It takes a screen capture of a designated section of the screen where the name of the map
+     * is displayed and uses the Tesseract image -> text recognition library to determine this.
+     * On 1920x1080 resolution, the start location of the rectangle is x:514 and y:374
+     * with the rectangle itself being width:368px and height:30px
+     */
+    public static String identifyQuickmatchMap() throws IOException {
+        //Constantly check for the map name to be available once the quick match 'search opponent' button is selected
+        boolean foundMapName = false;
+
+//        List<MAP> listOfQuickmatchMaps = Arrays.asList(MAP.);
+        String mapName = null;
+
+//        for (MAP m : listOfQuickmatchMaps){
+//            System.out.println(m.toString());
+//        }
+
+        while(!foundMapName) {
+            BufferedImage moneyScreenCapture = controller.createScreenCapture(new Rectangle(514, 374, 368, 30));
+            File outputfile = new File(".\\map_name.png");
+            ImageIO.write(moneyScreenCapture, "png", outputfile);
+            File imageFile = new File(".\\map_name.png");
+            ITesseract instance = new Tesseract();
+            try {
+                mapName = instance.doOCR(imageFile);
+                System.out.println(mapName);
+            } catch (TesseractException e) {
+                e.printStackTrace();
+            }
+
+            if (quickmatchMapList.contains(mapName)){
+                foundMapName = true;
+            }
+        }
+        return mapName;
+    }
+
     public static void leftMouseClick() throws InterruptedException {
         controller.mousePress(LEFT_MOUSE_CLICK);
         controller.mouseRelease(LEFT_MOUSE_CLICK);
@@ -104,8 +168,18 @@ public class Controller {
      *
      * @return An enum denoting the map that is being played in the quickplay ladder match
      */
-    public static Constants.MAP determineMap(){
+    public static String determineMap(){
         //TODO: Hardcoded for now, needs logic to determine map later..
-        return MAP.ARENA_VALLEY_EXTREME_MEGA;
+        return "ARENA VALLEY EXTREME (MEGA)";
+    }
+
+    public static void startQuickmatchMatch() throws InterruptedException {
+        controller.mouseMove(1260, 860);
+        leftMouseClick();
+    }
+
+    private static void selectNewEnglandFaction() throws InterruptedException {
+        controller.mouseMove(1185, 565);
+        leftMouseClick();
     }
 }

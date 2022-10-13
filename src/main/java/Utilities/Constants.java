@@ -1,6 +1,9 @@
 package Utilities;
 
 import java.awt.event.InputEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static java.awt.event.KeyEvent.VK_R;
 
@@ -38,16 +41,22 @@ public class Constants {
     public static final int commandCursorLineBufferTime = 10;
     //The buffer time the cursor need to stay right mouse pressed to scroll map
     public static final int commandCursorPauseBufferTime = 1000;
+    //The buffer time for screen changes in menu options
+    public static final int menuScreenChangeBufferTime = 2000;
 
-    //MAPS INFO
-    public enum MAP {
-        CANYON,
-        KEEP_OFF_THE_GRASS,
-        TOURNAMENT_ARENA,
-        TOURNAMENT_ORE_RIFT,
-        ARENA_VALLEY_EXTREME_MEGA,
-        BULLSEYE,
-        NORTH_BY_NORTHWEST,
-        PATH_BEYOND
-    }
+//    //MAPS INFO
+//    public enum MAP {
+//        CANYON,
+//        KEEP_OFF_THE_GRASS,
+//        TOURNAMENT_ARENA,
+//        TOURNAMENT_ORE_RIFT,
+//        ARENA_VALLEY_EXTREME_MEGA,
+//        BULLSEYE,
+//        NORTH_BY_NORTHWEST,
+//        PATH_BEYOND
+//    }
+
+    public static final List<String> quickmatchMapList = new ArrayList(Arrays.asList("BULLSEYE", "CANYON",
+            "KEEP OFF THE GRASS", "TOURNAMENT AREA", "TOURNAMENT ORE RIFT", "ARENA VALLEY EXTREME (MEGA)",
+            "NORTH BY NORTHWEST", "PATH BEYOND"));
 }

@@ -1,39 +1,38 @@
 package GameEngine;
 
 import GameEngine.Builds.ArenaValleyAllies;
-import Utilities.Constants;
 
 import static java.lang.System.exit;
 
 public class Game {
 
-    public static void startSovietGame(Constants.MAP map) throws InterruptedException {
+    public static void startSovietGame(String map) throws InterruptedException {
         //TODO: Implement me!
         exit(0);
     }
 
-    public static void startAlliesGame(Constants.MAP map) throws InterruptedException {
-        if (Constants.MAP.ARENA_VALLEY_EXTREME_MEGA == map) {
+    public static void startAlliesGame(String map) throws InterruptedException {
+        if ("ARENA VALLEY MEGA (EXTREME)".equals(map)) {
             ArenaValleyAllies.topLeft2WFSellBuild();
-        } else if (Constants.MAP.BULLSEYE == map){
+        } else if ("BULLSEYE".equals(map)){
             //TODO: Implement me!
             exit(0);
-        } else if (Constants.MAP.CANYON == map){
+        } else if ("CANYON".equals(map)){
             //TODO: Implement me!
             exit(0);
-        } else if (Constants.MAP.KEEP_OFF_THE_GRASS == map){
+        } else if ("KEEP OFF THE GRASS".equals(map)){
             //TODO: Implement me!
             exit(0);
-        } else if (Constants.MAP.NORTH_BY_NORTHWEST == map){
+        } else if ("NORTH BY NORTHWEST".equals(map)){
             //TODO: Implement me!
             exit(0);
-        } else if (Constants.MAP.PATH_BEYOND == map){
+        } else if ("PATH BEYOND".equals(map)){
             //TODO: Implement me!
             exit(0);
-        } else if (Constants.MAP.TOURNAMENT_ARENA == map){
+        } else if ("TOURNAMENT ARENA".equals(map)){
             //TODO: Implement me!
             exit(0);
-        } else if (Constants.MAP.TOURNAMENT_ORE_RIFT == map) {
+        } else if ("TOURNAMENT ORE RIFT".equals(map)) {
             //TODO: Implement me!
             exit(0);
         } else {

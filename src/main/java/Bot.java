@@ -1,9 +1,12 @@
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
 
-import static GameEngine.Game.startAlliesGame;
-import static GameEngine.Game.startSovietGame;
+import javax.swing.JFrame;
+import java.awt.Button;
+import java.awt.Frame;
+import java.awt.Panel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+
 import static Utilities.Constants.*;
 import static Utilities.Controller.*;
 
@@ -40,15 +43,25 @@ public class Bot extends Frame implements ActionListener {
             findScreenResolution();
             altTabIntoGame();
 
-            switch(event.getActionCommand()){
-                case SOVIETS:
-                    startSovietGame(determineMap());
-                    break;
-                case ALLIES:
-                    startAlliesGame(determineMap());
-                    break;
-            }
-        } catch (InterruptedException e) {
+            //TODO: Starting a game testing..
+//            selectQuickmatch();
+//            selectFaction();
+//            startQuickmatchMatch(); //careful uncommenting this..
+
+            //TODO: Testing out identifying the map
+            String map = identifyQuickmatchMap();
+            System.out.println("map => " + map);
+
+//
+//            switch(event.getActionCommand()){
+//                case SOVIETS:
+//                    startSovietGame(determineMap());
+//                    break;
+//                case ALLIES:
+//                    startAlliesGame(determineMap());
+//                    break;
+//            }
+        } catch (InterruptedException | IOException e) {
             e.printStackTrace();
         }
 
