@@ -123,7 +123,7 @@ public class Controller {
      * and compares that list of pixels to predefined map lists that are
      * keys to identify the map.  This is all hardcoded values.
      */
-    public static String midentifyQuickmatchMap() throws IOException, InterruptedException {
+    public static String identifyQuickmatchMap() throws IOException, InterruptedException {
         boolean pixelIsGolden = true;
 
         //Keep checking for the screen to change by observing a single pixel color
