@@ -143,7 +143,14 @@ public class BuildCommands {
             controller.keyRelease(SELECT_VEHICLE_MENU);
             Thread.sleep(commandInputBufferTime);
             controller.keyPress(VK_SHIFT);
-            for (int i = 0; i < 20; i++) {
+            for (int i = 0; i < 3;i++) {
+                Thread.sleep(commandTextedInputBufferTime);
+                controller.keyPress(VK_L);
+                controller.keyRelease(VK_L);
+            }
+            controller.keyPress(VK_F);
+            controller.keyRelease(VK_F);
+            for (int i = 0; i < 25; i++) {
                 Thread.sleep(commandTextedInputBufferTime);
                 controller.keyPress(VK_L);
                 controller.keyRelease(VK_L);

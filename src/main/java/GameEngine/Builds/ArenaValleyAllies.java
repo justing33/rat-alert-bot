@@ -24,12 +24,5 @@ public class ArenaValleyAllies {
         screenCommands.waitForTanks();
         screenCommands.moveScreenDownRight();
         screenCommands.cursorGQScreen();
-        screenCommands.cursorGQScreen();
-        screenCommands.cursorGQScreen();
-        screenCommands.cursorGQScreen();
-        screenCommands.cursorGQScreen();
-        screenCommands.cursorGQScreen();
-        screenCommands.cursorGQScreen();
-        screenCommands.cursorGQScreen();
     }
 }

@@ -40,15 +40,24 @@ public class Constants {
     public static final int commandCursorPauseBufferTime = 1000;
 
     // The buffer time in between moving the cursor for GQ positions
-    public static final int commandGQCursorPauseBufferTime = 150;
+    public static final int commandGQCursorPauseBufferTime = 500;
+
+    //The distance in pixels the cursor will move the screen between each gq cycle
+    public static final int screenScrollGQDistance = 40;
+
+    //The directions that the GQ will scan the cursor
+    public static final int [] cursorMaskGQx = {0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0,-1,-1,-1,-1};
+    public static final int [] cursorMaskGQy = {1, 1, 1, 1, 0,-1,-1,-1,-1, 0, 1, 1, 1, 1, 0,-1,-1,-1,-1, 0, 1, 1, 1, 1,-1,-1,-1,-1};
 
     //The directions that the GQ will scan the screen
-    public static final int [] arrayGQx = {0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
-    public static final int [] arrayGQy = {1, 1, 1, 1, 0,-1,-1,-1,-1, 0, 1, 1, 1, 1, 0,-1,-1,-1,-1, 0};
+    public static final int [] screenMaskGQx = {0, 0, 0, 0, -1, 0, 1,-1,-1, 0, 0, 1, 1, 0, 0};
+    public static final int [] screenMaskGQy = {0, 0, 0, -1, 0, 1, 0, 0, 0,-1,-1, 0, 0, 1, 1};
+
+
     //The size of the jumps in pixels while GQing
-    public static final int commandCursorGQJumpPixels = 64;
+    public static final int commandCursorGQJumpPixels = 128;
     //The number of the jumps while GQing
-    public static final int commandCursorGQNumberofJumps = 3;
+    public static final int commandCursorGQNumberofJumps = 2;
     //The buffer time enough tanks to be built for an effective first strike
     public static final int commandWaitForTanksTime = 30000;
 
