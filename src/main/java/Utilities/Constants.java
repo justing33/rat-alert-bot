@@ -17,6 +17,12 @@ public class Constants {
     public static final Integer PLAYABLE_SCREEN_WIDTH_1920x1080 = 1484;
     public static final Integer PLAYABLE_SCREEN_HEIGHT_1920x1080 = 1080;
 
+    //THE SIZE OF THE PART OF THE SCREEN TO CHECK FOR THE GREEN BAR AFTER BUILDING IS PLACED
+    public static final Integer CURSOR_BUILD_SQUARE_WIDTH = 1;
+    public static final Integer CURSOR_BUILD_SQUARE_HEIGHT = 128;
+
+
+
     //BUILDING PIXEL SIZES
     //TODO: Check this one later.. its estimated for now
     public static final Integer MCV_VERT_SIZE = 100;
@@ -49,9 +55,14 @@ public class Constants {
     public static final int [] cursorMaskGQx = {0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0,-1,-1,-1,-1};
     public static final int [] cursorMaskGQy = {1, 1, 1, 1, 0,-1,-1,-1,-1, 0, 1, 1, 1, 1, 0,-1,-1,-1,-1, 0, 1, 1, 1, 1,-1,-1,-1,-1};
 
+/*
     //The directions that the GQ will scan the screen
     public static final int [] screenMaskGQx = {0, 0, 0, 0, -1, 0, 1,-1,-1, 0, 0, 1, 1, 0, 0};
     public static final int [] screenMaskGQy = {0, 0, 0, -1, 0, 1, 0, 0, 0,-1,-1, 0, 0, 1, 1};
+*/
+//The directions that the GQ will scan the screen
+    public static final int [] screenMaskGQx = {0, 0, 0, 0,};
+    public static final int [] screenMaskGQy = {0, 0, 0, -1};
 
 
     //The size of the jumps in pixels while GQing
@@ -73,4 +84,10 @@ public class Constants {
         NORTH_BY_NORTHWEST,
         PATH_BEYOND
     }
+
+    //BUILDING PLACEMENT MASKS
+
+    public static final int [] ppPlacementMaskX = { 0, 0, 1, 1,-1,-1, 2, 2,-2,-2, 3, 3,-3,-3};
+    public static final int [] ppPlacementMaskY = {-6, 3, 3,-6, 3,-6, 3,-6, 3,-6, 3,-6, 3,-6};
+
 }

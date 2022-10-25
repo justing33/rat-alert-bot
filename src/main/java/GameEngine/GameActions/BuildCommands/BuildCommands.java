@@ -50,7 +50,7 @@ public class BuildCommands {
             controller.keyPress(VK_D);
             controller.keyRelease(VK_D);
             Thread.sleep(commandInputBufferTime);
-            placeBuildingDownAtCoordinates(xCoords, yCoords);
+            placeBuildingDownAtCoordinates(xCoords, yCoords, 1);
 
         } catch (Exception e){
             e.printStackTrace();
@@ -71,7 +71,7 @@ public class BuildCommands {
             controller.keyPress(VK_M);
             controller.keyRelease(VK_M);
             Thread.sleep(commandInputBufferTime);
-            placeBuildingDownAtCoordinates(xCoord, yCoord);
+            placeBuildingDownAtCoordinates(xCoord, yCoord,1);
 
         } catch (Exception e){
             e.printStackTrace();
@@ -93,7 +93,7 @@ public class BuildCommands {
             controller.keyPress(VK_F);
             controller.keyRelease(VK_F);
             Thread.sleep(commandInputBufferTime);
-            placeBuildingDownAtCoordinates(xCoordinate, yCoordinate);
+            placeBuildingDownAtCoordinates(xCoordinate, yCoordinate,1);
             Thread.sleep(commandInputBufferTime);
 
         } catch (Exception e){
@@ -174,40 +174,63 @@ public class BuildCommands {
      * @throws InterruptedException
      * @throws IOException
      */
-    private void placeBuildingDownAtCoordinates(int x, int y) throws InterruptedException, IOException {
+    private void placeBuildingDownAtCoordinates(int x, int y , int iter) throws InterruptedException, IOException {
+
         System.out.println("Trying to place a building at coordinates X=> " + x + " Y=> " + y);
 
         //Move the mouse to the location to place building
         controller.mouseMove(x, y);
-        Thread.sleep(commandInputBufferTime);
-        //Try to place it
-        leftMouseClick();
-        Thread.sleep(commandInputBufferTime);
-        //Try to place it
-        leftMouseClick();
-        Thread.sleep(commandInputBufferTime);
-        //Capture the game screen
-        BufferedImage gameScreenBuffer = capturePlayableGameScreen();
+        //Capture a piece of the screen to the right of the cursor
 
-        //Determine if the building was placed successfully or not
-        boolean placed = isBuildingPlaced(gameScreenBuffer);
-        System.out.println("Placed building? " + placed);
+        BufferedImage cursorSquareBuffer = captureCursorBuildSquare( x+64, y-32);
+
+        //Determine if the building is already in the spot
+        boolean there = isBuildingPlaced(cursorSquareBuffer);
+        System.out.println("Placed building already there? " + there);
+        boolean placed = false;
+
+        //if there's not already a building there, attempt to place
+        if (!there) {
+            Thread.sleep(commandInputBufferTime);
+            //Try to place it
+            leftMouseClick();
+            Thread.sleep(commandInputBufferTime);
+
+
+            //Capture a piece of the screen to the right of the cursor
+            cursorSquareBuffer = captureCursorBuildSquare(x + 64, y - 32);
+
+            //Determine if the building was placed successfully or not
+            placed = isBuildingPlaced(cursorSquareBuffer);
+            System.out.println("Placed building? " + placed);
+        }
 
         //if not placed, then pick a random new mouse coordinate to try to place the building again
         if (!placed){
-            Thread.sleep(commandInputBufferTime);
             Random random = new Random();
-            int newX = random.nextInt(x - 10) + 10;
+            int newX = x + ((random.nextInt(iter)-(iter/2)) * 32);
+            if (newX > PLAYABLE_SCREEN_WIDTH_1920x1080-10){
+                newX = PLAYABLE_SCREEN_WIDTH_1920x1080-10;
+            }
+            if (newX < 10){
+                newX = 10;
+            }
             System.out.println(newX);
 
             random = new Random();
-            int newY = random.nextInt(y - 10) + 10;
+            int newY = y + ((random.nextInt(iter)-(iter/2)) * 32);
+            if (newY > PLAYABLE_SCREEN_HEIGHT_1920x1080-10){
+                newY = PLAYABLE_SCREEN_HEIGHT_1920x1080-10;
+            }
+            if (newY < 10){
+                newY = 10;
+            }
             System.out.println(newY);
-
-            placeBuildingDownAtCoordinates(newX, newY);
+            iter++;
+            placeBuildingDownAtCoordinates(newX, newY, iter);
         } else {
             //Building was placed, break out of recursive loop
-            return;
+            return ;
         }
     }
 
@@ -217,8 +240,8 @@ public class BuildCommands {
      * @return
      */
     private boolean isBuildingPlaced(BufferedImage screen){
-        Point mousePointerLocation = MouseInfo.getPointerInfo().getLocation();
-        System.out.println("Mouse Coords X => " + mousePointerLocation.getX() + " Y => " + mousePointerLocation.getY());
+        //Point mousePointerLocation = MouseInfo.getPointerInfo().getLocation();
+        //System.out.println("Mouse Coords X => " + mousePointerLocation.getX() + " Y => " + mousePointerLocation.getY());
 
         /***
          * Get the color pixel at the mouse location to see if the building was placed successfully or not
@@ -227,14 +250,24 @@ public class BuildCommands {
          * outline is still there.
          * //TODO: This is going to be problematic logic when we play on a snow map so may need to reconsider approach
          */
-        int color = screen.getRaster().getDataBuffer().getElem((((int)mousePointerLocation.getY() + 5 ) * PLAYABLE_SCREEN_WIDTH_1920x1080) + (int)mousePointerLocation.getX() + 2);
-        System.out.println("Pixel color (integer value): " + color);
-        //determine individual colors
-        int blue = color & 0xff;
-        int green = (color & 0xff00) >> 8;
-        int red = (color & 0xff0000) >> 16;
-        System.out.println("Pixel RGB color values => red: " + red + " green: " + green + " blue: " + blue);
+        int blue = 0;
+        int green = 0;
+        int red = 0;
+        int sizeOfCursorSquareArray = CURSOR_BUILD_SQUARE_WIDTH * CURSOR_BUILD_SQUARE_HEIGHT;
+        for (int i = 0; i<sizeOfCursorSquareArray; i++) {
+            int color = screen.getRaster().getDataBuffer().getElem(i);
+            System.out.println("Pixel color (integer value): " + color);
+            //determine individual colors
+            blue = color & 0xff;
+            green = (color & 0xff00) >> 8;
+            red = (color & 0xff0000) >> 16;
+            System.out.println("Pixel RGB color values => red: " + red + " green: " + green + " blue: " + blue);
+            if (green == 255 && red == 0 && blue == 0){
+                return true;
+            }
+
+        }
         //If all pixel values are atleast 240 return false meaning the building was not placed
-        return red >= 240 && green >= 240 && blue >= 240 ? false : true;
+        return false;
     }
 }

@@ -66,6 +66,13 @@ public class Controller {
         return gameScreenBuffer;
     }
 
+    public static BufferedImage captureCursorBuildSquare(int cursor_x, int cursor_y) throws IOException {
+        //Grab the screen near the cursor
+        Rectangle playableScreenRect = new Rectangle(cursor_x,cursor_y,CURSOR_BUILD_SQUARE_WIDTH, CURSOR_BUILD_SQUARE_HEIGHT);
+        BufferedImage gameScreenBuffer = controller.createScreenCapture(playableScreenRect);
+        return gameScreenBuffer;
+    }
+
     /***
      * Find the resolution of the screen the game is being played on
      * The last pixel before the sidebar is 1484 on width

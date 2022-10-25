@@ -15,7 +15,7 @@ public class ArenaValleyAllies {
 
     public static void topLeft2WFSellBuild(){
         buildCommands.deployMCV();
-        buildCommands.buildPowerPlant(middleXScreenPos + 100, middleYScreenPos + (MCV_VERT_SIZE / 2));
+        buildCommands.buildPowerPlant(middleXScreenPos, middleYScreenPos);
         buildCommands.buildRefinery(middleXScreenPos + 290, middleYScreenPos + (MCV_VERT_SIZE / 2) + 100);
         buildCommands.buildWarFactory(middleXScreenPos + 550, middleYScreenPos + (MCV_VERT_SIZE / 2) + 100);
         buildCommands.buildLightTanks();
