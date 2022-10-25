@@ -108,8 +108,14 @@ public class BuildCommands {
             controller.keyRelease(VK_H);
             Thread.sleep(commandInputBufferTime);
             toggleSellCursor();
-            //Move the mouse to the location to sell building
+            //Move the mouse to the location to sell building AV North
             controller.mouseMove(middleXScreenPos, middleYScreenPos + (MCV_VERT_SIZE / 2) - 128 );
+            Thread.sleep(commandInputBufferTime);
+            //Try to sell it
+            leftMouseClick();
+            Thread.sleep(commandInputBufferTime);
+            //Move the mouse to the location to sell building Generally
+            controller.mouseMove(middleXScreenPos, middleYScreenPos + (MCV_VERT_SIZE / 2) );
             Thread.sleep(commandInputBufferTime);
             //Try to sell it
             leftMouseClick();
@@ -148,9 +154,31 @@ public class BuildCommands {
                 controller.keyPress(VK_L);
                 controller.keyRelease(VK_L);
             }
+            //BUILD AN EXTRA ORE TRUCK HERE
+            controller.keyRelease(VK_SHIFT);
+            Thread.sleep(commandTextedInputBufferTime);
+            Thread.sleep(commandTextedInputBufferTime);
             controller.keyPress(VK_F);
             controller.keyRelease(VK_F);
-            for (int i = 0; i < 25; i++) {
+            Thread.sleep(commandTextedInputBufferTime);
+            controller.keyPress(VK_SHIFT);
+
+            for (int i = 0; i < 3;i++) {
+                Thread.sleep(commandTextedInputBufferTime);
+                controller.keyPress(VK_L);
+                controller.keyRelease(VK_L);
+            }
+            //BUILD AN EXTRA ORE TRUCK HERE
+            controller.keyRelease(VK_SHIFT);
+            Thread.sleep(commandTextedInputBufferTime);
+            Thread.sleep(commandTextedInputBufferTime);
+            controller.keyPress(VK_F);
+            controller.keyRelease(VK_F);
+            Thread.sleep(commandTextedInputBufferTime);
+            controller.keyPress(VK_SHIFT);
+
+            for (int i = 0; i < 20; i++) {
+
                 Thread.sleep(commandTextedInputBufferTime);
                 controller.keyPress(VK_L);
                 controller.keyRelease(VK_L);
@@ -174,15 +202,16 @@ public class BuildCommands {
      * @throws InterruptedException
      * @throws IOException
      */
-    private void placeBuildingDownAtCoordinates(int x, int y , int iter) throws InterruptedException, IOException {
+    private void placeBuildingDownAtCoordinates(int x, int y , int iterate) throws InterruptedException, IOException {
 
-        System.out.println("Trying to place a building at coordinates X=> " + x + " Y=> " + y);
+        //System.out.println("Trying to place a building at coordinates X=> " + x + " Y=> " + y);
 
         //Move the mouse to the location to place building
         controller.mouseMove(x, y);
-        //Capture a piece of the screen to the right of the cursor
+        mouseLineMove(x,y,5,5,4);
 
-        BufferedImage cursorSquareBuffer = captureCursorBuildSquare( x+64, y-32);
+        //Capture a piece of the screen to the right of the cursor
+        BufferedImage cursorSquareBuffer = captureCursorBuildSquare( x+64, y-64);
 
         //Determine if the building is already in the spot
         boolean there = isBuildingPlaced(cursorSquareBuffer);
@@ -191,14 +220,14 @@ public class BuildCommands {
 
         //if there's not already a building there, attempt to place
         if (!there) {
-            Thread.sleep(commandInputBufferTime);
+            //Thread.sleep(commandInputBufferTime);
             //Try to place it
             leftMouseClick();
             Thread.sleep(commandInputBufferTime);
-
+            Thread.sleep(commandInputBufferTime);
 
             //Capture a piece of the screen to the right of the cursor
-            cursorSquareBuffer = captureCursorBuildSquare(x + 64, y - 32);
+            cursorSquareBuffer = captureCursorBuildSquare(x + 64, y - 64);
 
             //Determine if the building was placed successfully or not
             placed = isBuildingPlaced(cursorSquareBuffer);
@@ -207,27 +236,32 @@ public class BuildCommands {
 
         //if not placed, then pick a random new mouse coordinate to try to place the building again
         if (!placed){
+            int iter = iterate + 5;
             Random random = new Random();
-            int newX = x + ((random.nextInt(iter)-(iter/2)) * 32);
-            if (newX > PLAYABLE_SCREEN_WIDTH_1920x1080-10){
-                newX = PLAYABLE_SCREEN_WIDTH_1920x1080-10;
+            int newX = x + ((random.nextInt(iter)-(iter/2)) * 64);
+            if (newX > PLAYABLE_SCREEN_WIDTH_1920x1080-128){
+                newX = PLAYABLE_SCREEN_WIDTH_1920x1080/2;
+                iterate = 1;
             }
-            if (newX < 10){
-                newX = 10;
+            if (newX < 128){
+                newX = PLAYABLE_SCREEN_WIDTH_1920x1080/2;
+                iterate = 1;
             }
             System.out.println(newX);
 
             random = new Random();
-            int newY = y + ((random.nextInt(iter)-(iter/2)) * 32);
-            if (newY > PLAYABLE_SCREEN_HEIGHT_1920x1080-10){
-                newY = PLAYABLE_SCREEN_HEIGHT_1920x1080-10;
+            int newY = y + ((random.nextInt(iter)-(iter/2)) * 64);
+            if (newY > PLAYABLE_SCREEN_HEIGHT_1920x1080-128){
+                newY = PLAYABLE_SCREEN_HEIGHT_1920x1080/2;
+                iterate = 1;
             }
-            if (newY < 10){
-                newY = 10;
+            if (newY < 128){
+                newY = PLAYABLE_SCREEN_HEIGHT_1920x1080/2;
+                iterate = 1;
             }
             System.out.println(newY);
-            iter++;
-            placeBuildingDownAtCoordinates(newX, newY, iter);
+            iterate++;
+            placeBuildingDownAtCoordinates(newX, newY, iterate);
         } else {
             //Building was placed, break out of recursive loop
             return ;
@@ -256,12 +290,12 @@ public class BuildCommands {
         int sizeOfCursorSquareArray = CURSOR_BUILD_SQUARE_WIDTH * CURSOR_BUILD_SQUARE_HEIGHT;
         for (int i = 0; i<sizeOfCursorSquareArray; i++) {
             int color = screen.getRaster().getDataBuffer().getElem(i);
-            System.out.println("Pixel color (integer value): " + color);
+            //System.out.println("Pixel color (integer value): " + color);
             //determine individual colors
             blue = color & 0xff;
             green = (color & 0xff00) >> 8;
             red = (color & 0xff0000) >> 16;
-            System.out.println("Pixel RGB color values => red: " + red + " green: " + green + " blue: " + blue);
+            //System.out.println("Pixel RGB color values => red: " + red + " green: " + green + " blue: " + blue);
             if (green == 255 && red == 0 && blue == 0){
                 return true;
             }
@@ -270,4 +304,13 @@ public class BuildCommands {
         //If all pixel values are atleast 240 return false meaning the building was not placed
         return false;
     }
+    private void mouseLineMove(int start_x, int start_y, int length_x, int length_y, int steps) throws InterruptedException {
+
+        for( int i = 0; i < steps ; i++) {
+            Thread.sleep(commandCursorLineBufferTime);
+            controller.mouseMove(start_x + ((i * length_x )/ steps) , start_y + ((i * length_y) / steps));
+        }
+    }
+
+
 }

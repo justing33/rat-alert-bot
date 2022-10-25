@@ -1,5 +1,7 @@
 package GameEngine.GameActions.ScreenCommands;
 
+import java.util.Random;
+
 import static Utilities.Constants.*;
 import static Utilities.Controller.*;
 import static java.awt.event.KeyEvent.*;
@@ -37,7 +39,6 @@ public class ScreenCommands {
     }
 
     private void mouseLineMove(int start_x, int start_y, int length_x, int length_y, int steps) throws InterruptedException {
-        System.out.println("Trying to move mouse in a line X=> " + length_x + " Y=> " + length_y);
 
         for( int i = 0; i < steps ; i++) {
             Thread.sleep(commandCursorLineBufferTime);
@@ -119,7 +120,7 @@ public class ScreenCommands {
 
             Thread.sleep(commandInputBufferTime);
 
-            //stop every third cycle
+            //stop every fifth cycle
             if ( i % 5 == 0 ) {
                 controller.keyPress(VK_S);
                 controller.keyRelease(VK_S);
@@ -132,6 +133,7 @@ public class ScreenCommands {
             //press q and alt and start clicking around the screen
             controller.keyPress(VK_ALT);
             Thread.sleep(commandInputBufferTime);
+
             mouseLineClick(cursor_x, cursor_y, cursorMaskGQx[i], cursorMaskGQy[i], commandCursorGQJumpPixels, commandCursorGQNumberofJumps);
             controller.keyRelease(VK_ALT);
 
@@ -149,8 +151,8 @@ public class ScreenCommands {
 
         int steps = 5;
          for( int i = 0; i < loops ; i++) {
-
-             mouseLineMove(start_x,start_y, pixels_skipped * direction_x, pixels_skipped * direction_y, steps);
+             Random random = new Random();
+             mouseLineMove(start_x,start_y, pixels_skipped * direction_x + random.nextInt(64)-32, pixels_skipped * direction_y+ random.nextInt(64)-32, steps);
              Thread.sleep(commandInputBufferTime);
              controller.mousePress(LEFT_MOUSE_CLICK);
              controller.mouseRelease(LEFT_MOUSE_CLICK);

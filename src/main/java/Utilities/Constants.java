@@ -55,14 +55,18 @@ public class Constants {
     public static final int [] cursorMaskGQx = {0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0,-1,-1,-1,-1};
     public static final int [] cursorMaskGQy = {1, 1, 1, 1, 0,-1,-1,-1,-1, 0, 1, 1, 1, 1, 0,-1,-1,-1,-1, 0, 1, 1, 1, 1,-1,-1,-1,-1};
 
+
 /*
     //The directions that the GQ will scan the screen
-    public static final int [] screenMaskGQx = {0, 0, 0, 0, -1, 0, 1,-1,-1, 0, 0, 1, 1, 0, 0};
-    public static final int [] screenMaskGQy = {0, 0, 0, -1, 0, 1, 0, 0, 0,-1,-1, 0, 0, 1, 1};
+    public static final int [] screenMaskGQx = {0, 0,-1, 0, 0, -1, 0, 1,-1,-1, 0, 0, 1, 1, 0, 0};
+    public static final int [] screenMaskGQy = {0, 0,-1, 0, -1, 0, 1, 0, 0, 0,-1,-1, 0, 0, 1, 1};
 */
+
 //The directions that the GQ will scan the screen
-    public static final int [] screenMaskGQx = {0, 0, 0, 0,};
-    public static final int [] screenMaskGQy = {0, 0, 0, -1};
+
+    public static final int [] screenMaskGQx = {0, 0, -1, 0, 0,-1, 0, 1};
+    public static final int [] screenMaskGQy = {0, 0, -1, 0,-1, 0, 1, 0};
+
 
 
     //The size of the jumps in pixels while GQing
