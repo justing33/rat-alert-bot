@@ -220,11 +220,15 @@ public class BuildCommands {
 
         //if there's not already a building there, attempt to place
         if (!there) {
-            //Thread.sleep(commandInputBufferTime);
+            Thread.sleep(commandInputBufferTime);
             //Try to place it
             leftMouseClick();
             Thread.sleep(commandInputBufferTime);
             Thread.sleep(commandInputBufferTime);
+            Thread.sleep(commandInputBufferTime);
+            Thread.sleep(commandInputBufferTime);
+            Thread.sleep(commandInputBufferTime);
+
 
             //Capture a piece of the screen to the right of the cursor
             cursorSquareBuffer = captureCursorBuildSquare(x + 64, y - 64);

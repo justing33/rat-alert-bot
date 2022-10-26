@@ -78,6 +78,21 @@ public class Controller {
         BufferedImage gameScreenBuffer = controller.createScreenCapture(playableScreenRect);
         return gameScreenBuffer;
     }
+
+    public static BufferedImage captureGameScreenBegin() throws IOException {
+        //Grab the pixel at top right of screen
+        Rectangle playableScreenRect = new Rectangle(1900,20,1, 1);
+        BufferedImage gameScreenBuffer = controller.createScreenCapture(playableScreenRect);
+        return gameScreenBuffer;
+    }
+
+    public static BufferedImage captureGameScreenOver() throws IOException {
+        //Grab the pixel at top right of screen
+        Rectangle playableScreenRect = new Rectangle(1850,60,1, 1);
+        BufferedImage gameScreenBuffer = controller.createScreenCapture(playableScreenRect);
+        return gameScreenBuffer;
+    }
+
     /***
      * Find the resolution of the screen the game is being played on
      * The last pixel before the sidebar is 1484 on width
@@ -125,8 +140,11 @@ public class Controller {
         int j = 0;
         while (!game_started) {
             int sizeOfLoadScreenLeftArray = 350;
-            int [] startLocationColumPix = {542, 825};
-            for (j = 0; j<2; j++){
+            //look for the turqouise or yellow pixel on start screen
+            //startLocationColumPix = [AV left, Bullseye left, Canyon Left, Canyon Right, BullseyeRight, AV Right]
+            int [] startLocationColumPix = {528 , 586, 620 , 749, 789, 843};
+            int lengthOfStartArray = startLocationColumPix.length;
+            for (j = 0; j<lengthOfStartArray; j++){
             BufferedImage loadScreenLeft = captureLoadScreenStart(startLocationColumPix[j]);
                 for (i = 0; i < sizeOfLoadScreenLeftArray; i++) {
                     int color = loadScreenLeft.getRaster().getDataBuffer().getElem(i);
@@ -154,27 +172,42 @@ public class Controller {
                 }
             }
         }
+        //here we need to look for pixel @ 1900,20 for color to become 120,97,56
+        boolean begin_build = false;
+        while (!begin_build){
+           BufferedImage beginPixel = captureGameScreenBegin();
+            int color = beginPixel.getRaster().getDataBuffer().getElem(0);
+            blue = color & 0xff;
+            green = (color & 0xff00) >> 8;
+            red = (color & 0xff0000) >> 16;
+            System.out.println("TopRight pixel:  red = " + red + "   green = " + green + "    blue = "+ blue);
+            if (red == 118  && green == 94 && blue == 63) {
+                //prolly gunna need to change this to look at whether the mcv had spawned or not
+                Thread.sleep(commandInputBufferTime);
+                Thread.sleep(commandInputBufferTime);
+                begin_build = true;
+            }
+        }
 
-        Thread.sleep(gameStartWaitTime);
 
-        if (i < 175 && j == 0) {
+
+
+        if (i < 175 && ( (j == 0) || (j==1)|| (j==2) )) {
             System.out.println("TOPLEFT:  i = " + i + "   j = " + j);
             return MAP_START.TOPLEFT;
-        }else if (i > 175 && j == 0) {
+        }else if (i > 175 && ( (j == 0) || (j==1)|| (j==2) )) {
             System.out.println("BOTTOMLEFT:  i = " + i + "   j = " + j);
             return MAP_START.BOTTOMLEFT;
-        }else if (i < 175 && j == 1) {
+        }else if (i < 175 && ( (j == 3) || (j==4)|| (j==5) )) {
             System.out.println("TOPRIGHT:  i = " + i + "   j = " + j);
             return MAP_START.TOPRIGHT;
-        }else if (i > 175 && j == 1) {
+        }else if (i > 175 && ( (j == 3) || (j==4)|| (j==5) )) {
             System.out.println("BOTTOMRIGHT:  i = " + i + "   j = " + j);
             return MAP_START.BOTTOMRIGHT;
         }
 
         return MAP_START.NONE;
 
-        //TODO: Hardcoded for now, needs logic to determine map later..
-        //return MAP.ARENA_VALLEY_EXTREME_MEGA;
     }
 
 

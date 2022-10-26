@@ -45,8 +45,8 @@ public class Constants {
     //The buffer time the cursor needs to stay right mouse pressed to scroll across the map
     public static final int commandCursorPauseBufferTime = 1000;
     //The Distance in pixels the cursor should move to scroll across the map
-    public static final int moveScreenX = 600;
-    public static final int moveScreenY = 600;
+    public static final int moveScreenX = 400;
+    public static final int moveScreenY = 400;
 
     // The buffer time in between moving the cursor for GQ positions
     public static final int commandGQCursorPauseBufferTime = 500;
@@ -69,8 +69,8 @@ public class Constants {
 
 //The directions that the GQ will scan the screen
 
-    public static final int [] screenMaskGQx = {0, 0, -1, 0, 1, 0, 0,-1,-1};
-    public static final int [] screenMaskGQy = {0, 0, -1, 1, 0,-1,-1, 0, 0};
+    public static final int [] screenMaskGQx = {-1, 0, 1, -1, 0, 0, 1, 0, 0,-1,-1, 0, 0, 1, 1, 0, 0,-1,-1};
+    public static final int [] screenMaskGQy = {-1, 0, 1, -1, 0, 1, 0,-1,-1, 0, 0, 0, 0, 1, 1,-1,-1, 0, 0};
 
 
 

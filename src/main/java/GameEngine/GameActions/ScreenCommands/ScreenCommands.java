@@ -1,10 +1,13 @@
 package GameEngine.GameActions.ScreenCommands;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Random;
 
 import static Utilities.Constants.*;
 import static Utilities.Controller.*;
 import static java.awt.event.KeyEvent.*;
+import static java.lang.System.exit;
 
 
 public class ScreenCommands {
@@ -12,8 +15,8 @@ public class ScreenCommands {
     public void moveScreen(int[] attackDirection) {
         try {
             //Initiate cursor position
-            int cursor_x = 100;
-            int cursor_y = 100;
+            int cursor_x = PLAYABLE_SCREEN_WIDTH_1920x1080/2;
+            int cursor_y = PLAYABLE_SCREEN_HEIGHT_1920x1080/2;
             controller.mouseMove(cursor_x, cursor_y);
             controller.mousePress(RIGHT_MOUSE_CLICK);
             //Move the screen to where we want to attack
@@ -105,7 +108,7 @@ public class ScreenCommands {
             e.printStackTrace();
         }
     }
-    private void cursorGQclicks(int cursor_x, int cursor_y) throws InterruptedException {
+    private void cursorGQclicks(int cursor_x, int cursor_y) throws InterruptedException, IOException {
 
         //put cursor to center of screen
         controller.mouseMove(cursor_x, cursor_y);
@@ -142,6 +145,20 @@ public class ScreenCommands {
 
             cursor_x = commandCursorGQJumpPixels * cursorMaskGQx[i] * commandCursorGQNumberofJumps + cursor_x;
             cursor_y = commandCursorGQJumpPixels * cursorMaskGQy[i] * commandCursorGQNumberofJumps + cursor_y;
+
+            //check to see if game is over and stop bot if it is
+            BufferedImage overPixel = captureGameScreenOver();
+            int color = overPixel.getRaster().getDataBuffer().getElem(0);
+            int blue = color & 0xff;
+            int green = (color & 0xff00) >> 8;
+            int red = (color & 0xff0000) >> 16;
+            System.out.println("TopRight pixel:  red = " + red + "   green = " + green + "    blue = "+ blue);
+            if (red > 90  && green == 0 && blue == 0) {
+                System.out.println("GAME OVER");
+                exit(0);
+            }
+
+
         }
         controller.keyRelease(VK_Q);
 
