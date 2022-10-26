@@ -13,7 +13,7 @@ public class ArenaValleyAllies {
     static BuildCommands buildCommands = new BuildCommands();
     static ScreenCommands screenCommands = new ScreenCommands();
 
-    public static void topLeft2WFSellBuild(){
+    public static void topLeft2WFSellBuild(int[] attackDirection){
         buildCommands.deployMCV();
         buildCommands.buildPowerPlant(middleXScreenPos, middleYScreenPos);
         buildCommands.buildRefinery(middleXScreenPos, middleYScreenPos);
@@ -22,7 +22,9 @@ public class ArenaValleyAllies {
         buildCommands.buildWarFactory(middleXScreenPos, middleYScreenPos);
         buildCommands.sellConYard();
         screenCommands.waitForTanks();
-        screenCommands.moveScreenDownRight();
-        screenCommands.cursorGQScreen();
+        System.out.println("Trying to move THE SCREEN X=> " + attackDirection[0] + " Y=> " + attackDirection[1]);
+        screenCommands.moveScreen(attackDirection);
+
+        screenCommands.cursorGQScreen(attackDirection);
     }
 }

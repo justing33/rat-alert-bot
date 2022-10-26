@@ -50,6 +50,8 @@ public class Constants {
 
     // The buffer time in between moving the cursor for GQ positions
     public static final int commandGQCursorPauseBufferTime = 500;
+    // The buffer time in between moving the cursor for GQ cycles
+    public static final int commandGQCyclePauseBufferTime = 5000;
 
     //The distance in pixels the cursor will move the screen between each gq cycle
     public static final int screenScrollGQDistance = 40;
@@ -78,19 +80,17 @@ public class Constants {
     public static final int commandCursorGQNumberofJumps = 2;
     //The buffer time enough tanks to be built for an effective first strike
     public static final int commandWaitForTanksTime = 30000;
+    //The buffer time the game to start
+    public static final int gameStartWaitTime = 10000;
 
     // where to scroll the screen to find enemy
     public enum MAP_START {
-        TOPLEFT (1,1),
-        BOTTOMLEFT (1,-1),
-        TOPRIGHT(-1,1),
-        BOTTOMRIGHT(-1,-1)
+        TOPLEFT,
+        BOTTOMLEFT,
+        TOPRIGHT,
+        BOTTOMRIGHT,
+        NONE
 
-        ;
-        MAP_START(int X, int Y) {
-
-
-        }
     }
 
 

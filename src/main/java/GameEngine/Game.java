@@ -12,29 +12,27 @@ public class Game {
         exit(0);
     }
 
-    public static void startAlliesGame(Constants.MAP map) throws InterruptedException {
-        if (Constants.MAP.ARENA_VALLEY_EXTREME_MEGA == map) {
-            ArenaValleyAllies.topLeft2WFSellBuild();
-        } else if (Constants.MAP.BULLSEYE == map){
-            //TODO: Implement me!
+    public static void startAlliesGame(Constants.MAP_START map) throws InterruptedException {
+        int buildDirection[];
+         if (Constants.MAP_START.TOPLEFT == map){
+             buildDirection = new int[] {1,1};
+
+            ArenaValleyAllies.topLeft2WFSellBuild(buildDirection);
             exit(0);
-        } else if (Constants.MAP.CANYON == map){
-            //TODO: Implement me!
+        } else if (Constants.MAP_START.BOTTOMLEFT == map){
+             buildDirection = new int[] {1,-1};
+
+             ArenaValleyAllies.topLeft2WFSellBuild(buildDirection);
             exit(0);
-        } else if (Constants.MAP.KEEP_OFF_THE_GRASS == map){
-            //TODO: Implement me!
+        } else if (Constants.MAP_START.TOPRIGHT == map){
+             buildDirection = new int[] {-1,1};
+
+             ArenaValleyAllies.topLeft2WFSellBuild(buildDirection);
             exit(0);
-        } else if (Constants.MAP.NORTH_BY_NORTHWEST == map){
-            //TODO: Implement me!
-            exit(0);
-        } else if (Constants.MAP.PATH_BEYOND == map){
-            //TODO: Implement me!
-            exit(0);
-        } else if (Constants.MAP.TOURNAMENT_ARENA == map){
-            //TODO: Implement me!
-            exit(0);
-        } else if (Constants.MAP.TOURNAMENT_ORE_RIFT == map) {
-            //TODO: Implement me!
+        } else if (Constants.MAP_START.BOTTOMRIGHT == map){
+             buildDirection = new int[] {-1,-1};
+
+             ArenaValleyAllies.topLeft2WFSellBuild(buildDirection);
             exit(0);
         } else {
             System.out.println("Could not determine the map, exiting now..");

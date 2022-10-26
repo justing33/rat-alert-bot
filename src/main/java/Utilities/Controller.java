@@ -72,9 +72,9 @@ public class Controller {
         BufferedImage gameScreenBuffer = controller.createScreenCapture(playableScreenRect);
         return gameScreenBuffer;
     }
-    public static BufferedImage captureLoadScreenStart() throws IOException {
+    public static BufferedImage captureLoadScreenStart(int x) throws IOException {
         //Grab the screen near the cursor
-        Rectangle playableScreenRect = new Rectangle(542,425,1, 350);
+        Rectangle playableScreenRect = new Rectangle(x,425,1, 350);
         BufferedImage gameScreenBuffer = controller.createScreenCapture(playableScreenRect);
         return gameScreenBuffer;
     }
@@ -116,38 +116,65 @@ public class Controller {
      *
      * @return An enum denoting the map that is being played in the quickplay ladder match
      */
-    public static Constants.MAP determineMap() throws IOException, InterruptedException {
+    public static Constants.MAP_START determineMap() throws IOException, InterruptedException {
         boolean game_started = false;
         int blue = 0;
         int green = 0;
         int red = 0;
-        while (!game_started){
-            BufferedImage loadScreenLeft = captureLoadScreenStart();
+        int i = 0;
+        int j = 0;
+        while (!game_started) {
             int sizeOfLoadScreenLeftArray = 350;
-            for (int i = 0; i<sizeOfLoadScreenLeftArray; i++) {
-                int color = loadScreenLeft.getRaster().getDataBuffer().getElem(i);
-                //System.out.println("Pixel color (integer value): " + color);
-                //determine individual colors
-                blue = color & 0xff;
-                green = (color & 0xff00) >> 8;
-                red = (color & 0xff0000) >> 16;
-                //System.out.println("Pixel RGB color values => red: " + red + " green: " + green + " blue: " + blue);
-                //turquoise player color
-                if (red < 15 && green > 165 && green < 190 && blue > 230) {
-                    game_started = true;
+            int [] startLocationColumPix = {542, 825};
+            for (j = 0; j<2; j++){
+            BufferedImage loadScreenLeft = captureLoadScreenStart(startLocationColumPix[j]);
+                for (i = 0; i < sizeOfLoadScreenLeftArray; i++) {
+                    int color = loadScreenLeft.getRaster().getDataBuffer().getElem(i);
+                    //System.out.println("Pixel color (integer value): " + color);
+                    //determine individual colors
+                    blue = color & 0xff;
+                    green = (color & 0xff00) >> 8;
+                    red = (color & 0xff0000) >> 16;
+                    System.out.println("Pixel RGB color values => red: " + red + " green: " + green + " blue: " + blue);
+                    //turquoise player color
+                    if (red < 15 && green > 165 && green < 190 && blue > 230) {
+                        game_started = true;
+                        System.out.println("i = " + i + "   j = " + j);
+                        break;
+                    }
+                    //yellow player color
+                    if (red > 230 && green > 230 && blue < 15) {
+                        game_started = true;
+                        System.out.println("i = " + i + "   j = " + j);
+                        break;
+                    }
                 }
-                //yellow player color
-                if (red > 230 && green > 230 && blue < 15) {
-                    game_started = true;
+                if (game_started){
+                    break;
                 }
-
             }
         }
 
-        Thread.sleep(15000);
+        Thread.sleep(gameStartWaitTime);
+
+        if (i < 175 && j == 0) {
+            System.out.println("TOPLEFT:  i = " + i + "   j = " + j);
+            return MAP_START.TOPLEFT;
+        }else if (i > 175 && j == 0) {
+            System.out.println("BOTTOMLEFT:  i = " + i + "   j = " + j);
+            return MAP_START.BOTTOMLEFT;
+        }else if (i < 175 && j == 1) {
+            System.out.println("TOPRIGHT:  i = " + i + "   j = " + j);
+            return MAP_START.TOPRIGHT;
+        }else if (i > 175 && j == 1) {
+            System.out.println("BOTTOMRIGHT:  i = " + i + "   j = " + j);
+            return MAP_START.BOTTOMRIGHT;
+        }
+
+        return MAP_START.NONE;
 
         //TODO: Hardcoded for now, needs logic to determine map later..
-        return MAP.ARENA_VALLEY_EXTREME_MEGA;
+        //return MAP.ARENA_VALLEY_EXTREME_MEGA;
     }
 
 

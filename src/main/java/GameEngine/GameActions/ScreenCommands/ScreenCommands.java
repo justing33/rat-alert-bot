@@ -9,16 +9,17 @@ import static java.awt.event.KeyEvent.*;
 
 public class ScreenCommands {
 
-    public void moveScreenDownRight() {
+    public void moveScreen(int[] attackDirection) {
         try {
             //Initiate cursor position
             int cursor_x = 100;
             int cursor_y = 100;
             controller.mouseMove(cursor_x, cursor_y);
             controller.mousePress(RIGHT_MOUSE_CLICK);
-
+            //Move the screen to where we want to attack
             Thread.sleep(commandInputBufferTime);
-            mouseLineMove(cursor_x, cursor_y, moveScreenX, moveScreenY, 20);
+            //PROLLY NEED TO CLEAN THIS UP buildDirection[] WHERE 0 INDEX IS X AND 1 INDEX IS Y
+            mouseLineMove(cursor_x, cursor_y, moveScreenX * attackDirection[0], moveScreenY * attackDirection[1], 20);
             Thread.sleep(commandCursorPauseBufferTime);
 
             controller.mouseRelease(RIGHT_MOUSE_CLICK);
@@ -57,7 +58,7 @@ public class ScreenCommands {
             e.printStackTrace();
         }
     }
-    public void cursorGQScreen(){
+    public void cursorGQScreen(int[] attackDirection){
         try {
             int cursor_x;
             int cursor_y;
@@ -70,6 +71,8 @@ public class ScreenCommands {
             Thread.sleep(commandInputBufferTime);
             for( int j = 0; j < sizeOfGQScreenMask ; j++){
 
+                //wait a few seconds before scrolling the screen
+                Thread.sleep(commandGQCyclePauseBufferTime);
                 //set cursor to middle of screen
                 cursor_x = PLAYABLE_SCREEN_WIDTH_1920x1080 / 2;
                 cursor_y = PLAYABLE_SCREEN_HEIGHT_1920x1080 / 2;
@@ -77,8 +80,8 @@ public class ScreenCommands {
                 Thread.sleep(commandInputBufferTime);
                 controller.mousePress(RIGHT_MOUSE_CLICK);
                 Thread.sleep(commandInputBufferTime);
-
-                mouseLineMove(cursor_x, cursor_y, screenScrollGQDistance * screenMaskGQx[j], screenScrollGQDistance * screenMaskGQy[j], 20);
+                //This controls the overall screen scrolling
+                mouseLineMove(cursor_x, cursor_y, screenScrollGQDistance * screenMaskGQx[j] * attackDirection[0], screenScrollGQDistance * screenMaskGQy[j] * attackDirection[1], 20);
 
 
                 Thread.sleep(commandCursorPauseBufferTime);
@@ -145,9 +148,9 @@ public class ScreenCommands {
 
     }
 
-    //this will cause the mouse
+    //this will cause the mouse to move in a line while clicking
     private void mouseLineClick(int start_x, int start_y, int direction_x, int direction_y, int pixels_skipped, int loops) throws InterruptedException {
-        System.out.println("Trying to move mouse in spiral from line X=> " + start_x + " Y=> " + start_y);
+        //System.out.println("Trying to move mouse in spiral from line X=> " + start_x + " Y=> " + start_y);
 
         int steps = 5;
          for( int i = 0; i < loops ; i++) {

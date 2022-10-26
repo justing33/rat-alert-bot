@@ -43,12 +43,8 @@ public class Bot extends Frame implements ActionListener {
 
             switch(event.getActionCommand()){
                 case SOVIETS:
-                    try {
-                        startSovietGame(determineMap());
-                        break;
-                    }catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                    break;
+
 
                 case ALLIES:
                     startAlliesGame(determineMap());
