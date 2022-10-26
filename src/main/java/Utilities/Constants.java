@@ -42,8 +42,11 @@ public class Constants {
     public static final int commandTextedInputBufferTime = 30;
     //The buffer time for moving the cursor to scroll map
     public static final int commandCursorLineBufferTime = 10;
-    //The buffer time the cursor needs to stay right mouse pressed to scroll map
+    //The buffer time the cursor needs to stay right mouse pressed to scroll across the map
     public static final int commandCursorPauseBufferTime = 1000;
+    //The Distance in pixels the cursor should move to scroll across the map
+    public static final int moveScreenX = 600;
+    public static final int moveScreenY = 600;
 
     // The buffer time in between moving the cursor for GQ positions
     public static final int commandGQCursorPauseBufferTime = 500;
@@ -64,8 +67,8 @@ public class Constants {
 
 //The directions that the GQ will scan the screen
 
-    public static final int [] screenMaskGQx = {0, 0, -1, 0, 0,-1, 0, 1};
-    public static final int [] screenMaskGQy = {0, 0, -1, 0,-1, 0, 1, 0};
+    public static final int [] screenMaskGQx = {0, 0, -1, 0, 1, 0, 0,-1,-1};
+    public static final int [] screenMaskGQy = {0, 0, -1, 1, 0,-1,-1, 0, 0};
 
 
 
@@ -75,6 +78,20 @@ public class Constants {
     public static final int commandCursorGQNumberofJumps = 2;
     //The buffer time enough tanks to be built for an effective first strike
     public static final int commandWaitForTanksTime = 30000;
+
+    // where to scroll the screen to find enemy
+    public enum MAP_START {
+        TOPLEFT (1,1),
+        BOTTOMLEFT (1,-1),
+        TOPRIGHT(-1,1),
+        BOTTOMRIGHT(-1,-1)
+
+        ;
+        MAP_START(int X, int Y) {
+
+
+        }
+    }
 
 
     //MAPS INFO

@@ -18,7 +18,7 @@ public class ScreenCommands {
             controller.mousePress(RIGHT_MOUSE_CLICK);
 
             Thread.sleep(commandInputBufferTime);
-            mouseLineMove(cursor_x, cursor_y, 600, 600, 20);
+            mouseLineMove(cursor_x, cursor_y, moveScreenX, moveScreenY, 20);
             Thread.sleep(commandCursorPauseBufferTime);
 
             controller.mouseRelease(RIGHT_MOUSE_CLICK);

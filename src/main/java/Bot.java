@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import javax.swing.*;
 
 import static GameEngine.Game.startAlliesGame;
@@ -42,13 +43,18 @@ public class Bot extends Frame implements ActionListener {
 
             switch(event.getActionCommand()){
                 case SOVIETS:
-                    startSovietGame(determineMap());
-                    break;
+                    try {
+                        startSovietGame(determineMap());
+                        break;
+                    }catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
                 case ALLIES:
                     startAlliesGame(determineMap());
                     break;
             }
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | IOException e) {
             e.printStackTrace();
         }
 

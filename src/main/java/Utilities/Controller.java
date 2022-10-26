@@ -72,7 +72,12 @@ public class Controller {
         BufferedImage gameScreenBuffer = controller.createScreenCapture(playableScreenRect);
         return gameScreenBuffer;
     }
-
+    public static BufferedImage captureLoadScreenStart() throws IOException {
+        //Grab the screen near the cursor
+        Rectangle playableScreenRect = new Rectangle(542,425,1, 350);
+        BufferedImage gameScreenBuffer = controller.createScreenCapture(playableScreenRect);
+        return gameScreenBuffer;
+    }
     /***
      * Find the resolution of the screen the game is being played on
      * The last pixel before the sidebar is 1484 on width
@@ -111,8 +116,43 @@ public class Controller {
      *
      * @return An enum denoting the map that is being played in the quickplay ladder match
      */
-    public static Constants.MAP determineMap(){
+    public static Constants.MAP determineMap() throws IOException, InterruptedException {
+        boolean game_started = false;
+        int blue = 0;
+        int green = 0;
+        int red = 0;
+        while (!game_started){
+            BufferedImage loadScreenLeft = captureLoadScreenStart();
+            int sizeOfLoadScreenLeftArray = 350;
+            for (int i = 0; i<sizeOfLoadScreenLeftArray; i++) {
+                int color = loadScreenLeft.getRaster().getDataBuffer().getElem(i);
+                //System.out.println("Pixel color (integer value): " + color);
+                //determine individual colors
+                blue = color & 0xff;
+                green = (color & 0xff00) >> 8;
+                red = (color & 0xff0000) >> 16;
+                //System.out.println("Pixel RGB color values => red: " + red + " green: " + green + " blue: " + blue);
+                //turquoise player color
+                if (red < 15 && green > 165 && green < 190 && blue > 230) {
+                    game_started = true;
+                }
+                //yellow player color
+                if (red > 230 && green > 230 && blue < 15) {
+                    game_started = true;
+                }
+
+            }
+        }
+
+        Thread.sleep(15000);
+
         //TODO: Hardcoded for now, needs logic to determine map later..
         return MAP.ARENA_VALLEY_EXTREME_MEGA;
     }
+
+
+
+
 }
+
+
