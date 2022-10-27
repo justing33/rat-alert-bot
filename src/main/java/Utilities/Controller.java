@@ -92,6 +92,20 @@ public class Controller {
         BufferedImage gameScreenBuffer = controller.createScreenCapture(playableScreenRect);
         return gameScreenBuffer;
     }
+    //check to see if game is over and stop bot if it is
+
+    public static void Game_over() throws IOException {
+        BufferedImage overPixel = captureGameScreenOver();
+        int color = overPixel.getRaster().getDataBuffer().getElem(0);
+        int blue = color & 0xff;
+        int green = (color & 0xff00) >> 8;
+        int red = (color & 0xff0000) >> 16;
+        System.out.println("TopRight pixel:  red = " + red + "   green = " + green + "    blue = " + blue);
+        if (red > 90 && green == 0 && blue == 0) {
+            System.out.println("GAME OVER");
+            exit(0);
+        }
+    }
 
     /***
      * Find the resolution of the screen the game is being played on
@@ -141,8 +155,9 @@ public class Controller {
         while (!game_started) {
             int sizeOfLoadScreenLeftArray = 350;
             //look for the turqouise or yellow pixel on start screen
-            //startLocationColumPix = [AV left, Bullseye left, Canyon Left, Canyon Right, BullseyeRight, AV Right]
-            int [] startLocationColumPix = {528 , 586, 620 , 749, 789, 843};
+            //startLocationColumPix = [AV left, Bullseye left, Canyon Left,KOTG left, Canyon Right, BullseyeRight, AV Right
+            // Orerift Right, Orerift Left]
+            int [] startLocationColumPix = {528 , 553, 586, 620 , 749, 789, 808, 843, 832, 532};
             int lengthOfStartArray = startLocationColumPix.length;
             for (j = 0; j<lengthOfStartArray; j++){
             BufferedImage loadScreenLeft = captureLoadScreenStart(startLocationColumPix[j]);
@@ -155,13 +170,13 @@ public class Controller {
                     red = (color & 0xff0000) >> 16;
                     System.out.println("Pixel RGB color values => red: " + red + " green: " + green + " blue: " + blue);
                     //turquoise player color
-                    if (red < 15 && green > 165 && green < 190 && blue > 230) {
+                    if (red < 80 && green > 165 && green < 190 && blue > 215) {
                         game_started = true;
                         System.out.println("i = " + i + "   j = " + j);
                         break;
                     }
                     //yellow player color
-                    if (red > 230 && green > 230 && blue < 15) {
+                    if (red > 230 && green > 230 && blue < 70) {
                         game_started = true;
                         System.out.println("i = " + i + "   j = " + j);
                         break;
@@ -192,16 +207,16 @@ public class Controller {
 
 
 
-        if (i < 175 && ( (j == 0) || (j==1)|| (j==2) )) {
+        if (i < 175 && ( (j == 0) || (j==1) || (j==2) || (j==3) || (j==9))) {
             System.out.println("TOPLEFT:  i = " + i + "   j = " + j);
             return MAP_START.TOPLEFT;
-        }else if (i > 175 && ( (j == 0) || (j==1)|| (j==2) )) {
+        }else if (i > 175 && ( (j == 0) || (j==1) || (j==2) || (j==3)|| (j==9) )) {
             System.out.println("BOTTOMLEFT:  i = " + i + "   j = " + j);
             return MAP_START.BOTTOMLEFT;
-        }else if (i < 175 && ( (j == 3) || (j==4)|| (j==5) )) {
+        }else if (i < 175 && ( (j == 4) || (j==5) || (j==6) || (j==7) || (j==8) )) {
             System.out.println("TOPRIGHT:  i = " + i + "   j = " + j);
             return MAP_START.TOPRIGHT;
-        }else if (i > 175 && ( (j == 3) || (j==4)|| (j==5) )) {
+        }else if (i > 175 && ( (j == 4) || (j==5) || (j==6) || (j==7) || (j==8))) {
             System.out.println("BOTTOMRIGHT:  i = " + i + "   j = " + j);
             return MAP_START.BOTTOMRIGHT;
         }

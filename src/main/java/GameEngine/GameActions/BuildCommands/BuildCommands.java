@@ -17,17 +17,31 @@ public class BuildCommands {
      */
     public void deployMCV() {
         try {
+            boolean mcvInPlace = false;
+            int startX = SCREEN_WIDTH_1920x1080/2;
+            int startY = SCREEN_HEIGHT_1920x1080/2;
+            controller.keyPress(VK_H);
+            controller.keyRelease(VK_H);
             //select MCV
             controller.keyPress(VK_A); //key down
             controller.keyRelease(VK_A); //key up
-            Thread.sleep(commandInputBufferTime);
+
+            //need to make sure the MCV is in the middle of the screen, move if not
+            while(!mcvInPlace) {
+                Thread.sleep(commandInputBufferTime);
+                controller.mouseMove(startX,startY);
+                BufferedImage cursorSquareBuffer = captureCursorBuildSquare(startX + 32, startY - 128);
+                mcvInPlace = isBuildingPlaced(cursorSquareBuffer);
+                controller.mousePress(LEFT_MOUSE_CLICK);
+                controller.mouseRelease(LEFT_MOUSE_CLICK);
+            }
+
             //Deploy button
             controller.keyPress(VK_BACK_SLASH);
             controller.keyRelease(VK_BACK_SLASH);
             Thread.sleep(mcvDeployingTime);
-            controller.keyPress(VK_H);
-            controller.keyRelease(VK_H);
             Thread.sleep(commandInputBufferTime);
+
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -39,14 +53,15 @@ public class BuildCommands {
     public void buildPowerPlant(int xCoords, int yCoords) {
         try {
             //Initiate building power plant
-            controller.keyPress(VK_H);
-            controller.keyRelease(VK_H);
             Thread.sleep(commandInputBufferTime);
             controller.keyPress(VK_D);
             controller.keyRelease(VK_D);
             //Wait for the power plant to build
             Thread.sleep(powerPlantBuildTime);
             //Select power plant to be placed
+            controller.keyPress(VK_H);
+            controller.keyRelease(VK_H);
+            Thread.sleep(commandInputBufferTime);
             controller.keyPress(VK_D);
             controller.keyRelease(VK_D);
             Thread.sleep(commandInputBufferTime);
@@ -203,7 +218,8 @@ public class BuildCommands {
      * @throws IOException
      */
     private void placeBuildingDownAtCoordinates(int x, int y , int iterate) throws InterruptedException, IOException {
-
+        //see if the game is over
+        Game_over();
         //System.out.println("Trying to place a building at coordinates X=> " + x + " Y=> " + y);
 
         //Move the mouse to the location to place building
@@ -223,6 +239,9 @@ public class BuildCommands {
             Thread.sleep(commandInputBufferTime);
             //Try to place it
             leftMouseClick();
+
+            //need to make sure the building is fully inplace before sensing if the build is really there
+            Thread.sleep(commandInputBufferTime);
             Thread.sleep(commandInputBufferTime);
             Thread.sleep(commandInputBufferTime);
             Thread.sleep(commandInputBufferTime);

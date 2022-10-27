@@ -66,7 +66,7 @@ public class ScreenCommands {
             int cursor_x;
             int cursor_y;
             int sizeOfGQScreenMask = screenMaskGQx.length;
-
+            int cycleNumber = 1;
             //go to F2 screen bookmark
             Thread.sleep(commandInputBufferTime);
             controller.keyPress(VK_F2);
@@ -84,7 +84,8 @@ public class ScreenCommands {
                 controller.mousePress(RIGHT_MOUSE_CLICK);
                 Thread.sleep(commandInputBufferTime);
                 //This controls the overall screen scrolling
-                mouseLineMove(cursor_x, cursor_y, screenScrollGQDistance * screenMaskGQx[j] * attackDirection[0], screenScrollGQDistance * screenMaskGQy[j] * attackDirection[1], 20);
+                mouseLineMove(cursor_x, cursor_y, screenScrollGQDistance * screenMaskGQx[j] * attackDirection[0] * cycleNumber
+                        , screenScrollGQDistance * screenMaskGQy[j] * attackDirection[1] * cycleNumber, 20);
 
 
                 Thread.sleep(commandCursorPauseBufferTime);
@@ -94,8 +95,12 @@ public class ScreenCommands {
                 cursor_x = PLAYABLE_SCREEN_WIDTH_1920x1080 / 2 - 512;
                 cursor_y = PLAYABLE_SCREEN_HEIGHT_1920x1080 / 2 - 512;
 
-                cursorGQclicks(cursor_x, cursor_y);
-
+                cursorGQclicks(cursor_x, cursor_y, cycleNumber-1);
+                //just make it loop forever until someone looses
+                if (j == sizeOfGQScreenMask -1 ){
+                    j = -1;
+                    cycleNumber = cycleNumber + 1;
+                }
             }
 
             //Initiate cursor position to top leftish of screen
@@ -108,7 +113,7 @@ public class ScreenCommands {
             e.printStackTrace();
         }
     }
-    private void cursorGQclicks(int cursor_x, int cursor_y) throws InterruptedException, IOException {
+    private void cursorGQclicks(int cursor_x, int cursor_y, int noAltProbability) throws InterruptedException, IOException {
 
         //put cursor to center of screen
         controller.mouseMove(cursor_x, cursor_y);
@@ -127,7 +132,7 @@ public class ScreenCommands {
             Thread.sleep(commandInputBufferTime);
 
             //stop every fifth cycle
-            if ( i % 5 == 0 ) {
+            if ( i % 3 == 0 ) {
                 controller.keyPress(VK_S);
                 controller.keyRelease(VK_S);
                 Thread.sleep(commandTextedInputBufferTime);
@@ -137,7 +142,19 @@ public class ScreenCommands {
             }
             Thread.sleep(commandGQCursorPauseBufferTime);
             //press q and alt and start clicking around the screen
-            controller.keyPress(VK_ALT);
+            //don't hold alt every time so that we may hit some buildings too
+            //cycle 1 is always to alt
+            //cycle 2 is always to alt
+            //cycle 3 is 1/2 to alt
+            //cycle 4 is 2/3 to alt
+            //cycle 5 is 3/4 to alt
+            Random random = new Random();
+            if (noAltProbability<=0){
+                controller.keyPress(VK_ALT);
+            }else if (1%(random.nextInt(noAltProbability)+1) != 0) {
+                controller.keyPress(VK_ALT);
+            }
+
             Thread.sleep(commandInputBufferTime);
 
             mouseLineClick(cursor_x, cursor_y, cursorMaskGQx[i], cursorMaskGQy[i], commandCursorGQJumpPixels, commandCursorGQNumberofJumps);
@@ -146,17 +163,9 @@ public class ScreenCommands {
             cursor_x = commandCursorGQJumpPixels * cursorMaskGQx[i] * commandCursorGQNumberofJumps + cursor_x;
             cursor_y = commandCursorGQJumpPixels * cursorMaskGQy[i] * commandCursorGQNumberofJumps + cursor_y;
 
-            //check to see if game is over and stop bot if it is
-            BufferedImage overPixel = captureGameScreenOver();
-            int color = overPixel.getRaster().getDataBuffer().getElem(0);
-            int blue = color & 0xff;
-            int green = (color & 0xff00) >> 8;
-            int red = (color & 0xff0000) >> 16;
-            System.out.println("TopRight pixel:  red = " + red + "   green = " + green + "    blue = "+ blue);
-            if (red > 90  && green == 0 && blue == 0) {
-                System.out.println("GAME OVER");
-                exit(0);
-            }
+            //check if games is over
+
+            Game_over();
 
 
         }

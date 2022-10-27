@@ -11,8 +11,7 @@ import static Utilities.Controller.*;
 public class Bot extends Frame implements ActionListener {
     static JFrame frame;
 
-    public static void main(String args[])
-    {
+    public static void main(String args[]) {
         Bot redAlertBot = new Bot();
         frame = new JFrame("RAT ALERT B0T");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -35,13 +34,12 @@ public class Bot extends Frame implements ActionListener {
      * Determine what game to play based on faction chosen at game start
      * @param event
      */
-    public void actionPerformed(ActionEvent event)
-    {
+    public void actionPerformed(ActionEvent event) {
         try {
             findScreenResolution();
-            altTabIntoGame();
+            //altTabIntoGame();
 
-            switch(event.getActionCommand()){
+            switch (event.getActionCommand()) {
                 case SOVIETS:
                     break;
 

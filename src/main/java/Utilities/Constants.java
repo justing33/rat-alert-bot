@@ -14,12 +14,14 @@ public class Constants {
 
     public static final Integer SELECT_VEHICLE_MENU = VK_R;
 
+    public static final Integer SCREEN_WIDTH_1920x1080 = 1920;
+    public static final Integer SCREEN_HEIGHT_1920x1080 = 1080;
     public static final Integer PLAYABLE_SCREEN_WIDTH_1920x1080 = 1484;
     public static final Integer PLAYABLE_SCREEN_HEIGHT_1920x1080 = 1080;
 
     //THE SIZE OF THE PART OF THE SCREEN TO CHECK FOR THE GREEN BAR AFTER BUILDING IS PLACED
     public static final Integer CURSOR_BUILD_SQUARE_WIDTH = 1;
-    public static final Integer CURSOR_BUILD_SQUARE_HEIGHT = 128;
+    public static final Integer CURSOR_BUILD_SQUARE_HEIGHT = 192;
 
 
 
@@ -30,8 +32,8 @@ public class Constants {
     //TODO: Revisit these build times to see if can optimize further
     //BUILD TIMES
     //The time it takes for the MCV to complete deploying before another input can be sent
-    public static final int mcvDeployingTime = 1000;
-    public static final int powerPlantBuildTime = 6500;
+    public static final int mcvDeployingTime = 1500;
+    public static final int powerPlantBuildTime = 6100;
     //The input buffer time in-between commands
     public static final int refineryBuildTime = 32000;
     public static final int warFactoryBuildTime = 32000;
@@ -49,29 +51,23 @@ public class Constants {
     public static final int moveScreenY = 400;
 
     // The buffer time in between moving the cursor for GQ positions
-    public static final int commandGQCursorPauseBufferTime = 500;
+    public static final int commandGQCursorPauseBufferTime = 750;
     // The buffer time in between moving the cursor for GQ cycles
     public static final int commandGQCyclePauseBufferTime = 5000;
 
     //The distance in pixels the cursor will move the screen between each gq cycle
-    public static final int screenScrollGQDistance = 40;
+    public static final int screenScrollGQDistance = 24;
 
     //The directions that the GQ will scan the cursor
-    public static final int [] cursorMaskGQx = {0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0,-1,-1,-1,-1};
+    public static final int [] cursorMaskGQx = {1,-1, 1,-1, 1, 1,-1, 1,-1, 1, 1,-1, 1,-1, 1, 1,-1, 1,-1, 1,-1, 1,-1, 1,-1,-1,-1,-1};
     public static final int [] cursorMaskGQy = {1, 1, 1, 1, 0,-1,-1,-1,-1, 0, 1, 1, 1, 1, 0,-1,-1,-1,-1, 0, 1, 1, 1, 1,-1,-1,-1,-1};
 
 
-/*
-    //The directions that the GQ will scan the screen
-    public static final int [] screenMaskGQx = {0, 0,-1, 0, 0, -1, 0, 1,-1,-1, 0, 0, 1, 1, 0, 0};
-    public static final int [] screenMaskGQy = {0, 0,-1, 0, -1, 0, 1, 0, 0, 0,-1,-1, 0, 0, 1, 1};
-*/
 
 //The directions that the GQ will scan the screen
 
-    public static final int [] screenMaskGQx = {-1, 0, 1, -1, 0, 0, 1, 0, 0,-1,-1, 0, 0, 1, 1, 0, 0,-1,-1};
-    public static final int [] screenMaskGQy = {-1, 0, 1, -1, 0, 1, 0,-1,-1, 0, 0, 0, 0, 1, 1,-1,-1, 0, 0};
-
+    public static final int [] screenMaskGQx = {-2, 1, 2, 0,-1, 0, 1};
+    public static final int [] screenMaskGQy = {-2, 1, 2,-1, 0, 1, 0};
 
 
     //The size of the jumps in pixels while GQing
