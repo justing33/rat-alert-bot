@@ -85,6 +85,8 @@ public class Constants {
         BOTTOMLEFT,
         TOPRIGHT,
         BOTTOMRIGHT,
+        BOTTOM,
+        TOP,
         NONE
 
     }

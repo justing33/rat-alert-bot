@@ -34,6 +34,16 @@ public class Game {
 
              ArenaValleyAllies.topLeft2WFSellBuild(buildDirection);
             exit(0);
+         } else if (Constants.MAP_START.BOTTOM == map){
+             buildDirection = new int[] {0,-1};
+
+             ArenaValleyAllies.topLeft2WFSellBuild(buildDirection);
+             exit(0);
+         } else if (Constants.MAP_START.TOP == map){
+             buildDirection = new int[] {0,1};
+
+             ArenaValleyAllies.topLeft2WFSellBuild(buildDirection);
+             exit(0);
         } else {
             System.out.println("Could not determine the map, exiting now..");
             exit(0);

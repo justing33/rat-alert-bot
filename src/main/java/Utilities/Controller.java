@@ -155,9 +155,9 @@ public class Controller {
         while (!game_started) {
             int sizeOfLoadScreenLeftArray = 350;
             //look for the turqouise or yellow pixel on start screen
-            //startLocationColumPix = [AV left, Bullseye left, Canyon Left,KOTG left, Canyon Right, BullseyeRight, AV Right
-            // Orerift Right, Orerift Left]
-            int [] startLocationColumPix = {528 , 553, 586, 620 , 749, 789, 808, 843, 832, 532};
+            //startLocationColumPix = [AV left, Bullseye left, KOTG Left, Canyon Left, Canyon Right, BullseyeRight, AV Right
+            // Orerift Right, Orerift Left, NBNW MidLeft, NBNW MidRight]
+            int [] startLocationColumPix = {528 , 553, 586, 648 , 721, 789, 808, 843, 832, 532, 608, 754};
             int lengthOfStartArray = startLocationColumPix.length;
             for (j = 0; j<lengthOfStartArray; j++){
             BufferedImage loadScreenLeft = captureLoadScreenStart(startLocationColumPix[j]);
@@ -219,8 +219,13 @@ public class Controller {
         }else if (i > 175 && ( (j == 4) || (j==5) || (j==6) || (j==7) || (j==8))) {
             System.out.println("BOTTOMRIGHT:  i = " + i + "   j = " + j);
             return MAP_START.BOTTOMRIGHT;
+        }else if (i > 175 && ((j == 10) || (j == 11))) {
+            System.out.println("BOTTOMLEFT:  i = " + i + "   j = " + j);
+            return MAP_START.BOTTOM;
+        }else if (i < 175 && ((j == 10) || (j == 11))) {
+            System.out.println("TOPRIGHT:  i = " + i + "   j = " + j);
+            return MAP_START.TOP;
         }
-
         return MAP_START.NONE;
 
     }
