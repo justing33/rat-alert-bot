@@ -66,8 +66,8 @@ public class Constants {
 
 //The directions that the GQ will scan the screen
 
-    public static final int [] screenMaskGQx = {-2, 1, 2, 0,-1, 0, 1};
-    public static final int [] screenMaskGQy = {-2, 1, 2,-1, 0, 1, 0};
+    public static final int [] screenMaskGQx = {-2, 2, 0,-1, 0, 1};
+    public static final int [] screenMaskGQy = {-2, 2,-1, 0, 1, 0};
 
 
     //The size of the jumps in pixels while GQing
@@ -85,8 +85,10 @@ public class Constants {
         BOTTOMLEFT,
         TOPRIGHT,
         BOTTOMRIGHT,
-        BOTTOM,
-        TOP,
+        BOTTOMMIDLEFT,
+        BOTTOMMIDRIGHT,
+        TOPMIDLEFT,
+        TOPMIDRIGHT,
         NONE
 
     }

@@ -219,13 +219,20 @@ public class Controller {
         }else if (i > 175 && ( (j == 4) || (j==5) || (j==6) || (j==7) || (j==8))) {
             System.out.println("BOTTOMRIGHT:  i = " + i + "   j = " + j);
             return MAP_START.BOTTOMRIGHT;
-        }else if (i > 175 && ((j == 10) || (j == 11))) {
-            System.out.println("BOTTOMLEFT:  i = " + i + "   j = " + j);
-            return MAP_START.BOTTOM;
-        }else if (i < 175 && ((j == 10) || (j == 11))) {
-            System.out.println("TOPRIGHT:  i = " + i + "   j = " + j);
-            return MAP_START.TOP;
+        }else if (i > 175 && ((j == 10))) {
+            System.out.println("BOTTOMMIDLEFT:  i = " + i + "   j = " + j);
+            return MAP_START.BOTTOMMIDLEFT;
+        }else if (i > 175 && (j == 11)) {
+            System.out.println("BOTTOMMIDRIGHT:  i = " + i + "   j = " + j);
+            return MAP_START.BOTTOMMIDRIGHT;
+        }else if (i < 175 && (j == 10)) {
+            System.out.println("TOPMIDRIGHT:  i = " + i + "   j = " + j);
+            return MAP_START.TOPMIDRIGHT;
+        }else if (i > 175 && (j == 11)) {
+            System.out.println("TOPMIDLEFT:  i = " + i + "   j = " + j);
+            return MAP_START.TOPMIDLEFT;
         }
+
         return MAP_START.NONE;
 
     }

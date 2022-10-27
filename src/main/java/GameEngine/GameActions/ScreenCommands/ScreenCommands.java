@@ -22,7 +22,7 @@ public class ScreenCommands {
             //Move the screen to where we want to attack
             Thread.sleep(commandInputBufferTime);
             //PROLLY NEED TO CLEAN THIS UP buildDirection[] WHERE 0 INDEX IS X AND 1 INDEX IS Y
-            mouseLineMove(cursor_x, cursor_y, moveScreenX * attackDirection[0], moveScreenY * attackDirection[1], 20);
+            mouseLineMove(cursor_x, cursor_y, moveScreenX * attackDirection[2], moveScreenY * attackDirection[3], 20);
             Thread.sleep(commandCursorPauseBufferTime);
 
             controller.mouseRelease(RIGHT_MOUSE_CLICK);
