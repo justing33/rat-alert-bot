@@ -34,6 +34,7 @@ public class BuildCommands {
                 mcvInPlace = isBuildingPlaced(cursorSquareBuffer);
                 controller.mousePress(LEFT_MOUSE_CLICK);
                 controller.mouseRelease(LEFT_MOUSE_CLICK);
+                Game_over();
             }
 
             //Deploy button
@@ -92,13 +93,34 @@ public class BuildCommands {
             e.printStackTrace();
         }
     }
+    public void buildPillBox(int xCoord, int yCoord) {
+        try {
+            //Initiate building power plant
+            controller.keyPress(VK_H);
+            controller.keyRelease(VK_H);
+            Thread.sleep(commandInputBufferTime);
+            controller.keyPress(VK_Y);
+            controller.keyRelease(VK_Y);
+            //Wait for the power plant to build
+            Thread.sleep(pillBuildTime);
+            //Select ore refinery to be placed
+            controller.keyPress(VK_Y);
+            controller.keyRelease(VK_Y);
+            Thread.sleep(commandInputBufferTime);
+            placeBuildingDownAtCoordinates(xCoord, yCoord,1);
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
     public void buildWarFactory(int xCoordinate, int yCoordinate) {
         try {
             Thread.sleep(commandInputBufferTime);
             controller.keyPress(VK_F);
             controller.keyRelease(VK_F);
-            //Wait for the war factoryt to build
+
+            //Wait for the war factory to build
             Thread.sleep(warFactoryBuildTime);
             //Initiate building war factory
             controller.keyPress(VK_H);

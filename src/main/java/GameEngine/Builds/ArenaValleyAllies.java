@@ -3,6 +3,8 @@ package GameEngine.Builds;
 import GameEngine.GameActions.BuildCommands.BuildCommands;
 import GameEngine.GameActions.ScreenCommands.ScreenCommands;
 
+import java.io.IOException;
+
 import static Utilities.Constants.MCV_VERT_SIZE;
 import static Utilities.Constants.commandTextedInputBufferTime;
 import static Utilities.Controller.middleXScreenPos;
@@ -13,7 +15,7 @@ public class ArenaValleyAllies {
     static BuildCommands buildCommands = new BuildCommands();
     static ScreenCommands screenCommands = new ScreenCommands();
 
-    public static void topLeft2WFSellBuild(int[] attackDirection){
+    public static void topLeft2WFSellBuild(int[] attackDirection) throws IOException, InterruptedException {
         buildCommands.deployMCV();
         buildCommands.buildPowerPlant(middleXScreenPos, middleYScreenPos);
         buildCommands.buildRefinery(middleXScreenPos, middleYScreenPos);

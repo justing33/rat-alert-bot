@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+import static GameEngine.Game.startAlliesGame;
 import static Utilities.Constants.*;
 import static java.awt.event.KeyEvent.VK_ALT;
 import static java.awt.event.KeyEvent.VK_TAB;
@@ -94,7 +95,7 @@ public class Controller {
     }
     //check to see if game is over and stop bot if it is
 
-    public static void Game_over() throws IOException {
+    public static void Game_over() throws IOException, InterruptedException {
         BufferedImage overPixel = captureGameScreenOver();
         int color = overPixel.getRaster().getDataBuffer().getElem(0);
         int blue = color & 0xff;
@@ -103,6 +104,19 @@ public class Controller {
         System.out.println("TopRight pixel:  red = " + red + "   green = " + green + "    blue = " + blue);
         if (red > 90 && green == 0 && blue == 0) {
             System.out.println("GAME OVER");
+            //click on continue button
+            Thread.sleep(gameStartWaitTime);
+            controller.mouseMove(1000,1020);
+            controller.mousePress(LEFT_MOUSE_CLICK);
+            controller.mouseRelease(LEFT_MOUSE_CLICK);
+            //click on queue button
+            Thread.sleep(gameStartWaitTime);
+            controller.mouseMove(1250,875);
+            controller.mousePress(LEFT_MOUSE_CLICK);
+            controller.mouseRelease(LEFT_MOUSE_CLICK);
+            //recurse
+            startAlliesGame(determineMap());
+
             exit(0);
         }
     }
@@ -157,7 +171,7 @@ public class Controller {
             //look for the turqouise or yellow pixel on start screen
             //startLocationColumPix = [AV left, Bullseye left, KOTG Left, Canyon Left, Canyon Right, BullseyeRight, AV Right
             // Orerift Right, Orerift Left, NBNW MidLeft, NBNW MidRight]
-            int [] startLocationColumPix = {528 , 553, 586, 648 , 721, 789, 808, 843, 832, 532, 608, 754};
+            int [] startLocationColumPix = {528 , 553, 586, 648 , 721, 789, 808, 843, 832, 532, 637, 754};
             int lengthOfStartArray = startLocationColumPix.length;
             for (j = 0; j<lengthOfStartArray; j++){
             BufferedImage loadScreenLeft = captureLoadScreenStart(startLocationColumPix[j]);
@@ -168,7 +182,7 @@ public class Controller {
                     blue = color & 0xff;
                     green = (color & 0xff00) >> 8;
                     red = (color & 0xff0000) >> 16;
-                    System.out.println("Pixel RGB color values => red: " + red + " green: " + green + " blue: " + blue);
+                    //System.out.println("Pixel RGB color values => red: " + red + " green: " + green + " blue: " + blue);
                     //turquoise player color
                     if (red < 80 && green > 165 && green < 190 && blue > 215) {
                         game_started = true;

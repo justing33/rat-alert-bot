@@ -24,6 +24,17 @@ public class ScreenCommands {
             //PROLLY NEED TO CLEAN THIS UP buildDirection[] WHERE 0 INDEX IS X AND 1 INDEX IS Y
             mouseLineMove(cursor_x, cursor_y, moveScreenX * attackDirection[2], moveScreenY * attackDirection[3], 20);
             Thread.sleep(commandCursorPauseBufferTime);
+            controller.mouseRelease(RIGHT_MOUSE_CLICK);
+            Thread.sleep(commandInputBufferTime);
+
+            //
+            //Move the screen a little out of the corner to where we want to attack
+            controller.mouseMove(cursor_x, cursor_y);
+            controller.mousePress(RIGHT_MOUSE_CLICK);
+            Thread.sleep(commandInputBufferTime);
+            //PROLLY NEED TO CLEAN THIS UP buildDirection[] WHERE 0 INDEX IS X AND 1 INDEX IS Y
+            mouseLineMove(cursor_x, cursor_y, screenScrollGQDistance * attackDirection[2] * -1, screenScrollGQDistance * attackDirection[3] * -1, 20);
+            Thread.sleep(commandCursorPauseBufferTime);
 
             controller.mouseRelease(RIGHT_MOUSE_CLICK);
 
@@ -52,14 +63,23 @@ public class ScreenCommands {
 
 
 
-    public void waitForTanks(){
-        try {
-            Thread.sleep(commandWaitForTanksTime);
+    public void waitForTanks() throws IOException, InterruptedException {
+        //make ctrl group 1
+        controller.keyPress(VK_SHIFT);
+        Thread.sleep(commandTextedInputBufferTime);
+        controller.keyPress(VK_A);
+        controller.keyRelease(VK_A);
+        Thread.sleep(commandTextedInputBufferTime);
+        controller.keyRelease(VK_SHIFT);
+        controller.keyPress(VK_CONTROL);
+        Thread.sleep(commandTextedInputBufferTime);
+        controller.keyPress(VK_1);
+        controller.keyRelease(VK_1);
+        Thread.sleep(commandTextedInputBufferTime);
+        controller.keyRelease(VK_CONTROL);
 
+        cursorGQclicks(100,20,-1);
 
-        } catch (Exception e){
-            e.printStackTrace();
-        }
     }
     public void cursorGQScreen(int[] attackDirection){
         try {
@@ -72,6 +92,20 @@ public class ScreenCommands {
             controller.keyPress(VK_F2);
             controller.keyRelease(VK_F2);
             Thread.sleep(commandInputBufferTime);
+            //make ctrl group 1
+            controller.keyPress(VK_SHIFT);
+            Thread.sleep(commandTextedInputBufferTime);
+            controller.keyPress(VK_A);
+            controller.keyRelease(VK_A);
+            Thread.sleep(commandTextedInputBufferTime);
+            controller.keyRelease(VK_SHIFT);
+            controller.keyPress(VK_CONTROL);
+            Thread.sleep(commandTextedInputBufferTime);
+            controller.keyPress(VK_1);
+            controller.keyRelease(VK_1);
+            Thread.sleep(commandTextedInputBufferTime);
+            controller.keyRelease(VK_CONTROL);
+
             for( int j = 0; j < sizeOfGQScreenMask ; j++){
 
                 //wait a few seconds before scrolling the screen
@@ -100,10 +134,28 @@ public class ScreenCommands {
                 if (j == sizeOfGQScreenMask -1 ){
                     j = -1;
                     cycleNumber = cycleNumber + 1;
+                    //make new ctrl group 1
+                    controller.keyPress(VK_SHIFT);
+                    Thread.sleep(commandTextedInputBufferTime);
+                    controller.keyPress(VK_A);
+                    controller.keyRelease(VK_A);
+                    Thread.sleep(commandTextedInputBufferTime);
+                    controller.keyRelease(VK_SHIFT);
+                    controller.keyPress(VK_CONTROL);
+                    Thread.sleep(commandTextedInputBufferTime);
+                    controller.keyPress(VK_1);
+                    controller.keyRelease(VK_1);
+                    Thread.sleep(commandTextedInputBufferTime);
+                    controller.keyRelease(VK_CONTROL);
+
+                    //goback to f2
+                    Thread.sleep(commandTextedInputBufferTime);
+                    controller.keyPress(VK_F2);
+                    controller.keyRelease(VK_F2);
+                    Thread.sleep(commandTextedInputBufferTime);
+
                 }
             }
-
-            //Initiate cursor position to top leftish of screen
 
 
 
@@ -120,14 +172,11 @@ public class ScreenCommands {
         int sizeOfGQDirectionMask = cursorMaskGQx.length;
         //We want to cycle the GQing
         for( int i = 0; i < sizeOfGQDirectionMask ; i++) {
-            //shift a all units
+            //select ctrl group 1
             controller.keyPress(VK_Q);
-            controller.keyPress(VK_SHIFT);
             Thread.sleep(commandTextedInputBufferTime);
-            controller.keyPress(VK_A);
-            controller.keyRelease(VK_A);
-            Thread.sleep(commandTextedInputBufferTime);
-            controller.keyRelease(VK_SHIFT);
+            controller.keyPress(VK_1);
+            controller.keyRelease(VK_1);
 
             Thread.sleep(commandInputBufferTime);
 

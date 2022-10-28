@@ -36,6 +36,8 @@ public class Constants {
     public static final int powerPlantBuildTime = 6100;
     //The input buffer time in-between commands
     public static final int refineryBuildTime = 32000;
+
+    public static final int pillBuildTime = 5000;
     public static final int warFactoryBuildTime = 32000;
 
     //BUFFER TIMES
@@ -53,21 +55,21 @@ public class Constants {
     // The buffer time in between moving the cursor for GQ positions
     public static final int commandGQCursorPauseBufferTime = 750;
     // The buffer time in between moving the cursor for GQ cycles
-    public static final int commandGQCyclePauseBufferTime = 5000;
+    public static final int commandGQCyclePauseBufferTime = 1500;
 
     //The distance in pixels the cursor will move the screen between each gq cycle
     public static final int screenScrollGQDistance = 24;
 
     //The directions that the GQ will scan the cursor
-    public static final int [] cursorMaskGQx = {1,-1, 1,-1, 1, 1,-1, 1,-1, 1, 1,-1, 1,-1, 1, 1,-1, 1,-1, 1,-1, 1,-1, 1,-1,-1,-1,-1};
-    public static final int [] cursorMaskGQy = {1, 1, 1, 1, 0,-1,-1,-1,-1, 0, 1, 1, 1, 1, 0,-1,-1,-1,-1, 0, 1, 1, 1, 1,-1,-1,-1,-1};
+    public static final int [] cursorMaskGQx = {1,-1, 1,-1, 1, 1,-1, 1,-1, 1, 1,-1, 1,-1, 1, 1,-1, 1,-1};
+    public static final int [] cursorMaskGQy = {1, 1, 1, 1, 0,-1,-1,-1,-1, 0, 1, 1, 1, 1, 0,-1,-1,-1,-1};
 
 
 
 //The directions that the GQ will scan the screen
 
-    public static final int [] screenMaskGQx = {-2, 2, 0,-1, 0, 1};
-    public static final int [] screenMaskGQy = {-2, 2,-1, 0, 1, 0};
+    public static final int [] screenMaskGQx = {-2, 2, 0,-1, 0};
+    public static final int [] screenMaskGQy = {-2, 2,-1, 0, 1};
 
 
     //The size of the jumps in pixels while GQing
