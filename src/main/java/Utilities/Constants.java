@@ -61,8 +61,8 @@ public class Constants {
     public static final int screenScrollGQDistance = 24;
 
     //The directions that the GQ will scan the cursor
-    public static final int [] cursorMaskGQx = {1,-1, 1,-1, 1, 1,-1, 1,-1, 1, 1,-1, 1,-1, 1, 1,-1, 1,-1};
-    public static final int [] cursorMaskGQy = {1, 1, 1, 1, 0,-1,-1,-1,-1, 0, 1, 1, 1, 1, 0,-1,-1,-1,-1};
+    public static final int [] cursorMaskGQx = {1, 1, 1, 1,-1,-1,-1,-1, 1, 1, 1, 1};
+    public static final int [] cursorMaskGQy = {1, 1, 1, 1, 0, 0, 0, 0,-1,-1,-1,-1};
 
 
 
@@ -91,6 +91,11 @@ public class Constants {
         BOTTOMMIDRIGHT,
         TOPMIDLEFT,
         TOPMIDRIGHT,
+
+        MIDTOPRIGHT,
+        MIDTOPLEFT,
+        MIDBOTTOMRIGHT,
+        MIDBOTTOMLEFT,
         NONE
 
     }

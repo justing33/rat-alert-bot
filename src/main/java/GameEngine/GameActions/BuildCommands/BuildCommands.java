@@ -66,7 +66,7 @@ public class BuildCommands {
             controller.keyPress(VK_D);
             controller.keyRelease(VK_D);
             Thread.sleep(commandInputBufferTime);
-            placeBuildingDownAtCoordinates(xCoords, yCoords, 1);
+            placeBuildingDownAtCoordinates(xCoords, yCoords, 1, 1);
 
         } catch (Exception e){
             e.printStackTrace();
@@ -87,7 +87,7 @@ public class BuildCommands {
             controller.keyPress(VK_M);
             controller.keyRelease(VK_M);
             Thread.sleep(commandInputBufferTime);
-            placeBuildingDownAtCoordinates(xCoord, yCoord,1);
+            placeBuildingDownAtCoordinates(xCoord, yCoord,1, 1);
 
         } catch (Exception e){
             e.printStackTrace();
@@ -107,7 +107,7 @@ public class BuildCommands {
             controller.keyPress(VK_Y);
             controller.keyRelease(VK_Y);
             Thread.sleep(commandInputBufferTime);
-            placeBuildingDownAtCoordinates(xCoord, yCoord,1);
+            placeBuildingDownAtCoordinates(xCoord, yCoord,1, 1);
 
         } catch (Exception e){
             e.printStackTrace();
@@ -130,7 +130,7 @@ public class BuildCommands {
             controller.keyPress(VK_F);
             controller.keyRelease(VK_F);
             Thread.sleep(commandInputBufferTime);
-            placeBuildingDownAtCoordinates(xCoordinate, yCoordinate,1);
+            placeBuildingDownAtCoordinates(xCoordinate, yCoordinate,1, 1);
             Thread.sleep(commandInputBufferTime);
 
         } catch (Exception e){
@@ -239,7 +239,7 @@ public class BuildCommands {
      * @throws InterruptedException
      * @throws IOException
      */
-    private void placeBuildingDownAtCoordinates(int x, int y , int iterate) throws InterruptedException, IOException {
+    private void placeBuildingDownAtCoordinates(int x, int y , int iterate, int numberOfTries) throws InterruptedException, IOException {
         //see if the game is over
         Game_over();
         //System.out.println("Trying to place a building at coordinates X=> " + x + " Y=> " + y);
@@ -253,17 +253,15 @@ public class BuildCommands {
 
         //Determine if the building is already in the spot
         boolean there = isBuildingPlaced(cursorSquareBuffer);
-        System.out.println("Placed building already there? " + there);
+        //System.out.println("Placed building already there? " + there);
         boolean placed = false;
 
         //if there's not already a building there, attempt to place
         if (!there) {
-            Thread.sleep(commandInputBufferTime);
             //Try to place it
             leftMouseClick();
 
             //need to make sure the building is fully inplace before sensing if the build is really there
-            Thread.sleep(commandInputBufferTime);
             Thread.sleep(commandInputBufferTime);
             Thread.sleep(commandInputBufferTime);
             Thread.sleep(commandInputBufferTime);
@@ -276,7 +274,7 @@ public class BuildCommands {
 
             //Determine if the building was placed successfully or not
             placed = isBuildingPlaced(cursorSquareBuffer);
-            System.out.println("Placed building? " + placed);
+            //System.out.println("Placed building? " + placed);
         }
 
         //if not placed, then pick a random new mouse coordinate to try to place the building again
@@ -296,7 +294,7 @@ public class BuildCommands {
 
             random = new Random();
             int newY = y + ((random.nextInt(iter)-(iter/2)) * 64);
-            if (newY > PLAYABLE_SCREEN_HEIGHT_1920x1080-128){
+            if (newY > PLAYABLE_SCREEN_HEIGHT_1920x1080-64){
                 newY = PLAYABLE_SCREEN_HEIGHT_1920x1080/2;
                 iterate = 1;
             }
@@ -306,7 +304,16 @@ public class BuildCommands {
             }
             System.out.println(newY);
             iterate++;
-            placeBuildingDownAtCoordinates(newX, newY, iterate);
+            //so if we try to place a building too many times, just stop trying
+            numberOfTries++;
+            if (numberOfTries > 45){
+
+                rightMouseClick();
+                return;
+            }
+
+
+            placeBuildingDownAtCoordinates(newX, newY, iterate, numberOfTries);
         } else {
             //Building was placed, break out of recursive loop
             return ;

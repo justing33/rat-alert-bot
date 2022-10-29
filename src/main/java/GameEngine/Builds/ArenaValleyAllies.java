@@ -23,6 +23,7 @@ public class ArenaValleyAllies {
         buildCommands.buildLightTanks();
         buildCommands.buildWarFactory(middleXScreenPos, middleYScreenPos);
         buildCommands.sellConYard();
+        buildCommands.buildLightTanks();
         screenCommands.waitForTanks();
         System.out.println("Trying to move THE SCREEN X=> " + attackDirection[0] + " Y=> " + attackDirection[1]);
         screenCommands.moveScreen(attackDirection);

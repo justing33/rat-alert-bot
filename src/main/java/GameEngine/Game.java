@@ -37,26 +37,47 @@ public class Game {
              ArenaValleyAllies.topLeft2WFSellBuild(buildDirection);
             exit(0);
          } else if (Constants.MAP_START.BOTTOMMIDLEFT == map){
-             buildDirection = new int[] {1,-1,0,-1};
-
-             ArenaValleyAllies.topLeft2WFSellBuild(buildDirection);
-             exit(0);
-         } else if (Constants.MAP_START.BOTTOMMIDRIGHT == map){
              buildDirection = new int[] {-1,-1,0,-1};
 
              ArenaValleyAllies.topLeft2WFSellBuild(buildDirection);
              exit(0);
-         } else if (Constants.MAP_START.TOPMIDLEFT == map){
-             buildDirection = new int[] {1,1,0,1};
+         } else if (Constants.MAP_START.BOTTOMMIDRIGHT == map){
+             buildDirection = new int[] {1,-1,0,-1};
 
              ArenaValleyAllies.topLeft2WFSellBuild(buildDirection);
              exit(0);
-         } else if (Constants.MAP_START.TOPMIDRIGHT == map){
+         } else if (Constants.MAP_START.TOPMIDLEFT == map){
              buildDirection = new int[] {-1,1,0,1};
 
              ArenaValleyAllies.topLeft2WFSellBuild(buildDirection);
              exit(0);
-        } else {
+         } else if (Constants.MAP_START.TOPMIDRIGHT == map){
+             buildDirection = new int[] {1,1,0,1};
+
+             ArenaValleyAllies.topLeft2WFSellBuild(buildDirection);
+             exit(0);
+         } else if (Constants.MAP_START.MIDTOPRIGHT == map){
+             buildDirection = new int[] {-1,-1,-1,0};
+
+             ArenaValleyAllies.topLeft2WFSellBuild(buildDirection);
+             exit(0);
+         } else if (Constants.MAP_START.MIDTOPLEFT == map){
+             buildDirection = new int[] {1,-1,1,0};
+
+             ArenaValleyAllies.topLeft2WFSellBuild(buildDirection);
+             exit(0);
+         } else if (Constants.MAP_START.MIDBOTTOMLEFT == map){
+             buildDirection = new int[] {1,1,1,0};
+
+             ArenaValleyAllies.topLeft2WFSellBuild(buildDirection);
+             exit(0);
+         } else if (Constants.MAP_START.MIDBOTTOMRIGHT == map){
+             buildDirection = new int[] {-1,1,-1,0};
+
+             ArenaValleyAllies.topLeft2WFSellBuild(buildDirection);
+             exit(0);
+         } else {
+
             System.out.println("Could not determine the map, exiting now..");
             exit(0);
         }

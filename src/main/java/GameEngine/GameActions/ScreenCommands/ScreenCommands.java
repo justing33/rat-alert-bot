@@ -92,21 +92,22 @@ public class ScreenCommands {
             controller.keyPress(VK_F2);
             controller.keyRelease(VK_F2);
             Thread.sleep(commandInputBufferTime);
-            //make ctrl group 1
-            controller.keyPress(VK_SHIFT);
-            Thread.sleep(commandTextedInputBufferTime);
-            controller.keyPress(VK_A);
-            controller.keyRelease(VK_A);
-            Thread.sleep(commandTextedInputBufferTime);
-            controller.keyRelease(VK_SHIFT);
-            controller.keyPress(VK_CONTROL);
-            Thread.sleep(commandTextedInputBufferTime);
-            controller.keyPress(VK_1);
-            controller.keyRelease(VK_1);
-            Thread.sleep(commandTextedInputBufferTime);
-            controller.keyRelease(VK_CONTROL);
 
             for( int j = 0; j < sizeOfGQScreenMask ; j++){
+
+                //make ctrl group 1
+                controller.keyPress(VK_SHIFT);
+                Thread.sleep(commandTextedInputBufferTime);
+                controller.keyPress(VK_A);
+                controller.keyRelease(VK_A);
+                Thread.sleep(commandTextedInputBufferTime);
+                controller.keyRelease(VK_SHIFT);
+                controller.keyPress(VK_CONTROL);
+                Thread.sleep(commandTextedInputBufferTime);
+                controller.keyPress(VK_1);
+                controller.keyRelease(VK_1);
+                Thread.sleep(commandTextedInputBufferTime);
+                controller.keyRelease(VK_CONTROL);
 
                 //wait a few seconds before scrolling the screen
                 Thread.sleep(commandGQCyclePauseBufferTime);
@@ -130,6 +131,9 @@ public class ScreenCommands {
                 cursor_y = PLAYABLE_SCREEN_HEIGHT_1920x1080 / 2 - 512;
 
                 cursorGQclicks(cursor_x, cursor_y, cycleNumber-1);
+                Look_for_Building();
+
+
                 //just make it loop forever until someone looses
                 if (j == sizeOfGQScreenMask -1 ){
                     j = -1;
@@ -173,6 +177,7 @@ public class ScreenCommands {
         //We want to cycle the GQing
         for( int i = 0; i < sizeOfGQDirectionMask ; i++) {
             //select ctrl group 1
+            Thread.sleep(commandGQCursorPauseBufferTime);
             controller.keyPress(VK_Q);
             Thread.sleep(commandTextedInputBufferTime);
             controller.keyPress(VK_1);
@@ -181,15 +186,15 @@ public class ScreenCommands {
             Thread.sleep(commandInputBufferTime);
 
             //stop every fifth cycle
-            if ( i % 3 == 0 ) {
+            if ( i % 2 == 0 ) {
                 controller.keyPress(VK_S);
                 controller.keyRelease(VK_S);
-                Thread.sleep(commandTextedInputBufferTime);
+                Thread.sleep(commandInputBufferTime);
                 //gaurd
                 controller.keyPress(VK_G);
                 controller.keyRelease(VK_G);
+                Thread.sleep(commandInputBufferTime);
             }
-            Thread.sleep(commandGQCursorPauseBufferTime);
             //press q and alt and start clicking around the screen
             //don't hold alt every time so that we may hit some buildings too
             //cycle 1 is always to alt
@@ -205,6 +210,7 @@ public class ScreenCommands {
             }
 
             Thread.sleep(commandInputBufferTime);
+            Thread.sleep(commandInputBufferTime);
 
             mouseLineClick(cursor_x, cursor_y, cursorMaskGQx[i], cursorMaskGQy[i], commandCursorGQJumpPixels, commandCursorGQNumberofJumps);
             controller.keyRelease(VK_ALT);
@@ -219,7 +225,6 @@ public class ScreenCommands {
 
         }
         controller.keyRelease(VK_Q);
-
 
     }
 
