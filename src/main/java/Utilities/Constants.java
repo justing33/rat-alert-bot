@@ -2,6 +2,7 @@ package Utilities;
 
 import java.awt.event.InputEvent;
 
+import static java.awt.event.KeyEvent.VK_E;
 import static java.awt.event.KeyEvent.VK_R;
 
 public class Constants {
@@ -11,6 +12,8 @@ public class Constants {
 
     public static final Integer LEFT_MOUSE_CLICK = InputEvent.BUTTON1_DOWN_MASK;
     public static final Integer RIGHT_MOUSE_CLICK = InputEvent.BUTTON2_DOWN_MASK;
+
+    public static final Integer SELECT_INFANTRY_MENU = VK_E;
 
     public static final Integer SELECT_VEHICLE_MENU = VK_R;
 
@@ -22,7 +25,7 @@ public class Constants {
     //THE SIZE OF THE PART OF THE SCREEN TO CHECK FOR THE GREEN BAR AFTER BUILDING IS PLACED
     public static final Integer CURSOR_BUILD_SQUARE_WIDTH = 1;
     public static final Integer CURSOR_BUILD_SQUARE_HEIGHT = 192;
-
+    public static final Integer CURSOR_PLACE_BUILDING_SQUARE_HEIGHT = 36;
 
 
     //BUILDING PIXEL SIZES
@@ -37,7 +40,10 @@ public class Constants {
     //The input buffer time in-between commands
     public static final int refineryBuildTime = 32000;
 
+    public static final int defendBaseTime = 15500;
+
     public static final int pillBuildTime = 5000;
+    public static final int barracksBuildTime = 7000;
     public static final int warFactoryBuildTime = 32000;
 
     //BUFFER TIMES
@@ -58,22 +64,22 @@ public class Constants {
     public static final int commandGQCyclePauseBufferTime = 1500;
 
     //The distance in pixels the cursor will move the screen between each gq cycle
-    public static final int screenScrollGQDistance = 24;
+    public static final int screenScrollGQDistance = 18;
 
     //The directions that the GQ will scan the cursor
-    public static final int [] cursorMaskGQx = {1, 1, 1, 1,-1,-1,-1,-1, 1, 1, 1, 1};
-    public static final int [] cursorMaskGQy = {1, 1, 1, 1, 0, 0, 0, 0,-1,-1,-1,-1};
+    public static final int [] cursorMaskGQx = { 1, 1, 1,-1,-1,-1, 1, 1, 1};
+    public static final int [] cursorMaskGQy = { 1, 1, 1, 0, 0, 0,-1,-1,-1};
 
 
 
 //The directions that the GQ will scan the screen
 
-    public static final int [] screenMaskGQx = {-2, 2, 0,-1, 0};
-    public static final int [] screenMaskGQy = {-2, 2,-1, 0, 1};
+    public static final int [] screenMaskGQx = { 0, 0,-2, 0, 3};
+    public static final int [] screenMaskGQy = { 0,-2, 0, 2, 3};
 
 
     //The size of the jumps in pixels while GQing
-    public static final int commandCursorGQJumpPixels = 128;
+    public static final int commandCursorGQJumpPixels = 156;
     //The number of the jumps while GQing
     public static final int commandCursorGQNumberofJumps = 2;
     //The buffer time enough tanks to be built for an effective first strike

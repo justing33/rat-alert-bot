@@ -35,18 +35,15 @@ public class ScreenCommands {
             //PROLLY NEED TO CLEAN THIS UP buildDirection[] WHERE 0 INDEX IS X AND 1 INDEX IS Y
             mouseLineMove(cursor_x, cursor_y, screenScrollGQDistance * attackDirection[2] * -1, screenScrollGQDistance * attackDirection[3] * -1, 20);
             Thread.sleep(commandCursorPauseBufferTime);
-
             controller.mouseRelease(RIGHT_MOUSE_CLICK);
 
-            //let's set this as the F2 position
-            Thread.sleep(commandInputBufferTime);
-            controller.keyPress(VK_CONTROL);
-            Thread.sleep(commandTextedInputBufferTime);
-            controller.keyPress(VK_F2);
-            controller.keyRelease(VK_F2);
-            Thread.sleep(commandTextedInputBufferTime);
-            controller.keyRelease(VK_CONTROL);
+            Thread.sleep(commandCursorPauseBufferTime);
+            controller.mousePress(LEFT_MOUSE_CLICK);
+            Thread.sleep(commandCursorPauseBufferTime);
+            controller.mouseRelease(LEFT_MOUSE_CLICK);
 
+            //let's set this as the F2 position
+            setF2Position();
 
         } catch (Exception e){
             e.printStackTrace();
@@ -63,7 +60,7 @@ public class ScreenCommands {
 
 
 
-    public void waitForTanks() throws IOException, InterruptedException {
+    public void defendBase() throws IOException, InterruptedException {
         //make ctrl group 1
         controller.keyPress(VK_SHIFT);
         Thread.sleep(commandTextedInputBufferTime);
@@ -96,61 +93,50 @@ public class ScreenCommands {
             for( int j = 0; j < sizeOfGQScreenMask ; j++){
 
                 //make ctrl group 1
-                controller.keyPress(VK_SHIFT);
-                Thread.sleep(commandTextedInputBufferTime);
-                controller.keyPress(VK_A);
-                controller.keyRelease(VK_A);
-                Thread.sleep(commandTextedInputBufferTime);
-                controller.keyRelease(VK_SHIFT);
-                controller.keyPress(VK_CONTROL);
-                Thread.sleep(commandTextedInputBufferTime);
-                controller.keyPress(VK_1);
-                controller.keyRelease(VK_1);
-                Thread.sleep(commandTextedInputBufferTime);
-                controller.keyRelease(VK_CONTROL);
+                makeCtrlGroup1();
 
-                //wait a few seconds before scrolling the screen
-                Thread.sleep(commandGQCyclePauseBufferTime);
+
+                //don't wait a few seconds before scrolling the screen
+                Thread.sleep(commandInputBufferTime);
                 //set cursor to middle of screen
                 cursor_x = PLAYABLE_SCREEN_WIDTH_1920x1080 / 2;
                 cursor_y = PLAYABLE_SCREEN_HEIGHT_1920x1080 / 2;
                 controller.mouseMove(cursor_x, cursor_y);
                 Thread.sleep(commandInputBufferTime);
-                controller.mousePress(RIGHT_MOUSE_CLICK);
-                Thread.sleep(commandInputBufferTime);
                 //This controls the overall screen scrolling
-                mouseLineMove(cursor_x, cursor_y, screenScrollGQDistance * screenMaskGQx[j] * attackDirection[0] * cycleNumber
-                        , screenScrollGQDistance * screenMaskGQy[j] * attackDirection[1] * cycleNumber, 20);
+                //only moves the screen if there's no building on screen...arg..a little bit better with 50%
+                Boolean buildingIsThere = Find_a_Building();
+                Random random = new Random();
+                int screenMoveProbability = random.nextInt(64);
+                if (!buildingIsThere && screenMoveProbability < 32) {
+                    controller.mousePress(RIGHT_MOUSE_CLICK);
+                    Thread.sleep(commandInputBufferTime);
+                    //we wanna really try to find the enemy base on the first cycle
+                    if (cycleNumber == 1) {
+                        mouseLineMove(cursor_x, cursor_y, attackDirection[0] * (screenScrollGQDistance * screenMaskGQx[j] + screenMaskGQx[j] * cycleNumber * 20)
+                                , attackDirection[1] * (screenScrollGQDistance * screenMaskGQy[j] + screenMaskGQy[j] * cycleNumber *  20), 20);
+                    }else {
+                        mouseLineMove(cursor_x, cursor_y, attackDirection[0] * (screenScrollGQDistance * screenMaskGQx[j] + screenMaskGQx[j] * cycleNumber * 10)
+                                , attackDirection[1] * (screenScrollGQDistance * screenMaskGQy[j] + screenMaskGQy[j] * cycleNumber *  10), 20);
 
-
-                Thread.sleep(commandCursorPauseBufferTime);
-                controller.mouseRelease(RIGHT_MOUSE_CLICK);
-
+                    }
+                    Thread.sleep(commandCursorPauseBufferTime);
+                    controller.mouseRelease(RIGHT_MOUSE_CLICK);
+                }
                 //reset cursor position for clicks
                 cursor_x = PLAYABLE_SCREEN_WIDTH_1920x1080 / 2 - 512;
                 cursor_y = PLAYABLE_SCREEN_HEIGHT_1920x1080 / 2 - 512;
 
-                cursorGQclicks(cursor_x, cursor_y, cycleNumber-1);
+                cursorGQclicks(cursor_x, cursor_y, cycleNumber);
                 Look_for_Building();
-
 
                 //just make it loop forever until someone looses
                 if (j == sizeOfGQScreenMask -1 ){
                     j = -1;
                     cycleNumber = cycleNumber + 1;
                     //make new ctrl group 1
-                    controller.keyPress(VK_SHIFT);
-                    Thread.sleep(commandTextedInputBufferTime);
-                    controller.keyPress(VK_A);
-                    controller.keyRelease(VK_A);
-                    Thread.sleep(commandTextedInputBufferTime);
-                    controller.keyRelease(VK_SHIFT);
-                    controller.keyPress(VK_CONTROL);
-                    Thread.sleep(commandTextedInputBufferTime);
-                    controller.keyPress(VK_1);
-                    controller.keyRelease(VK_1);
-                    Thread.sleep(commandTextedInputBufferTime);
-                    controller.keyRelease(VK_CONTROL);
+                    //make ctrl group 1
+                    makeCtrlGroup1();
 
                     //goback to f2
                     Thread.sleep(commandTextedInputBufferTime);
@@ -160,10 +146,6 @@ public class ScreenCommands {
 
                 }
             }
-
-
-
-
 
         } catch (Exception e){
             e.printStackTrace();
@@ -182,8 +164,7 @@ public class ScreenCommands {
             Thread.sleep(commandTextedInputBufferTime);
             controller.keyPress(VK_1);
             controller.keyRelease(VK_1);
-
-            Thread.sleep(commandInputBufferTime);
+            Thread.sleep(commandTextedInputBufferTime);
 
             //stop every fifth cycle
             if ( i % 2 == 0 ) {
@@ -219,7 +200,6 @@ public class ScreenCommands {
             cursor_y = commandCursorGQJumpPixels * cursorMaskGQy[i] * commandCursorGQNumberofJumps + cursor_y;
 
             //check if games is over
-
             Game_over();
 
 

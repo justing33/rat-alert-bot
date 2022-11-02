@@ -74,6 +74,12 @@ public class Controller {
         BufferedImage gameScreenBuffer = controller.createScreenCapture(playableScreenRect);
         return gameScreenBuffer;
     }
+    public static BufferedImage captureCursorPlaceBuildingSquare(int cursor_x, int cursor_y) throws IOException {
+        //Grab the screen near the cursor
+        Rectangle playableScreenRect = new Rectangle(cursor_x,cursor_y,CURSOR_BUILD_SQUARE_WIDTH, CURSOR_PLACE_BUILDING_SQUARE_HEIGHT);
+        BufferedImage gameScreenBuffer = controller.createScreenCapture(playableScreenRect);
+        return gameScreenBuffer;
+    }
     public static BufferedImage captureLoadScreenStart(int x) throws IOException {
         //Grab the screen near the cursor
         Rectangle playableScreenRect = new Rectangle(x,425,1, 350);
@@ -123,21 +129,14 @@ public class Controller {
     }
     public static BufferedImage captureCursorBuildAttackSquare(int cursor_x, int cursor_y) throws IOException {
         //Grab the screen near the cursor
-        Rectangle playableScreenRect = new Rectangle(cursor_x,cursor_y-100,CURSOR_BUILD_SQUARE_WIDTH, 50);
+        Rectangle playableScreenRect = new Rectangle(cursor_x,cursor_y-90,CURSOR_BUILD_SQUARE_WIDTH, 25);
         BufferedImage gameScreenBuffer = controller.createScreenCapture(playableScreenRect);
         return gameScreenBuffer;
     }
-    public static boolean isBuildingAttackedThere(BufferedImage screen){
+    public static boolean isBuildingAttackedThere(BufferedImage screen) throws InterruptedException {
         //Point mousePointerLocation = MouseInfo.getPointerInfo().getLocation();
         //System.out.println("Mouse Coords X => " + mousePointerLocation.getX() + " Y => " + mousePointerLocation.getY());
 
-        /***
-         * Get the color pixel at the mouse location to see if the building was placed successfully or not
-         * If the RGB value of the color that is returned from this is near RGB(255,255,255) which is
-         * pure WHITE pixel, then it is very likely that we did NOT place the building as the placement
-         * outline is still there.
-         * //TODO: This is going to be problematic logic when we play on a snow map so may need to reconsider approach
-         */
         int blue = 0;
         int green = 0;
         int red = 0;
@@ -151,12 +150,13 @@ public class Controller {
             red = (color & 0xff0000) >> 16;
             //System.out.println("Pixel RGB color values => red: " + red + " green: " + green + " blue: " + blue);
             if (green < 20 && red < 20 && blue < 20){
-                System.out.println("building still there @ i= " + i);
+                //System.out.println("building still there @ i= " + i);
+                setF2Position();
                 return true;
             }
 
         }
-        //If all pixel values are atleast 240 return false meaning the building was not placed
+        //If there is no black pixel, building is gone
         System.out.println("building is gone now");
         return false;
     }
@@ -174,8 +174,47 @@ public class Controller {
         BufferedImage gameScreenBuffer = controller.createScreenCapture(playableScreenRect);
         return gameScreenBuffer;
     }
+    public static boolean Find_a_Building() throws IOException, InterruptedException {
+        for (int Colum_Num = 120; Colum_Num < PLAYABLE_SCREEN_WIDTH_1920x1080 - 120;  Colum_Num = Colum_Num+149){
+            BufferedImage game_colum = captureGameScreenColum(Colum_Num);
+            for (int Row_Num = 1; Row_Num < PLAYABLE_SCREEN_HEIGHT_1920x1080 - 128; Row_Num = Row_Num + 4){
+                int numberOfGreenPixels = 0;
+                int color = game_colum.getRaster().getDataBuffer().getElem(Row_Num);
+                int blue = color & 0xff;
+                int green = (color & 0xff00) >> 8;
+                int red = (color & 0xff0000) >> 16;
+                if (red < 20 && green > 240 && blue < 20) {
+                    //System.out.println("Found GREEN at x = " + Colum_Num + " y = " + Row_Num);
+                    BufferedImage game_row = captureGameScreenRow(Colum_Num-120,Row_Num);
+                    for (int j = 1; j < 240; j++){
+                        color = game_row.getRaster().getDataBuffer().getElem(j);
+                        blue = color & 0xff;
+                        green = (color & 0xff00) >> 8;
+                        red = (color & 0xff0000) >> 16;
+                        if (red < 20 && green > 240 && blue < 20) {
+                            //count number of green pixels in a row on the screen
+                            numberOfGreenPixels = numberOfGreenPixels + 1;
+                            if (numberOfGreenPixels > 90){
+                                System.out.println("Found 90 GREEN pixels at j = " + j );
+                                return true;
+                            }
+                        }else  if (numberOfGreenPixels != 0){
+                            //reset the count if there's a break in the green pixels   THIS DONT WORK
+                            System.out.println("no more green pixels = " + numberOfGreenPixels );
+                            numberOfGreenPixels = 0;
+                        }
+                    }
 
+                }
+
+            }
+
+        }
+
+        return false;
+    }
     public static void Look_for_Building() throws IOException, InterruptedException {
+        Boolean buildingWasShot = false;
         for (int Colum_Num = 120; Colum_Num < PLAYABLE_SCREEN_WIDTH_1920x1080 - 120;  Colum_Num = Colum_Num+149){
             BufferedImage game_colum = captureGameScreenColum(Colum_Num);
             for (int Row_Num = 1; Row_Num < PLAYABLE_SCREEN_HEIGHT_1920x1080 - 128; Row_Num = Row_Num + 4){
@@ -197,6 +236,15 @@ public class Controller {
                             if (numberOfGreenPixels > 90){
                                 //System.out.println("Found Building at x = " + Colum_Num + "y = " + Row_Num);
                                 shootBuilding(Colum_Num,Row_Num+75);
+                                Thread.sleep(commandInputBufferTime);
+                                controller.keyPress(VK_X);
+                                controller.keyRelease(VK_X);
+                                Thread.sleep(commandInputBufferTime);
+                                //gaurd
+                                controller.keyPress(VK_G);
+                                controller.keyRelease(VK_G);
+                                Thread.sleep(commandInputBufferTime);
+                                buildingWasShot = true;
                                 break;
                             }
 
@@ -204,7 +252,13 @@ public class Controller {
                     }
 
                 }
+                if (buildingWasShot){
+                    break;
+                }
 
+            }
+            if (buildingWasShot){
+                break;
             }
 
         }
@@ -225,12 +279,13 @@ public class Controller {
             controller.mouseRelease(LEFT_MOUSE_CLICK);
             Thread.sleep(commandInputBufferTime);
             controller.keyPress(VK_ALT);
+            Thread.sleep(commandInputBufferTime);
             Random random = new Random();
             int offset_x = random.nextInt(192);
             int offset_y = random.nextInt(256)-128;
             int moveToX = x + ((64+offset_x) * eigen_value_x);
             int moveToY = y + ((64+offset_y));
-            if (moveToX > 10 && moveToX < PLAYABLE_SCREEN_WIDTH_1920x1080 - 10 && moveToY > 10 && moveToY < PLAYABLE_SCREEN_HEIGHT_1920x1080 - 10) {
+            if (moveToX > 10 && moveToX < PLAYABLE_SCREEN_WIDTH_1920x1080 - 10 && moveToY > 10 && moveToY < PLAYABLE_SCREEN_HEIGHT_1920x1080 - 64) {
                 controller.mouseMove(moveToX, moveToY);
                 eigen_value_x = eigen_value_x * -1;
                 controller.mousePress(LEFT_MOUSE_CLICK);
@@ -272,6 +327,30 @@ public class Controller {
             //TODO: Add more resolutions in, fail until then..
             exit(0);
         }
+    }
+    public static void setF2Position() throws InterruptedException {
+        Thread.sleep(commandInputBufferTime);
+        controller.keyPress(VK_CONTROL);
+        Thread.sleep(commandTextedInputBufferTime);
+        controller.keyPress(VK_F2);
+        controller.keyRelease(VK_F2);
+        Thread.sleep(commandTextedInputBufferTime);
+        controller.keyRelease(VK_CONTROL);
+    }
+    public static void makeCtrlGroup1() throws InterruptedException {
+        controller.keyPress(VK_SHIFT);
+        Thread.sleep(commandTextedInputBufferTime);
+        controller.keyPress(VK_A);
+        controller.keyRelease(VK_A);
+        Thread.sleep(commandTextedInputBufferTime);
+        controller.keyRelease(VK_SHIFT);
+        controller.keyPress(VK_CONTROL);
+        Thread.sleep(commandTextedInputBufferTime);
+        controller.keyPress(VK_1);
+        controller.keyRelease(VK_1);
+        Thread.sleep(commandTextedInputBufferTime);
+        controller.keyRelease(VK_CONTROL);
+
     }
 
     public static void leftMouseClick() throws InterruptedException {
@@ -394,15 +473,22 @@ public class Controller {
         }else if (i < 175 && i > 95 && (j == 0)) {
             System.out.println("MIDTOPLEFT:  i = " + i + "   j = " + j);
             return MAP_START.MIDTOPLEFT;
-        }else if (i < 175 && i > 95 && (j == 9)) {
+        }else if (i < 175  && i > 100 && (j == 9)) {
+            System.out.println("TOPLEFT:  i = " + i + "   j = " + j);
+            return MAP_START.TOPLEFT;
+        }else if (i < 110 && i > 95 && (j == 9)) {
             System.out.println("MIDTOPLEFT:  i = " + i + "   j = " + j);
             return MAP_START.MIDTOPLEFT;
         }else if (i > 175 && i < 255 &&  (j == 0)) {
             System.out.println("MIDBOTTOMLEFT:  i = " + i + "   j = " + j);
             return MAP_START.MIDBOTTOMLEFT;
-        }else if (i > 175 && i < 255 &&  (j == 8)) {
+        }else if (i > 175 && i < 215 &&  (j == 8)) {
             System.out.println("MIDBOTTOMRIGHT:  i = " + i + "   j = " + j);
             return MAP_START.MIDBOTTOMRIGHT;
+            //Orerift Right i=221 j=8
+        }else if (i > 215 && i < 255 &&  (j == 8)) {
+            System.out.println("BOTTOMRIGHT:  i = " + i + "   j = " + j);
+            return MAP_START.BOTTOMRIGHT;
         }
 
         return MAP_START.NONE;
