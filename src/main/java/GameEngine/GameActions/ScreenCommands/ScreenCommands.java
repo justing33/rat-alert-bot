@@ -89,8 +89,8 @@ public class ScreenCommands {
             controller.keyPress(VK_F2);
             controller.keyRelease(VK_F2);
             Thread.sleep(commandInputBufferTime);
-
-            for( int j = 0; j < sizeOfGQScreenMask ; j++){
+            int j = 0;
+            while( j < sizeOfGQScreenMask){
 
                 //make ctrl group 1
                 makeCtrlGroup1();
@@ -108,16 +108,18 @@ public class ScreenCommands {
                 Boolean buildingIsThere = Find_a_Building();
                 Random random = new Random();
                 int screenMoveProbability = random.nextInt(64);
-                if (!buildingIsThere && screenMoveProbability < 32) {
+                if (!buildingIsThere || screenMoveProbability < 55 ) {
                     controller.mousePress(RIGHT_MOUSE_CLICK);
                     Thread.sleep(commandInputBufferTime);
+                    //iterate the screen mask index
+                    j = j + 1;
                     //we wanna really try to find the enemy base on the first cycle
                     if (cycleNumber == 1) {
                         mouseLineMove(cursor_x, cursor_y, attackDirection[0] * (screenScrollGQDistance * screenMaskGQx[j] + screenMaskGQx[j] * cycleNumber * 20)
-                                , attackDirection[1] * (screenScrollGQDistance * screenMaskGQy[j] + screenMaskGQy[j] * cycleNumber *  20), 20);
+                                , attackDirection[1] * (screenScrollGQDistance * screenMaskGQy[j] + screenMaskGQy[j] * cycleNumber *  3), 20);
                     }else {
                         mouseLineMove(cursor_x, cursor_y, attackDirection[0] * (screenScrollGQDistance * screenMaskGQx[j] + screenMaskGQx[j] * cycleNumber * 10)
-                                , attackDirection[1] * (screenScrollGQDistance * screenMaskGQy[j] + screenMaskGQy[j] * cycleNumber *  10), 20);
+                                , attackDirection[1] * (screenScrollGQDistance * screenMaskGQy[j] + screenMaskGQy[j] * cycleNumber *  2), 20);
 
                     }
                     Thread.sleep(commandCursorPauseBufferTime);

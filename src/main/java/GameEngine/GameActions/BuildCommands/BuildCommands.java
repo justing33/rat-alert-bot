@@ -331,12 +331,26 @@ public class BuildCommands {
         BufferedImage cursorSquareBuffer = captureCursorBuildSquare( x+10, y-64);
 
         //Determine if the building is already in the spot
-        boolean there = isBuildingThere(cursorSquareBuffer);
+        boolean there1 = isBuildingThere(cursorSquareBuffer);
+
+        //Capture a piece of the screen to the right of the cursor
+        cursorSquareBuffer = captureCursorBuildSquare( x+74, y-64);
+
+        //Determine if the building is already in the spot
+        boolean there2 = isBuildingThere(cursorSquareBuffer);
+
+        //Capture a piece of the screen to the right of the cursor
+        cursorSquareBuffer = captureCursorBuildSquare( x+138, y-64);
+
+        //Determine if the building is already in the spot
+        boolean there3 = isBuildingThere(cursorSquareBuffer);
+
+        //Syst
         //System.out.println("Placed building already there? " + there);
         boolean placed = false;
 
         //if there's not already a building there, attempt to place
-        if (!there) {
+        if (!there1 && !there2 && !there3) {
             //Try to place it
             leftMouseClick();
             mouseLineMove(x,y,-64,0,4);
@@ -383,12 +397,16 @@ public class BuildCommands {
             }
 
             iterate++;
-            //so if we try to place a building too many times, just stop trying
-            //numberOfTries++;
-            //if (numberOfTries > 45){
-                //rightMouseClick();
+            //so if we try to place a building too many times, hit the build buttons again
+            numberOfTries++;
+            if ( numberOfTries%45 == 1 ){
+                rightMouseClick();
+                queuePowerPlant();
+                queueWarFactory();
+                queueRefinery();
+                queueBarracks();
                 //return;
-            //}
+            }
 
             placeBuildingDownAtCoordinates(newX, newY, iterate, numberOfTries);
         } else {
@@ -442,12 +460,16 @@ public class BuildCommands {
                 // look for some green
                 System.out.println("found green pixel at element i = " + i );
                 return true;
-            }else if (red < 230 && red > 145 && green < 220 && green > 130  && blue < 140 && blue > 70){
+            }else if (red < 230 && red > 145 && green < 220 && green > 130  && blue < 140 && blue > 70) {
                 //look for the ore
-                System.out.println("found green pixel at element i = " + i );
+                System.out.println("found ore pixel at element i = " + i);
                 return true;
-            }
+            } else if (red > 160 && green < 35  && blue < 35 ) {
+                //look for red stripes
+                System.out.println("found red pixel at element i = " + i);
+                return true;
 
+            }
 
         }
         //If all pixel values are atleast 240 return false meaning the building was not placed

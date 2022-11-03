@@ -141,6 +141,24 @@ public class Controller {
         int green = 0;
         int red = 0;
         int sizeOfCursorSquareArray = CURSOR_BUILD_SQUARE_WIDTH * 25;
+
+        //below we need to see if there is a white pixel below the HP box
+        for (int i = 10; i<sizeOfCursorSquareArray; i++) {
+            int color = screen.getRaster().getDataBuffer().getElem(i);
+            //System.out.println("Pixel color (integer value): " + color);
+            //determine individual colors
+            blue = color & 0xff;
+            green = (color & 0xff00) >> 8;
+            red = (color & 0xff0000) >> 16;
+            //System.out.println("Pixel RGB color values => red: " + red + " green: " + green + " blue: " + blue);
+            if (green > 245 && red > 245 && blue > 245){
+                System.out.println("is freindly or we don't have anymore units selected " + i);
+                return false;
+            }
+
+        }
+
+        //below we'll look for the black around the HP box
         for (int i = 0; i<sizeOfCursorSquareArray; i++) {
             int color = screen.getRaster().getDataBuffer().getElem(i);
             //System.out.println("Pixel color (integer value): " + color);
@@ -151,12 +169,18 @@ public class Controller {
             //System.out.println("Pixel RGB color values => red: " + red + " green: " + green + " blue: " + blue);
             if (green < 20 && red < 20 && blue < 20){
                 //System.out.println("building still there @ i= " + i);
-                setF2Position();
+                setF3Position();
                 return true;
             }
 
         }
-        //If there is no black pixel, building is gone
+        //If there is no black pixel, building is gone set this as new f2 bookmark
+
+        Thread.sleep(commandInputBufferTime);
+        controller.keyPress(VK_F3);
+        controller.keyRelease(VK_F3);
+        Thread.sleep(commandInputBufferTime);
+        setF2Position();
         System.out.println("building is gone now");
         return false;
     }
@@ -213,6 +237,9 @@ public class Controller {
 
         return false;
     }
+
+
+    //this is looking for a building to shoot
     public static void Look_for_Building() throws IOException, InterruptedException {
         Boolean buildingWasShot = false;
         for (int Colum_Num = 120; Colum_Num < PLAYABLE_SCREEN_WIDTH_1920x1080 - 120;  Colum_Num = Colum_Num+149){
@@ -234,8 +261,9 @@ public class Controller {
                         if (red < 20 && green > 240 && blue < 20) {
                             numberOfGreenPixels = numberOfGreenPixels + 1;
                             if (numberOfGreenPixels > 90){
+                                //we want to shoot the building near the left side so we can see white pop up if it is our building
                                 //System.out.println("Found Building at x = " + Colum_Num + "y = " + Row_Num);
-                                shootBuilding(Colum_Num,Row_Num+75);
+                                shootBuilding(Colum_Num - 120 + j - 64,Row_Num+75);
                                 Thread.sleep(commandInputBufferTime);
                                 controller.keyPress(VK_X);
                                 controller.keyRelease(VK_X);
@@ -248,6 +276,8 @@ public class Controller {
                                 break;
                             }
 
+                        }else{
+                            numberOfGreenPixels = 0;
                         }
                     }
 
@@ -334,6 +364,16 @@ public class Controller {
         Thread.sleep(commandTextedInputBufferTime);
         controller.keyPress(VK_F2);
         controller.keyRelease(VK_F2);
+        Thread.sleep(commandTextedInputBufferTime);
+        controller.keyRelease(VK_CONTROL);
+    }
+
+    public static void setF3Position() throws InterruptedException {
+        Thread.sleep(commandInputBufferTime);
+        controller.keyPress(VK_CONTROL);
+        Thread.sleep(commandTextedInputBufferTime);
+        controller.keyPress(VK_F3);
+        controller.keyRelease(VK_F3);
         Thread.sleep(commandTextedInputBufferTime);
         controller.keyRelease(VK_CONTROL);
     }
