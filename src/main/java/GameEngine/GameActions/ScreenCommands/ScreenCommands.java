@@ -193,7 +193,6 @@ public class ScreenCommands {
             }
 
             Thread.sleep(commandInputBufferTime);
-            Thread.sleep(commandInputBufferTime);
 
             mouseLineClick(cursor_x, cursor_y, cursorMaskGQx[i], cursorMaskGQy[i], commandCursorGQJumpPixels, commandCursorGQNumberofJumps);
             controller.keyRelease(VK_ALT);

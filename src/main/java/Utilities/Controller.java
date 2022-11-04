@@ -310,18 +310,9 @@ public class Controller {
             Thread.sleep(commandInputBufferTime);
             controller.keyPress(VK_ALT);
             Thread.sleep(commandInputBufferTime);
-            Random random = new Random();
-            int offset_x = random.nextInt(192);
-            int offset_y = random.nextInt(256)-128;
-            int moveToX = x + ((64+offset_x) * eigen_value_x);
-            int moveToY = y + ((64+offset_y));
-            if (moveToX > 10 && moveToX < PLAYABLE_SCREEN_WIDTH_1920x1080 - 10 && moveToY > 10 && moveToY < PLAYABLE_SCREEN_HEIGHT_1920x1080 - 64) {
-                controller.mouseMove(moveToX, moveToY);
-                eigen_value_x = eigen_value_x * -1;
-                controller.mousePress(LEFT_MOUSE_CLICK);
-                controller.mouseRelease(LEFT_MOUSE_CLICK);
-                Thread.sleep(commandInputBufferTime);
-            }
+
+            moveToShoot(x,y,eigen_value_x);
+
             controller.keyRelease(VK_ALT);
             controller.keyRelease(VK_Q);
             BufferedImage buildingStillThere = captureCursorBuildAttackSquare(x,y);
@@ -331,6 +322,26 @@ public class Controller {
                 controller.keyRelease(VK_G);
                 break;
             }
+        }
+
+
+
+    }
+
+    private static void moveToShoot(int x, int y, int eigen_value_x) throws InterruptedException {
+        Random random = new Random();
+        int offset_x = random.nextInt(192);
+        int offset_y = random.nextInt(256)-128;
+        int moveToX = x + ((64+offset_x) * eigen_value_x);
+        int moveToY = y + ((64+offset_y));
+        if (moveToX > 10 && moveToX < PLAYABLE_SCREEN_WIDTH_1920x1080 - 10 && moveToY > 10 && moveToY < PLAYABLE_SCREEN_HEIGHT_1920x1080 - 10) {
+            controller.mouseMove(moveToX, moveToY);
+            eigen_value_x = eigen_value_x * -1;
+            controller.mousePress(LEFT_MOUSE_CLICK);
+            controller.mouseRelease(LEFT_MOUSE_CLICK);
+            Thread.sleep(commandInputBufferTime);
+        }else{
+            moveToShoot(x, y, eigen_value_x);
         }
 
 
