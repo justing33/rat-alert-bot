@@ -40,10 +40,10 @@ public class Constants {
     //The input buffer time in-between commands
     public static final int refineryBuildTime = 32000;
 
-    public static final int defendBaseTime = 15500;
+    public static final int defendBaseTime = 7000;
 
     public static final int pillBuildTime = 5000;
-    public static final int barracksBuildTime = 7000;
+    public static final int barracksBuildTime = 6500;
     public static final int warFactoryBuildTime = 32000;
 
     //BUFFER TIMES
@@ -70,12 +70,16 @@ public class Constants {
     public static final int [] cursorMaskGQx = { 1, 1, 1,-1,-1,-1, 1, 1, 1};
     public static final int [] cursorMaskGQy = { 1, 1, 1, 0, 0, 0,-1,-1,-1};
 
+    //The directions that the GQ will scan the cursor to defend
+    public static final int [] cursorMaskGQDefendx = { 2, 1,-2,-1, 3};
+    public static final int [] cursorMaskGQDefendy = { 2, 1, 0, 0,-3};
+
 
 
 //The directions that the GQ will scan the screen
 
-    public static final int [] screenMaskGQx = { 0, 0,-2, 0, 3};
-    public static final int [] screenMaskGQy = { 0,-2, 0, 2, 3};
+    public static final int [] screenMaskGQx = { 0,-2, 0, 3};
+    public static final int [] screenMaskGQy = {-2, 0, 2, 3};
 
 
     //The size of the jumps in pixels while GQing

@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Random;
 
+import static Utilities.BuildingFinder.Look_for_Building;
 import static Utilities.Constants.*;
 import static Utilities.Controller.*;
 import static java.awt.event.KeyEvent.*;
@@ -22,6 +23,7 @@ public class ScreenCommands {
             //Move the screen to where we want to attack
             Thread.sleep(commandInputBufferTime);
             //PROLLY NEED TO CLEAN THIS UP buildDirection[] WHERE 0 INDEX IS X AND 1 INDEX IS Y
+
             mouseLineMove(cursor_x, cursor_y, moveScreenX * attackDirection[2], moveScreenY * attackDirection[3], 20);
             Thread.sleep(commandCursorPauseBufferTime);
             controller.mouseRelease(RIGHT_MOUSE_CLICK);
@@ -37,9 +39,9 @@ public class ScreenCommands {
             Thread.sleep(commandCursorPauseBufferTime);
             controller.mouseRelease(RIGHT_MOUSE_CLICK);
 
-            Thread.sleep(commandCursorPauseBufferTime);
+            Thread.sleep(commandInputBufferTime);
             controller.mousePress(LEFT_MOUSE_CLICK);
-            Thread.sleep(commandCursorPauseBufferTime);
+            Thread.sleep(commandInputBufferTime);
             controller.mouseRelease(LEFT_MOUSE_CLICK);
 
             //let's set this as the F2 position
@@ -75,7 +77,7 @@ public class ScreenCommands {
         Thread.sleep(commandTextedInputBufferTime);
         controller.keyRelease(VK_CONTROL);
 
-        cursorGQclicks(100,20,-1);
+        cursorGQdefend(100,20,-1);
 
     }
     public void cursorGQScreen(int[] attackDirection){
@@ -114,13 +116,18 @@ public class ScreenCommands {
                     //iterate the screen mask index
                     j = j + 1;
                     //we wanna really try to find the enemy base on the first cycle
-                    if (cycleNumber == 1) {
-                        mouseLineMove(cursor_x, cursor_y, attackDirection[0] * (screenScrollGQDistance * screenMaskGQx[j] + screenMaskGQx[j] * cycleNumber * 20)
-                                , attackDirection[1] * (screenScrollGQDistance * screenMaskGQy[j] + screenMaskGQy[j] * cycleNumber *  3), 20);
-                    }else {
-                        mouseLineMove(cursor_x, cursor_y, attackDirection[0] * (screenScrollGQDistance * screenMaskGQx[j] + screenMaskGQx[j] * cycleNumber * 10)
-                                , attackDirection[1] * (screenScrollGQDistance * screenMaskGQy[j] + screenMaskGQy[j] * cycleNumber *  2), 20);
+                    int x_scroll_pixel = attackDirection[0] * screenMaskGQx[j] * (screenScrollGQDistance  +  cycleNumber * 3);
+                    int y_scroll_pixel = attackDirection[1] * screenMaskGQy[j] * (screenScrollGQDistance + cycleNumber *  3);
+                    System.out.println("moving screen in the direction");
+                    System.out.println("X=" + x_scroll_pixel);
+                    System.out.println("Y=" + y_scroll_pixel);
 
+                    if (cycleNumber == 1) {
+                        mouseLineMove(cursor_x, cursor_y, x_scroll_pixel
+                                , y_scroll_pixel, 20);
+                    }else {
+                        mouseLineMove(cursor_x, cursor_y, x_scroll_pixel
+                                , y_scroll_pixel, 20);
                     }
                     Thread.sleep(commandCursorPauseBufferTime);
                     controller.mouseRelease(RIGHT_MOUSE_CLICK);
@@ -202,11 +209,61 @@ public class ScreenCommands {
 
             //check if games is over
             Game_over();
-
-
         }
         controller.keyRelease(VK_Q);
+    }
 
+    private void cursorGQdefend(int cursor_x, int cursor_y, int noAltProbability) throws InterruptedException, IOException {
+
+        //put cursor to center of screen
+        controller.mouseMove(cursor_x, cursor_y);
+        int sizeOfGQDirectionMask = cursorMaskGQDefendx.length;
+        //We want to cycle the GQing
+        for( int i = 0; i < sizeOfGQDirectionMask ; i++) {
+            //select ctrl group 1
+            Thread.sleep(commandGQCursorPauseBufferTime);
+            controller.keyPress(VK_Q);
+            Thread.sleep(commandTextedInputBufferTime);
+            controller.keyPress(VK_1);
+            controller.keyRelease(VK_1);
+            Thread.sleep(commandTextedInputBufferTime);
+
+            //stop every fifth cycle
+            if ( i % 2 == 0 ) {
+                controller.keyPress(VK_S);
+                controller.keyRelease(VK_S);
+                Thread.sleep(commandInputBufferTime);
+                //gaurd
+                controller.keyPress(VK_G);
+                controller.keyRelease(VK_G);
+                Thread.sleep(commandInputBufferTime);
+            }
+            //press q and alt and start clicking around the screen
+            //don't hold alt every time so that we may hit some buildings too
+            //cycle 1 is always to alt
+            //cycle 2 is always to alt
+            //cycle 3 is 1/2 to alt
+            //cycle 4 is 2/3 to alt
+            //cycle 5 is 3/4 to alt
+            Random random = new Random();
+            if (noAltProbability<=0){
+                controller.keyPress(VK_ALT);
+            }else if (1%(random.nextInt(noAltProbability)+1) != 0) {
+                controller.keyPress(VK_ALT);
+            }
+
+            Thread.sleep(commandInputBufferTime);
+
+            mouseLineClick(cursor_x, cursor_y, cursorMaskGQDefendx[i], cursorMaskGQDefendy[i], commandCursorGQJumpPixels, commandCursorGQNumberofJumps);
+            controller.keyRelease(VK_ALT);
+
+            cursor_x = commandCursorGQJumpPixels * cursorMaskGQDefendx[i] * commandCursorGQNumberofJumps + cursor_x;
+            cursor_y = commandCursorGQJumpPixels * cursorMaskGQDefendy[i] * commandCursorGQNumberofJumps + cursor_y;
+
+            //check if games is over
+            Game_over();
+        }
+        controller.keyRelease(VK_Q);
     }
 
     //this will cause the mouse to move in a line while clicking

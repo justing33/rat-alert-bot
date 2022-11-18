@@ -70,7 +70,8 @@ public class ArenaValleyAllies {
         //Refinery
         buildCommands.queueRefinery();
         screenCommands.defendBase();
-        Thread.sleep(refineryBuildTime-defendBaseTime);
+        Thread.sleep(refineryBuildTime-defendBaseTime*2);
+        screenCommands.defendBase();
         buildCommands.buildRefinery(middleXScreenPos, middleYScreenPos);
         buildCommands.sellConYard();
 
