@@ -129,7 +129,7 @@ public class Controller {
     }
     public static BufferedImage captureCursorBuildAttackSquare(int cursor_x, int cursor_y) throws IOException {
         //Grab the screen near the cursor
-        Rectangle playableScreenRect = new Rectangle(cursor_x,cursor_y-90,CURSOR_BUILD_SQUARE_WIDTH, 25);
+        Rectangle playableScreenRect = new Rectangle(cursor_x,cursor_y,CURSOR_BUILD_SQUARE_WIDTH, 25);
         BufferedImage gameScreenBuffer = controller.createScreenCapture(playableScreenRect);
         return gameScreenBuffer;
     }
@@ -192,60 +192,25 @@ public class Controller {
         return gameScreenBuffer;
     }
 
-    public static BufferedImage captureGameScreenRow(int x, int y) throws IOException {
+    public static BufferedImage captureGameScreenRow(int x, int y, int width) throws IOException {
         //Grab the screen near the cursor
-        Rectangle playableScreenRect = new Rectangle(x,y,240, 1);
+        Rectangle playableScreenRect = new Rectangle(x,y,width, 1);
         BufferedImage gameScreenBuffer = controller.createScreenCapture(playableScreenRect);
         return gameScreenBuffer;
     }
-    public static boolean Find_a_Building() throws IOException, InterruptedException {
-        for (int Colum_Num = 120; Colum_Num < PLAYABLE_SCREEN_WIDTH_1920x1080 - 120;  Colum_Num = Colum_Num+149){
-            BufferedImage game_colum = captureGameScreenColum(Colum_Num);
-            for (int Row_Num = 1; Row_Num < PLAYABLE_SCREEN_HEIGHT_1920x1080 - 128; Row_Num = Row_Num + 4){
-                int numberOfGreenPixels = 0;
-                int color = game_colum.getRaster().getDataBuffer().getElem(Row_Num);
-                int blue = color & 0xff;
-                int green = (color & 0xff00) >> 8;
-                int red = (color & 0xff0000) >> 16;
-                if (red < 20 && green > 240 && blue < 20) {
-                    //System.out.println("Found GREEN at x = " + Colum_Num + " y = " + Row_Num);
-                    BufferedImage game_row = captureGameScreenRow(Colum_Num-120,Row_Num);
-                    for (int j = 1; j < 240; j++){
-                        color = game_row.getRaster().getDataBuffer().getElem(j);
-                        blue = color & 0xff;
-                        green = (color & 0xff00) >> 8;
-                        red = (color & 0xff0000) >> 16;
-                        if (red < 20 && green > 240 && blue < 20) {
-                            //count number of green pixels in a row on the screen
-                            numberOfGreenPixels = numberOfGreenPixels + 1;
-                            if (numberOfGreenPixels > 90){
-                                System.out.println("Found 90 GREEN pixels at j = " + j );
-                                return true;
-                            }
-                        }else  if (numberOfGreenPixels != 0){
-                            //reset the count if there's a break in the green pixels   THIS DONT WORK
-                            System.out.println("no more green pixels = " + numberOfGreenPixels );
-                            numberOfGreenPixels = 0;
-                        }
-                    }
 
-                }
-
-            }
-
-        }
-
-        return false;
-    }
 
 
 
 
     public static void shootBuilding( int x, int y) throws InterruptedException, IOException {
         int eigen_value_x = 1;
+        int shoot_x = x + 26;
+        int shoot_y = y + 75;
+
         for (int numOfClicks = 0; numOfClicks < 10; numOfClicks++) {
             Thread.sleep(commandGQCursorPauseBufferTime);
-            controller.mouseMove(x,y);
+            controller.mouseMove(shoot_x,shoot_y);
             Thread.sleep(commandTextedInputBufferTime);
             controller.keyPress(VK_1);
             controller.keyRelease(VK_1);
@@ -276,10 +241,10 @@ public class Controller {
 
     private static void moveToShoot(int x, int y, int eigen_value_x) throws InterruptedException {
         Random random = new Random();
-        int offset_x = random.nextInt(192);
+        int offset_x = random.nextInt(256);
         int offset_y = random.nextInt(256)-128;
-        int moveToX = x + ((64+offset_x) * eigen_value_x);
-        int moveToY = y + ((64+offset_y));
+        int moveToX = x + 96 + ((96+offset_x) * eigen_value_x);
+        int moveToY = y + offset_y;
         if (moveToX > 10 && moveToX < PLAYABLE_SCREEN_WIDTH_1920x1080 - 10 && moveToY > 10 && moveToY < PLAYABLE_SCREEN_HEIGHT_1920x1080 - 10) {
             controller.mouseMove(moveToX, moveToY);
             eigen_value_x = eigen_value_x * -1;

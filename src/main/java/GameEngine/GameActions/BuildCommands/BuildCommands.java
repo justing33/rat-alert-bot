@@ -460,10 +460,6 @@ public class BuildCommands {
                 // look for some green
                 //System.out.println("found green pixel at element i = " + i );
                 return true;
-            }else if (red < 230 && red > 145 && green < 220 && green > 130  && blue < 140 && blue > 70) {
-                //look for the ore
-                //System.out.println("found ore pixel at element i = " + i);
-                return true;
             } else if (red > 160 && green < 35  && blue < 35 ) {
                 //look for red stripes
                 //System.out.println("found red pixel at element i = " + i);

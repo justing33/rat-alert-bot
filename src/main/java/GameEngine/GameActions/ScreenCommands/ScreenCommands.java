@@ -1,7 +1,11 @@
 package GameEngine.GameActions.ScreenCommands;
 
+import Utilities.BuildingFinder;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import static Utilities.BuildingFinder.Look_for_Building;
@@ -107,10 +111,12 @@ public class ScreenCommands {
                 Thread.sleep(commandInputBufferTime);
                 //This controls the overall screen scrolling
                 //only moves the screen if there's no building on screen...arg..a little bit better with 50%
-                Boolean buildingIsThere = Find_a_Building();
+                List building_list = Look_for_Building();
+                //Boolean buildingIsThere = Find_a_Building();
                 Random random = new Random();
-                int screenMoveProbability = random.nextInt(64);
-                if (!buildingIsThere || screenMoveProbability < 55 ) {
+                //if 0 buildings ==
+                int screenMoveProbability = random.nextInt(building_list.size());
+                if (screenMoveProbability < building_list.size() ) {
                     controller.mousePress(RIGHT_MOUSE_CLICK);
                     Thread.sleep(commandInputBufferTime);
                     //iterate the screen mask index
@@ -137,7 +143,19 @@ public class ScreenCommands {
                 cursor_y = PLAYABLE_SCREEN_HEIGHT_1920x1080 / 2 - 512;
 
                 cursorGQclicks(cursor_x, cursor_y, cycleNumber);
-                Look_for_Building();
+                List Building_loc = Look_for_Building();
+                if (Building_loc.size() > 0 ) {
+
+                    random = new Random();
+                    int random_Building = random.nextInt(Building_loc.size()/2);
+
+                    int shoot_x = (int) Building_loc.get(random_Building * 2);
+                    int shoot_y = (int) Building_loc.get(random_Building * 2 + 1);
+                    System.out.println("shooting at the " + random_Building + "th building");
+                    shootBuilding(shoot_x,shoot_y);
+
+                }
+
 
                 //just make it loop forever until someone looses
                 if (j == sizeOfGQScreenMask -1 ){

@@ -2,6 +2,8 @@ package Utilities;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static Utilities.Constants.*;
 import static Utilities.Constants.commandInputBufferTime;
@@ -14,11 +16,11 @@ public class BuildingFinder {
 
 
     //this is looking for a building to shoot
-    public static void Look_for_Building() throws IOException, InterruptedException {
-        Boolean buildingWasShot = false;
-
-        for (int Colum_Num = 120; Colum_Num < PLAYABLE_SCREEN_WIDTH_1920x1080 - 120;  Colum_Num = Colum_Num+149){
+    public static List Look_for_Building() throws IOException, InterruptedException {
+       List<Integer> Building_Locations = new ArrayList<>();
+        for (int Colum_Num = 150; Colum_Num < PLAYABLE_SCREEN_WIDTH_1920x1080 - 120;  Colum_Num = Colum_Num+149){
             BufferedImage game_colum = captureGameScreenColum(Colum_Num);
+            //only need to check every fourth pixel due to heighth of the health bar
             for (int Row_Num = 1; Row_Num < PLAYABLE_SCREEN_HEIGHT_1920x1080 - 128; Row_Num = Row_Num + 4){
                 int numberOfGreenPixels = 0;
                 int color = game_colum.getRaster().getDataBuffer().getElem(Row_Num);
@@ -27,8 +29,8 @@ public class BuildingFinder {
                 int red = (color & 0xff0000) >> 16;
                 if (red < 20 && green > 240 && blue < 20) {
                     //System.out.println("Found GREEN at x = " + Colum_Num + " y = " + Row_Num);
-                    BufferedImage game_row = captureGameScreenRow(Colum_Num-120,Row_Num);
-                    for (int j = 1; j < 240; j++){
+                    BufferedImage game_row = captureGameScreenRow(Colum_Num-150,Row_Num, 299);
+                    for (int j = 1; j < 299; j++){
                         color = game_row.getRaster().getDataBuffer().getElem(j);
                         blue = color & 0xff;
                         green = (color & 0xff00) >> 8;
@@ -38,36 +40,23 @@ public class BuildingFinder {
                             if (numberOfGreenPixels > 90){
                                 //we want to shoot the building near the left side so we can see white pop up if it is our building
                                 //System.out.println("Found Building at x = " + Colum_Num + "y = " + Row_Num);
-                                shootBuilding(Colum_Num - 120 + j - 64,Row_Num+75);
-                                Thread.sleep(commandInputBufferTime);
-                                controller.keyPress(VK_X);
-                                controller.keyRelease(VK_X);
-                                Thread.sleep(commandInputBufferTime);
-                                //gaurd
-                                controller.keyPress(VK_G);
-                                controller.keyRelease(VK_G);
-                                Thread.sleep(commandInputBufferTime);
-                                buildingWasShot = true;
-                                break;
+                                Building_Locations.add(Colum_Num-150+j-90);
+                                Building_Locations.add(Row_Num);
+                                //shootBuilding(Colum_Num - 120 + j - 64,Row_Num+75);
+                                numberOfGreenPixels = 0;
                             }
-
                         }else{
                             numberOfGreenPixels = 0;
                         }
                     }
 
                 }
-                if (buildingWasShot){
-                    break;
-                }
 
-            }
-            if (buildingWasShot){
-                break;
             }
 
         }
-
+        System.out.println("found building at:" + Building_Locations);
+    return Building_Locations;
     }
 
 
