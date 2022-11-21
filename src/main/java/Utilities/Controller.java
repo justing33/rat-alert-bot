@@ -9,9 +9,11 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Random;
 
 import static GameEngine.Game.startAlliesGame;
+import static Utilities.BuildingFinder.Look_for_Building;
 import static Utilities.Constants.*;
 import static java.awt.event.KeyEvent.*;
 import static java.awt.event.KeyEvent.VK_1;
@@ -131,6 +133,10 @@ public class Controller {
         //Grab the screen near the cursor
         Rectangle playableScreenRect = new Rectangle(cursor_x,cursor_y,CURSOR_BUILD_SQUARE_WIDTH, 25);
         BufferedImage gameScreenBuffer = controller.createScreenCapture(playableScreenRect);
+        // Save as JPEG
+        File file = new File("myimage.jpg");
+        ImageIO.write(gameScreenBuffer, "jpg", file);
+
         return gameScreenBuffer;
     }
     public static boolean isBuildingAttackedThere(BufferedImage screen) throws InterruptedException {
@@ -143,7 +149,7 @@ public class Controller {
         int sizeOfCursorSquareArray = CURSOR_BUILD_SQUARE_WIDTH * 25;
 
         //below we need to see if there is a white pixel below the HP box
-        for (int i = 10; i<sizeOfCursorSquareArray; i++) {
+        for (int i = 4; i<sizeOfCursorSquareArray; i++) {
             int color = screen.getRaster().getDataBuffer().getElem(i);
             //System.out.println("Pixel color (integer value): " + color);
             //determine individual colors
@@ -151,13 +157,12 @@ public class Controller {
             green = (color & 0xff00) >> 8;
             red = (color & 0xff0000) >> 16;
             //System.out.println("Pixel RGB color values => red: " + red + " green: " + green + " blue: " + blue);
-            if (green > 245 && red > 245 && blue > 245){
+            if (green > 249 && red > 249 && blue > 249){
                 System.out.println("is freindly or we don't have anymore units selected " + i);
                 return false;
             }
-
         }
-
+        
         //below we'll look for the black around the HP box
         for (int i = 0; i<sizeOfCursorSquareArray; i++) {
             int color = screen.getRaster().getDataBuffer().getElem(i);
@@ -169,30 +174,33 @@ public class Controller {
             //System.out.println("Pixel RGB color values => red: " + red + " green: " + green + " blue: " + blue);
             if (green < 20 && red < 20 && blue < 20){
                 //System.out.println("building still there @ i= " + i);
-                setF3Position();
                 return true;
             }
 
         }
-        //If there is no black pixel, building is gone set this as new f2 bookmark
-
-        Thread.sleep(commandInputBufferTime);
-        controller.keyPress(VK_F3);
-        controller.keyRelease(VK_F3);
-        Thread.sleep(commandInputBufferTime);
-        setF2Position();
+        
+        //If there is no black pixel, building is gone set this as new f3 bookmark
+        setF3Position();
         System.out.println("building is gone now");
         return false;
     }
 
     public static BufferedImage captureGameScreenColum(int x) throws IOException {
         //Grab the screen near the cursor
-        Rectangle playableScreenRect = new Rectangle(x,1,1, 1078);
+        Rectangle playableScreenRect = new Rectangle(x,1,1, PLAYABLE_SCREEN_HEIGHT_1920x1080 - 2);
         BufferedImage gameScreenBuffer = controller.createScreenCapture(playableScreenRect);
         return gameScreenBuffer;
     }
 
-    public static BufferedImage captureGameScreenRow(int x, int y, int width) throws IOException {
+
+    public static BufferedImage captureGameScreenRow(int y) throws IOException {
+        //Grab the screen near the cursor
+        Rectangle playableScreenRect = new Rectangle(1,y,PLAYABLE_SCREEN_WIDTH_1920x1080, 1);
+        BufferedImage gameScreenBuffer = controller.createScreenCapture(playableScreenRect);
+        return gameScreenBuffer;
+    }
+
+    public static BufferedImage captureGameScreenRowBelow(int x, int y, int width) throws IOException {
         //Grab the screen near the cursor
         Rectangle playableScreenRect = new Rectangle(x,y,width, 1);
         BufferedImage gameScreenBuffer = controller.createScreenCapture(playableScreenRect);
@@ -205,12 +213,17 @@ public class Controller {
 
     public static void shootBuilding( int x, int y) throws InterruptedException, IOException {
         int eigen_value_x = 1;
-        int shoot_x = x + 26;
-        int shoot_y = y + 75;
-
-        for (int numOfClicks = 0; numOfClicks < 10; numOfClicks++) {
+        int shoot_x = x + 64;
+        int shoot_y = y + 45;
+        List building_list = Look_for_Building();
+        if (building_list.size() == 0) {
+            System.out.println("Aborting shootBuilding: no buildings found");
+            return;
+        }        
+        
+        for (int numOfClicks = 0; numOfClicks < 12; numOfClicks++) {
             Thread.sleep(commandGQCursorPauseBufferTime);
-            controller.mouseMove(shoot_x,shoot_y);
+            controller.mouseMove(shoot_x, shoot_y);
             Thread.sleep(commandTextedInputBufferTime);
             controller.keyPress(VK_1);
             controller.keyRelease(VK_1);
@@ -221,22 +234,121 @@ public class Controller {
             Thread.sleep(commandInputBufferTime);
             controller.keyPress(VK_ALT);
             Thread.sleep(commandInputBufferTime);
-
-            moveToShoot(x,y,eigen_value_x);
+            eigen_value_x = eigen_value_x * -1;
+            //System.out.println("Moving around x=" + x + " y=" + y);
+            moveToShoot(x, y, eigen_value_x);
 
             controller.keyRelease(VK_ALT);
             controller.keyRelease(VK_Q);
-            BufferedImage buildingStillThere = captureCursorBuildAttackSquare(x,y);
-            Boolean buildingThereBool = isBuildingAttackedThere(buildingStillThere);
-            if (!buildingThereBool){
+            BufferedImage buildingStillThere = captureCursorBuildAttackSquare(x, y);
+            boolean buildingThereBool = isBuildingAttackedThere(buildingStillThere);
+            if (!buildingThereBool) {
                 controller.keyPress(VK_G);
                 controller.keyRelease(VK_G);
-                break;
+                return;
             }
         }
+        regroup();
+    }
 
+    private static void regroup() throws InterruptedException, IOException {
+        System.out.println("Regrouping Because building did not die");
+        makeCtrlGroup1();
+        setF2Position();
 
+        Thread.sleep(commandTextedInputBufferTime);
+        controller.keyPress(VK_1);
+        controller.keyRelease(VK_1);
+        Thread.sleep(commandInputBufferTime);
+        controller.keyPress(VK_1);
+        controller.keyRelease(VK_1);
+        int cursor_x = PLAYABLE_SCREEN_WIDTH_1920x1080 / 2 - 512;
+        int cursor_y = PLAYABLE_SCREEN_HEIGHT_1920x1080 / 2 - 512;
+        int cycleNumber = 1;
+        cursorGQclicks(cursor_x, cursor_y, cycleNumber);
+        gotoF2Position();
+    }
 
+    public static void cursorGQclicks(int cursor_x, int cursor_y, int noAltProbability) throws InterruptedException, IOException {
+
+            //put cursor to center of screen
+            controller.mouseMove(cursor_x, cursor_y);
+            int sizeOfGQDirectionMask = cursorMaskGQx.length;
+            //We want to cycle the GQing
+            for( int i = 0; i < sizeOfGQDirectionMask ; i++) {
+                //select ctrl group 1
+                Thread.sleep(commandGQCursorPauseBufferTime);
+                controller.keyPress(VK_Q);
+                Thread.sleep(commandTextedInputBufferTime);
+                controller.keyPress(VK_1);
+                controller.keyRelease(VK_1);
+                Thread.sleep(commandTextedInputBufferTime);
+
+                //stop every second cycle
+                if ( i % 2 == 0 ) {
+                    controller.keyPress(VK_S);
+                    controller.keyRelease(VK_S);
+                    Thread.sleep(commandInputBufferTime);
+                    //gaurd
+                    controller.keyPress(VK_G);
+                    controller.keyRelease(VK_G);
+                    Thread.sleep(commandInputBufferTime);
+                }
+                //press q and alt and start clicking around the screen
+                //don't hold alt every time so that we may hit some buildings too
+                //cycle 1 is always to alt
+                //cycle 2 is always to alt
+                //cycle 3 is 1/2 to alt
+                //cycle 4 is 2/3 to alt
+                //cycle 5 is 3/4 to alt
+                Random random = new Random();
+                if (noAltProbability<=0){
+                    controller.keyPress(VK_ALT);
+                }else if (1%(random.nextInt(noAltProbability)+1) != 0) {
+                    controller.keyPress(VK_ALT);
+                }
+
+                Thread.sleep(commandInputBufferTime);
+
+                mouseLineClick(cursor_x, cursor_y, cursorMaskGQx[i], cursorMaskGQy[i], commandCursorGQJumpPixels, commandCursorGQNumberofJumps);
+                controller.keyRelease(VK_ALT);
+
+                cursor_x = commandCursorGQJumpPixels * cursorMaskGQx[i] * commandCursorGQNumberofJumps + cursor_x;
+                cursor_y = commandCursorGQJumpPixels * cursorMaskGQy[i] * commandCursorGQNumberofJumps + cursor_y;
+
+                //check if games is over
+                Game_over();
+            }
+            controller.keyRelease(VK_Q);
+
+    }
+
+    //this will cause the mouse to move in a line while clicking
+    public static void mouseLineClick(int start_x, int start_y, int direction_x, int direction_y, int pixels_skipped, int loops) throws InterruptedException {
+        //System.out.println("Trying to move mouse in spiral from line X=> " + start_x + " Y=> " + start_y);
+
+        int steps = 5;
+        for( int i = 0; i < loops ; i++) {
+            Random random = new Random();
+            mouseLineMove(start_x,start_y, pixels_skipped * direction_x + random.nextInt(64)-32, pixels_skipped * direction_y+ random.nextInt(64)-32, steps);
+            Thread.sleep(commandInputBufferTime);
+            controller.mousePress(LEFT_MOUSE_CLICK);
+            controller.mouseRelease(LEFT_MOUSE_CLICK);
+            Thread.sleep(commandTextedInputBufferTime);
+
+            start_x = start_x + pixels_skipped * direction_x;
+            start_y = start_y + pixels_skipped * direction_y;
+
+        }
+
+    }
+
+    public static void mouseLineMove(int start_x, int start_y, int length_x, int length_y, int steps) throws InterruptedException {
+
+        for( int i = 0; i < steps ; i++) {
+            Thread.sleep(commandCursorLineBufferTime);
+            controller.mouseMove(start_x + ((i * length_x )/ steps) , start_y + ((i * length_y) / steps));
+        }
     }
 
     private static void moveToShoot(int x, int y, int eigen_value_x) throws InterruptedException {
@@ -245,13 +357,14 @@ public class Controller {
         int offset_y = random.nextInt(256)-128;
         int moveToX = x + 96 + ((96+offset_x) * eigen_value_x);
         int moveToY = y + offset_y;
+        //System.out.println("Moving to x=" + moveToX + " y=" + moveToY);
         if (moveToX > 10 && moveToX < PLAYABLE_SCREEN_WIDTH_1920x1080 - 10 && moveToY > 10 && moveToY < PLAYABLE_SCREEN_HEIGHT_1920x1080 - 10) {
             controller.mouseMove(moveToX, moveToY);
-            eigen_value_x = eigen_value_x * -1;
             controller.mousePress(LEFT_MOUSE_CLICK);
             controller.mouseRelease(LEFT_MOUSE_CLICK);
             Thread.sleep(commandInputBufferTime);
         }else{
+            eigen_value_x = eigen_value_x * -1;
             moveToShoot(x, y, eigen_value_x);
         }
 
@@ -280,6 +393,15 @@ public class Controller {
             exit(0);
         }
     }
+    public static void gotoF2Position() throws InterruptedException {
+        Thread.sleep(commandTextedInputBufferTime);
+        controller.keyPress(VK_F2);
+        controller.keyRelease(VK_F2);
+        Thread.sleep(commandTextedInputBufferTime);
+    }
+
+
+
     public static void setF2Position() throws InterruptedException {
         Thread.sleep(commandInputBufferTime);
         controller.keyPress(VK_CONTROL);
@@ -288,6 +410,13 @@ public class Controller {
         controller.keyRelease(VK_F2);
         Thread.sleep(commandTextedInputBufferTime);
         controller.keyRelease(VK_CONTROL);
+    }
+
+    public static void gotoF3Position() throws InterruptedException {
+        Thread.sleep(commandTextedInputBufferTime);
+        controller.keyPress(VK_F3);
+        controller.keyRelease(VK_F3);
+        Thread.sleep(commandTextedInputBufferTime);
     }
 
     public static void setF3Position() throws InterruptedException {

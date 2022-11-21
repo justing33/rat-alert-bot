@@ -19,7 +19,6 @@ public class Game {
         int buildDirection[] = {0,0,0,0};
          if (Constants.MAP_START.TOPLEFT == map){
              buildDirection = new int[] {1,1,1,1};
-
         } else if (Constants.MAP_START.BOTTOMLEFT == map){
              buildDirection = new int[] {1,-1,1,-1};
         } else if (Constants.MAP_START.TOPRIGHT == map){
@@ -37,7 +36,7 @@ public class Game {
          } else if (Constants.MAP_START.MIDTOPRIGHT == map){
              buildDirection = new int[] {-1,1,-1,0};
          } else if (Constants.MAP_START.MIDTOPLEFT == map){
-             buildDirection = new int[] {1,-1,1,0};
+             buildDirection = new int[] {1,1,1,0};
          } else if (Constants.MAP_START.MIDBOTTOMLEFT == map){
              buildDirection = new int[] {1,1,1,0};
          } else if (Constants.MAP_START.MIDBOTTOMRIGHT == map){

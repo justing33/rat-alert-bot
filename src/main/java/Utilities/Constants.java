@@ -63,27 +63,30 @@ public class Constants {
     // The buffer time in between moving the cursor for GQ cycles
     public static final int commandGQCyclePauseBufferTime = 1500;
 
-    //The distance in pixels the cursor will move the screen between each gq cycle
-    public static final int screenScrollGQDistance = 18;
+
 
     //The directions that the GQ will scan the cursor
     public static final int [] cursorMaskGQx = { 1, 1, 1,-1,-1,-1, 1, 1, 1};
     public static final int [] cursorMaskGQy = { 1, 1, 1, 0, 0, 0,-1,-1,-1};
 
     //The directions that the GQ will scan the cursor to defend
-    public static final int [] cursorMaskGQDefendx = { 2, 1,-2,-1, 3};
-    public static final int [] cursorMaskGQDefendy = { 2, 1, 0, 0,-3};
+    public static final int [] cursorMaskGQDefendx = { 2, 2, 0,-2,-2};
+    public static final int [] cursorMaskGQDefendy = { 0, 0, 3, 0, 0};
 
-
+    //The distance in pixels the cursor will move the screen between each gq cycle
+    public static final int screenScrollGQDistance = 5;
 
 //The directions that the GQ will scan the screen
+    public static final int XY_SCREEN_SCROLL_PIXELS = 175;
+    public static final int [] screenMaskGQx = {-6,-2, 6, 2};
+    public static final int [] screenMaskGQy = {-2,-6, 2, 6};
 
-    public static final int [] screenMaskGQx = { 0,-2, 0, 3};
-    public static final int [] screenMaskGQy = {-2, 0, 2, 3};
 
 
     //The size of the jumps in pixels while GQing
     public static final int commandCursorGQJumpPixels = 156;
+
+
     //The number of the jumps while GQing
     public static final int commandCursorGQNumberofJumps = 2;
     //The buffer time enough tanks to be built for an effective first strike

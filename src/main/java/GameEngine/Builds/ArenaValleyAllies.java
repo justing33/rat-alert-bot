@@ -29,7 +29,7 @@ public class ArenaValleyAllies {
         buildCommands.buildLightTanks();
         Thread.sleep((warFactoryBuildTime)/2);
         screenCommands.defendBase();
-        Thread.sleep((warFactoryBuildTime/2-defendBaseTime));
+        Thread.sleep((warFactoryBuildTime/2-defendBaseTime-3000));
         buildCommands.buildWarFactory(middleXScreenPos, middleYScreenPos);
         buildCommands.sellConYard();
         screenCommands.defendBase();
@@ -37,14 +37,14 @@ public class ArenaValleyAllies {
         //System.out.println("Trying to move THE SCREEN X=> " + attackDirection[0] + " Y=> " + attackDirection[1]);
         screenCommands.moveScreen(attackDirection);
 
-        screenCommands.cursorGQScreen(attackDirection);
+        screenCommands.ScreenCycle(attackDirection, 0);
     }
 
     public static void InfantryBuild(int[] attackDirection) throws IOException, InterruptedException {
         buildCommands.deployMCV();
         //Power Plant
         buildCommands.queuePowerPlant();
-        Thread.sleep(powerPlantBuildTime);
+        Thread.sleep(powerPlantBuildTime-1000);
         buildCommands.buildPowerPlant(middleXScreenPos, middleYScreenPos);
         //Refinery
         buildCommands.queueRefinery();
@@ -59,7 +59,7 @@ public class ArenaValleyAllies {
         buildCommands.queueWarFactory();
         Thread.sleep((warFactoryBuildTime-defendBaseTime)/2);
         screenCommands.defendBase();
-        Thread.sleep((warFactoryBuildTime-defendBaseTime)/2);
+        Thread.sleep((warFactoryBuildTime-defendBaseTime)/2-2000);
         buildCommands.buildWarFactory(middleXScreenPos, middleYScreenPos);
         //PowerPlant
         buildCommands.queuePowerPlant();
@@ -70,7 +70,7 @@ public class ArenaValleyAllies {
         //Refinery
         buildCommands.queueRefinery();
         screenCommands.defendBase();
-        Thread.sleep(refineryBuildTime-defendBaseTime*2);
+        Thread.sleep(refineryBuildTime-defendBaseTime*2-2000);
         screenCommands.defendBase();
         buildCommands.buildRefinery(middleXScreenPos, middleYScreenPos);
         buildCommands.sellConYard();
@@ -80,7 +80,7 @@ public class ArenaValleyAllies {
         screenCommands.defendBase();
         //System.out.println("Trying to move THE SCREEN X=> " + attackDirection[0] + " Y=> " + attackDirection[1]);
         screenCommands.moveScreen(attackDirection);
-
-        screenCommands.cursorGQScreen(attackDirection);
+        buildCommands.build99Infs();
+        screenCommands.ScreenCycle(attackDirection, 0);
     }
 }

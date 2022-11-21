@@ -1,6 +1,9 @@
 package Utilities;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +32,7 @@ public class BuildingFinder {
                 int red = (color & 0xff0000) >> 16;
                 if (red < 20 && green > 240 && blue < 20) {
                     //System.out.println("Found GREEN at x = " + Colum_Num + " y = " + Row_Num);
-                    BufferedImage game_row = captureGameScreenRow(Colum_Num-150,Row_Num, 299);
+                    BufferedImage game_row = captureGameScreenRowBelow(Colum_Num-150,Row_Num, 299);
                     for (int j = 1; j < 299; j++){
                         color = game_row.getRaster().getDataBuffer().getElem(j);
                         blue = color & 0xff;
@@ -44,6 +47,9 @@ public class BuildingFinder {
                                 Building_Locations.add(Row_Num);
                                 //shootBuilding(Colum_Num - 120 + j - 64,Row_Num+75);
                                 numberOfGreenPixels = 0;
+                                Capture_Building_Image(Colum_Num-150+j-90,Row_Num);
+
+
                             }
                         }else{
                             numberOfGreenPixels = 0;
@@ -59,9 +65,16 @@ public class BuildingFinder {
     return Building_Locations;
     }
 
+    private static void Capture_Building_Image(int cursor_x,int cursor_y) throws IOException {
 
+        //Grab the screen near the cursor
+        Rectangle playableScreenRect = new Rectangle(cursor_x,cursor_y,128, 128);
+        BufferedImage gameScreenBuffer = controller.createScreenCapture(playableScreenRect);
+        // Save as JPEG
+        File file = new File("mybuildingimage.jpg");
+        ImageIO.write(gameScreenBuffer, "jpg", file);
 
-
+    }
 
 
 }

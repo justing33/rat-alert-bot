@@ -23,11 +23,14 @@ public class BuildCommands {
             controller.keyPress(VK_H);
             controller.keyRelease(VK_H);
             //select MCV
-            controller.keyPress(VK_A); //key down
-            controller.keyRelease(VK_A); //key up
 
             //need to make sure the MCV is in the middle of the screen, move if not
             while(!mcvInPlace) {
+                controller.keyPress(VK_A); //key down
+                controller.keyRelease(VK_A); //key up
+                Thread.sleep(commandInputBufferTime);
+                controller.keyPress(VK_H);
+                controller.keyRelease(VK_H);
                 Thread.sleep(commandInputBufferTime);
                 controller.mouseMove(startX,startY);
                 BufferedImage cursorSquareBuffer = captureCursorBuildSquare(startX + 32, startY - 128);
@@ -258,6 +261,29 @@ public class BuildCommands {
 
     }
 
+    public void build99Infs() {
+        try {
+            controller.keyPress(SELECT_INFANTRY_MENU);
+            controller.keyRelease(SELECT_INFANTRY_MENU);
+            Thread.sleep(commandInputBufferTime);
+            controller.keyPress(VK_SHIFT);
+            for (int i = 0; i < 10;i++) {
+                Thread.sleep(commandTextedInputBufferTime);
+                controller.keyPress(VK_I);
+                controller.keyRelease(VK_I);
+            }
+            //BUILD AN ELTON
+            controller.keyRelease(VK_SHIFT);
+            Thread.sleep(commandInputBufferTime);
+            controller.keyPress(VK_W);
+            controller.keyRelease(VK_W);
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
 
     public void buildLightTanks() {
         try {
@@ -340,17 +366,24 @@ public class BuildCommands {
         boolean there2 = isBuildingThere(cursorSquareBuffer);
 
         //Capture a piece of the screen to the right of the cursor
-        cursorSquareBuffer = captureCursorBuildSquare( x+138, y-64);
-
+        //cursorSquareBuffer = captureCursorBuildSquare( x+138, y-64);
         //Determine if the building is already in the spot
-        boolean there3 = isBuildingThere(cursorSquareBuffer);
+        //boolean there3 = isBuildingThere(cursorSquareBuffer);
 
-        //Syst
-        //System.out.println("Placed building already there? " + there);
+
+        BufferedImage cursorColumBuffer = captureGameScreenColum(x);
+        BufferedImage cursorRowBuffer = captureGameScreenRow(y);
+        boolean too_far_in_shroud = isTooFarInBlack(cursorColumBuffer,cursorRowBuffer,x,y);
+
+
+
+
+        //System.out.println("too far into the shroud? " + too_far_in_shroud);
+
         boolean placed = false;
 
         //if there's not already a building there, attempt to place
-        if (!there1 && !there2 && !there3) {
+        if (!there1 && !there2 && !too_far_in_shroud) {
             //Try to place it
             leftMouseClick();
             mouseLineMove(x,y,-64,0,4);
@@ -368,7 +401,7 @@ public class BuildCommands {
             cursorSquareBuffer = captureCursorPlaceBuildingSquare(x + 10, y - 36);
             //Determine if the building was placed successfully or not
             placed = isBuildingPlaced(cursorSquareBuffer);
-            System.out.println("Placed building? " + placed);
+            //System.out.println("Placed building? " + placed);
         }
 
         //if not placed, then pick a random new mouse coordinate to try to place the building again
@@ -387,7 +420,7 @@ public class BuildCommands {
 
             random = new Random();
             int newY = y + ((random.nextInt(iter)-(iter/2)) * 64);
-            if (newY > PLAYABLE_SCREEN_HEIGHT_1920x1080-50){
+            if (newY > PLAYABLE_SCREEN_HEIGHT_1920x1080-25){
                 newY = PLAYABLE_SCREEN_HEIGHT_1920x1080/2;
                 iterate = 1;
             }
@@ -413,6 +446,51 @@ public class BuildCommands {
             //Building was placed, break out of recursive loop
             return ;
         }
+    }
+
+    private boolean isTooFarInBlack(BufferedImage cursorColumBuffer, BufferedImage cursorRowBuffer, int x_index, int y_index) {
+        int blue = 0;
+        int green = 0;
+        int red = 0;
+
+        if (x_index < 96){
+            x_index = 96;
+        }
+        if (x_index > PLAYABLE_SCREEN_WIDTH_1920x1080 - 192){
+            x_index = PLAYABLE_SCREEN_WIDTH_1920x1080 - 192;
+        }
+
+        for (int i = x_index - 96; i < x_index + 190; i++){
+            int color = cursorRowBuffer.getRaster().getDataBuffer().getElem(i);
+            blue = color & 0xff;
+            green = (color & 0xff00) >> 8;
+            red = (color & 0xff0000) >> 16;
+            if (green != 0 && red != 0 && blue != 0) {
+                //System.out.println("found not black in row");
+                return false;
+            }
+        }
+
+        if (y_index < 96){
+            y_index = 96;
+        }
+        if (y_index > PLAYABLE_SCREEN_HEIGHT_1920x1080 - 192){
+            y_index = PLAYABLE_SCREEN_HEIGHT_1920x1080 - 192;
+        }
+
+        for (int i = y_index - 96; i < y_index +190; i++){
+            int color = cursorColumBuffer.getRaster().getDataBuffer().getElem(i);
+            blue = color & 0xff;
+            green = (color & 0xff00) >> 8;
+            red = (color & 0xff0000) >> 16;
+            if (green != 0 && red != 0 && blue != 0) {
+                //System.out.println("found not black in colum");
+                return false;
+            }
+        }
+
+
+        return true;
     }
 
 
