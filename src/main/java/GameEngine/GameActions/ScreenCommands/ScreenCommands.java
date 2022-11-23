@@ -62,6 +62,8 @@ public class ScreenCommands {
         //make ctrl group 1
         makeCtrlGroup1();
         cursorGQdefend(100,30,-1);
+        Game_over();
+
     }
 
     /***
@@ -75,7 +77,7 @@ public class ScreenCommands {
             setF3Position();
             makeCtrlGroup1();
             boolean f2PositionReset = false;
-            int screenScrollPixels = XY_SCREEN_SCROLL_PIXELS + cycle_number * 5;
+            int screenScrollPixels = XY_SCREEN_SCROLL_PIXELS + cycle_number * 10;
             //set cursor position for clicks
             int cursor_x = PLAYABLE_SCREEN_WIDTH_1920x1080 / 2 - 512;
             int cursor_y = PLAYABLE_SCREEN_HEIGHT_1920x1080 / 2 - 512;
@@ -110,10 +112,9 @@ public class ScreenCommands {
             int x_scroll_pixel = 1 * attackDirection[0] * screenScrollPixels;
             int y_scroll_pixel = 1 * attackDirection[1] * screenScrollPixels;
             controller.mousePress(RIGHT_MOUSE_CLICK);
-            Thread.sleep(commandInputBufferTime);
+            Thread.sleep(commandTextedInputBufferTime);
             mouseLineMove(cursor_x, cursor_y, x_scroll_pixel, y_scroll_pixel, 20);
             controller.mouseRelease(RIGHT_MOUSE_CLICK);
-            Thread.sleep(commandInputBufferTime);
             Thread.sleep(commandInputBufferTime);
             Building_locs = Look_for_Building();
             int Num_buildings_away = Building_locs.size();
@@ -124,10 +125,9 @@ public class ScreenCommands {
             x_scroll_pixel = -1 * attackDirection[0] * screenScrollPixels;
             y_scroll_pixel = 1 * attackDirection[1] * screenScrollPixels;
             controller.mousePress(RIGHT_MOUSE_CLICK);
-            Thread.sleep(commandInputBufferTime);
+            Thread.sleep(commandTextedInputBufferTime);
             mouseLineMove(cursor_x, cursor_y, x_scroll_pixel, y_scroll_pixel, 20);
             controller.mouseRelease(RIGHT_MOUSE_CLICK);
-            Thread.sleep(commandInputBufferTime);
             Thread.sleep(commandInputBufferTime);
             Building_locs = Look_for_Building();
             int Num_buildings_left = Building_locs.size();
@@ -138,10 +138,9 @@ public class ScreenCommands {
             x_scroll_pixel = 1 * attackDirection[0] * screenScrollPixels;
             y_scroll_pixel = -1 * attackDirection[1] * screenScrollPixels;
             controller.mousePress(RIGHT_MOUSE_CLICK);
-            Thread.sleep(commandInputBufferTime);
+            Thread.sleep(commandTextedInputBufferTime);
             mouseLineMove(cursor_x, cursor_y, x_scroll_pixel, y_scroll_pixel, 20);
             controller.mouseRelease(RIGHT_MOUSE_CLICK);
-            Thread.sleep(commandInputBufferTime);
             Thread.sleep(commandInputBufferTime);
             Building_locs = Look_for_Building();
             int Num_buildings_right = Building_locs.size();
@@ -155,10 +154,9 @@ public class ScreenCommands {
             x_scroll_pixel = -1 * attackDirection[2] * screenScrollPixels ;
             y_scroll_pixel = -1 * attackDirection[3] * screenScrollPixels ;
             controller.mousePress(RIGHT_MOUSE_CLICK);
-            Thread.sleep(commandInputBufferTime);
+            Thread.sleep(commandTextedInputBufferTime);
             mouseLineMove(cursor_x, cursor_y, x_scroll_pixel, y_scroll_pixel, 20);
             controller.mouseRelease(RIGHT_MOUSE_CLICK);
-            Thread.sleep(commandInputBufferTime);
             Thread.sleep(commandInputBufferTime);
             Building_locs = Look_for_Building();
             //if there's enough buildings there reset the f2 bookmark and recurse
@@ -181,7 +179,7 @@ public class ScreenCommands {
                 x_scroll_pixel = 1 * attackDirection[0] * screenScrollPixels;
                 y_scroll_pixel = -1 * attackDirection[1] * screenScrollPixels;
                 controller.mousePress(RIGHT_MOUSE_CLICK);
-                Thread.sleep(commandInputBufferTime);
+                Thread.sleep(commandTextedInputBufferTime);
                 mouseLineMove(cursor_x, cursor_y, x_scroll_pixel, y_scroll_pixel, 20);
                 controller.mouseRelease(RIGHT_MOUSE_CLICK);
                 f2PositionReset = true;
@@ -197,7 +195,7 @@ public class ScreenCommands {
                 x_scroll_pixel = -1 * attackDirection[0] * screenScrollPixels;
                 y_scroll_pixel = 1 * attackDirection[1] * screenScrollPixels;
                 controller.mousePress(RIGHT_MOUSE_CLICK);
-                Thread.sleep(commandInputBufferTime);
+                Thread.sleep(commandTextedInputBufferTime);
                 mouseLineMove(cursor_x, cursor_y, x_scroll_pixel, y_scroll_pixel, 20);
                 controller.mouseRelease(RIGHT_MOUSE_CLICK);
                 f2PositionReset = true;
@@ -214,7 +212,7 @@ public class ScreenCommands {
                 x_scroll_pixel = 1 * attackDirection[0] * screenScrollPixels;
                 y_scroll_pixel = 1 * attackDirection[1] * screenScrollPixels;
                 controller.mousePress(RIGHT_MOUSE_CLICK);
-                Thread.sleep(commandInputBufferTime);
+                Thread.sleep(commandTextedInputBufferTime);
                 mouseLineMove(cursor_x, cursor_y, x_scroll_pixel, y_scroll_pixel, 20);
                 controller.mouseRelease(RIGHT_MOUSE_CLICK);
                 f2PositionReset = true;
@@ -228,13 +226,16 @@ public class ScreenCommands {
             controller.mouseMove(cursor_x, cursor_y);
             gotoF3Position();
             double moveScreenAngle = Math.toRadians(Math.random() * 270);
+            if (moveScreenAngle > 90 && moveScreenAngle < 180) {
+                moveScreenAngle = Math.toRadians(Math.random() * 270);
+            }
             double away_direction_Y = Math.sin(moveScreenAngle);
             double away_direction_X = -1 * Math.cos(moveScreenAngle);
-            int away_direction_Y_pixels = (int) (away_direction_Y * attackDirection[1] * screenScrollPixels);
-            int away_direction_X_pixels = (int) (away_direction_X * attackDirection[0] * screenScrollPixels);
+            int away_direction_Y_pixels = (int) (away_direction_Y * attackDirection[1] * screenScrollPixels) * 2;
+            int away_direction_X_pixels = (int) (away_direction_X * attackDirection[0] * screenScrollPixels) * 2;
             controller.mouseMove(cursor_x, cursor_y);
             controller.mousePress(RIGHT_MOUSE_CLICK);
-            Thread.sleep(commandInputBufferTime);
+            Thread.sleep(commandTextedInputBufferTime);
             mouseLineMove(cursor_x, cursor_y, away_direction_X_pixels, away_direction_Y_pixels, 20);
             controller.mouseRelease(RIGHT_MOUSE_CLICK);
             System.out.println("Moving horde furth randomly down map");
