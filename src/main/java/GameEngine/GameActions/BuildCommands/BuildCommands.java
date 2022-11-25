@@ -370,16 +370,11 @@ public class BuildCommands {
         //Determine if the building is already in the spot
         //boolean there3 = isBuildingThere(cursorSquareBuffer);
 
-
         BufferedImage cursorColumBuffer = captureGameScreenColum(x);
         BufferedImage cursorRowBuffer = captureGameScreenRow(y);
         boolean too_far_in_shroud = isTooFarInBlack(cursorColumBuffer,cursorRowBuffer,x,y);
 
-
-
-
         //System.out.println("too far into the shroud? " + too_far_in_shroud);
-
         boolean placed = false;
 
         //if there's not already a building there, attempt to place
@@ -403,7 +398,6 @@ public class BuildCommands {
             placed = isBuildingPlaced(cursorSquareBuffer);
             //System.out.println("Placed building? " + placed);
         }
-
         //if not placed, then pick a random new mouse coordinate to try to place the building again
         if (!placed){
             int iter = iterate + 5;
@@ -432,12 +426,13 @@ public class BuildCommands {
             iterate++;
             //so if we try to place a building too many times, hit the build buttons again
             numberOfTries++;
-            if ( numberOfTries%45 == 1 ){
+            if ( numberOfTries%15 == 1 ){
                 rightMouseClick();
                 queuePowerPlant();
                 queueWarFactory();
                 queueRefinery();
                 queueBarracks();
+                queuePillBox();
                 //return;
             }
 

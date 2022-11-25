@@ -16,7 +16,26 @@ import static java.awt.event.KeyEvent.VK_X;
 
 public class BuildingFinder {
 
+    public static int Look_for_the_Blackness() throws IOException {
+        int numberOfBlackPixels = 0;
+        for (int Colum_Num = 150; Colum_Num < PLAYABLE_SCREEN_WIDTH_1920x1080 - 120;  Colum_Num = Colum_Num+149) {
+            BufferedImage game_colum = captureGameScreenColum(Colum_Num);
+            //only need to check every fourth pixel
+            for (int Row_Num = 1; Row_Num < PLAYABLE_SCREEN_HEIGHT_1920x1080 - 128; Row_Num = Row_Num + 4) {
+                int color = game_colum.getRaster().getDataBuffer().getElem(Row_Num);
+                int blue = color & 0xff;
+                int green = (color & 0xff00) >> 8;
+                int red = (color & 0xff0000) >> 16;
+                if (red < 10 && green < 10 && blue < 10){
+                    numberOfBlackPixels++;
+                }
 
+            }
+
+        }
+        System.out.println("number of Black Pixels:" + numberOfBlackPixels);
+        return numberOfBlackPixels;
+    }
 
     //this is looking for a building to shoot
     public static List Look_for_Building() throws IOException, InterruptedException {

@@ -111,7 +111,7 @@ public class Controller {
         int green = (color & 0xff00) >> 8;
         int red = (color & 0xff0000) >> 16;
         //System.out.println("TopRight pixel:  red = " + red + "   green = " + green + "    blue = " + blue);
-        if (red > 90 && green == 0 && blue == 0) {
+        if (red > 90 && green < 2 && blue < 2) {
             System.out.println("GAME OVER");
             //click on continue button
             Thread.sleep(gameStartWaitTime);
@@ -228,9 +228,13 @@ public class Controller {
             controller.keyPress(VK_1);
             controller.keyRelease(VK_1);
             controller.keyPress(VK_Q);
+            if (numOfClicks != 0) {
+                controller.keyPress(VK_CONTROL);
+            }
             Thread.sleep(commandInputBufferTime);
             controller.mousePress(LEFT_MOUSE_CLICK);
             controller.mouseRelease(LEFT_MOUSE_CLICK);
+            controller.keyRelease(VK_CONTROL);
             Thread.sleep(commandInputBufferTime);
             controller.keyPress(VK_ALT);
             Thread.sleep(commandInputBufferTime);
@@ -243,16 +247,41 @@ public class Controller {
             BufferedImage buildingStillThere = captureCursorBuildAttackSquare(x, y);
             boolean buildingThereBool = isBuildingAttackedThere(buildingStillThere);
             if (!buildingThereBool) {
-                controller.keyPress(VK_G);
-                controller.keyRelease(VK_G);
+                fastGQ();
                 return;
             }
         }
         regroup();
     }
 
+    private static void fastGQ() throws InterruptedException, IOException {
+
+        Random random = new Random();
+        int cursor_x = random.nextInt(PLAYABLE_SCREEN_WIDTH_1920x1080 - 200);
+        int cursor_y = random.nextInt(PLAYABLE_SCREEN_HEIGHT_1920x1080 - 200);
+        //put cursor to designated spot of screen
+        controller.mouseMove(cursor_x, cursor_y);
+
+        Thread.sleep(commandTextedInputBufferTime);
+        controller.keyPress(VK_Q);
+        Thread.sleep(commandTextedInputBufferTime);
+        controller.keyPress(VK_1);
+        controller.keyRelease(VK_1);
+        Thread.sleep(commandTextedInputBufferTime);
+        //gaurd
+        controller.keyPress(VK_G);
+        controller.keyRelease(VK_G);
+        Thread.sleep(commandInputBufferTime);
+        controller.keyPress(VK_ALT);
+        Thread.sleep(commandInputBufferTime);
+        mouseLineClick(cursor_x, cursor_y, 1, 1, commandCursorGQJumpPixels, commandCursorGQNumberofJumps);
+        controller.keyRelease(VK_ALT);
+        controller.keyRelease(VK_Q);
+    }
+
     private static void regroup() throws InterruptedException, IOException {
         System.out.println("Regrouping Because building did not die");
+        selectAllMap();
         makeCtrlGroup1();
         setF2Position();
 
@@ -276,9 +305,9 @@ public class Controller {
             int sizeOfGQDirectionMask = cursorMaskGQx.length;
             //We want to cycle the GQing
             for( int i = 0; i < sizeOfGQDirectionMask ; i++) {
-                //select ctrl group 1
                 Thread.sleep(commandGQCursorPauseBufferTime);
                 controller.keyPress(VK_Q);
+                //select ctrl group 1
                 Thread.sleep(commandTextedInputBufferTime);
                 controller.keyPress(VK_1);
                 controller.keyRelease(VK_1);
@@ -428,13 +457,23 @@ public class Controller {
         Thread.sleep(commandTextedInputBufferTime);
         controller.keyRelease(VK_CONTROL);
     }
-    public static void makeCtrlGroup1() throws InterruptedException {
+
+    public static void selectAllMap() throws InterruptedException {
         controller.keyPress(VK_SHIFT);
         Thread.sleep(commandTextedInputBufferTime);
         controller.keyPress(VK_A);
         controller.keyRelease(VK_A);
         Thread.sleep(commandTextedInputBufferTime);
         controller.keyRelease(VK_SHIFT);
+    }
+
+    public static void selectAllScreen() throws InterruptedException {
+        controller.keyPress(VK_A);
+        controller.keyRelease(VK_A);
+        Thread.sleep(commandTextedInputBufferTime);
+    }
+    public static void makeCtrlGroup1() throws InterruptedException {
+
         controller.keyPress(VK_CONTROL);
         Thread.sleep(commandTextedInputBufferTime);
         controller.keyPress(VK_1);
@@ -467,15 +506,16 @@ public class Controller {
         int red = 0;
         int i = 0;
         int j = 0;
+        BufferedImage loadScreenLeft = null;
         while (!game_started) {
             int sizeOfLoadScreenLeftArray = 350;
             //look for the turqouise or yellow pixel on start screen
             //startLocationColumPix = [AV left, Bullseye left, KOTG Left, Canyon Left, Canyon Right, BullseyeRight, AV Right
             // Orerift Right, Orerift Left, NBNW MidLeft, NBNW MidRight]
-            int [] startLocationColumPix = {528 , 553, 586, 648 , 721, 789, 808, 843, 832, 532, 637, 754};
+            int[] startLocationColumPix = {528, 553, 586, 648, 721, 789, 808, 843, 832, 532, 637, 754};
             int lengthOfStartArray = startLocationColumPix.length;
-            for (j = 0; j<lengthOfStartArray; j++){
-            BufferedImage loadScreenLeft = captureLoadScreenStart(startLocationColumPix[j]);
+            for (j = 0; j < lengthOfStartArray; j++) {
+                loadScreenLeft = captureLoadScreenStart(startLocationColumPix[j]);
                 for (i = 0; i < sizeOfLoadScreenLeftArray; i++) {
                     int color = loadScreenLeft.getRaster().getDataBuffer().getElem(i);
                     //System.out.println("Pixel color (integer value): " + color);
@@ -487,97 +527,98 @@ public class Controller {
                     //turquoise player color
                     if (red < 80 && green > 165 && green < 190 && blue > 215) {
                         game_started = true;
-                        System.out.println("i = " + i + "   j = " + j);
+                        System.out.println("i = " + i + "   j = " + j + "Color = Blue");
                         break;
                     }
                     //yellow player color
                     if (red > 230 && green > 230 && blue < 70) {
                         game_started = true;
-                        System.out.println("i = " + i + "   j = " + j);
+                        System.out.println("i = " + i + "   j = " + j + "Color = Yellow");
                         break;
                     }
                 }
-                if (game_started){
+                if (game_started) {
                     break;
                 }
             }
         }
         //here we need to look for pixel @ 1900,20 for color to become 120,97,56
         boolean begin_build = false;
-        while (!begin_build){
-           BufferedImage beginPixel = captureGameScreenBegin();
+        while (!begin_build) {
+            BufferedImage beginPixel = captureGameScreenBegin();
             int color = beginPixel.getRaster().getDataBuffer().getElem(0);
             blue = color & 0xff;
             green = (color & 0xff00) >> 8;
             red = (color & 0xff0000) >> 16;
             //System.out.println("TopRight pixel:  red = " + red + "   green = " + green + "    blue = "+ blue);
-            if (red == 118  && green == 94 && blue == 63) {
-                //prolly gunna need to change this to look at whether the mcv had spawned or not
+            if (red == 118 && green == 94 && blue == 63) {
                 Thread.sleep(commandInputBufferTime);
                 Thread.sleep(commandInputBufferTime);
                 begin_build = true;
             }
         }
 
+        // Save as JPEG
+        File file = new File("StartColum.jpg");
+        ImageIO.write(loadScreenLeft, "jpg", file);
 
 
-
-        if (i < 95 && ( (j == 0) || (j==1) || (j==2) || (j==3) || (j==9))) {
+        if (i < 95 && ((j == 0) || (j == 1) || (j == 2) || (j == 3) || (j == 9))) {
             System.out.println("TOPLEFT:  i = " + i + "   j = " + j);
             return MAP_START.TOPLEFT;
-        }else if (i < 110 && ((j==2)||(j==1))) {
-                System.out.println("TOPLEFT:  i = " + i + "   j = " + j);
-                return MAP_START.TOPLEFT;
-        }else if (i > 255 && ( (j == 0) || (j==1) || (j==2) || (j==3)|| (j==9) )) {
+        } else if (i < 110 && ((j == 2) || (j == 1))) {
+            System.out.println("TOPLEFT:  i = " + i + "   j = " + j);
+            return MAP_START.TOPLEFT;
+        } else if (i > 255 && ((j == 0) || (j == 1) || (j == 2) || (j == 3) || (j == 9))) {
             System.out.println("BOTTOMLEFT:  i = " + i + "   j = " + j);
             return MAP_START.BOTTOMLEFT;
-        }else if (i > 175 && (j==9) ) {
+        } else if (i > 175 && (j == 9)) {
             System.out.println("BOTTOMLEFT:  i = " + i + "   j = " + j);
             return MAP_START.BOTTOMLEFT;
-        }else if (i > 220 && (j==3) ) {
+        } else if (i > 220 && (j == 3)) {
             System.out.println("BOTTOMLEFT:  i = " + i + "   j = " + j);
             return MAP_START.BOTTOMLEFT;
-        }else if (i < 95 && ( (j == 4) || (j==5) || (j==6) || (j==7) || (j==8) )) {
+        } else if (i < 95 && ((j == 4) || (j == 5) || (j == 6) || (j == 7) || (j == 8))) {
             System.out.println("TOPRIGHT:  i = " + i + "   j = " + j);
             return MAP_START.TOPRIGHT;
-        }else if (i > 255 && ( (j == 4) || (j==5) || (j==6) || (j==7) || (j==8))) {
+        } else if (i > 255 && ((j == 4) || (j == 5) || (j == 6) || (j == 7) || (j == 8))) {
             System.out.println("BOTTOMRIGHT:  i = " + i + "   j = " + j);
             return MAP_START.BOTTOMRIGHT;
-        }else if (i > 175 && i < 255 && ((j == 6) || (j ==5))) {
+        } else if (i > 175 && i < 255 && ((j == 6) || (j == 5))) {
             System.out.println("BOTTOMRIGHT:  i = " + i + "   j = " + j);
             return MAP_START.BOTTOMRIGHT;
-        }else if (i > 175 && ((j == 10))) {
+        } else if (i > 175 && ((j == 10))) {
             System.out.println("BOTTOMMIDLEFT:  i = " + i + "   j = " + j);
             return MAP_START.BOTTOMMIDLEFT;
-        }else if (i > 175 && (j == 11)) {
+        } else if (i > 175 && (j == 11)) {
             System.out.println("BOTTOMMIDRIGHT:  i = " + i + "   j = " + j);
             return MAP_START.BOTTOMMIDRIGHT;
-        }else if (i < 175 && (j == 10)) {
+        } else if (i < 175 && (j == 10)) {
             System.out.println("TOPMIDLEFT:  i = " + i + "   j = " + j);
             return MAP_START.TOPMIDLEFT;
-        }else if (i < 175 && (j == 11)) {
+        } else if (i < 175 && (j == 11)) {
             System.out.println("TOPMIDRIGHT:  i = " + i + "   j = " + j);
             return MAP_START.TOPMIDRIGHT;
-        }else if (i < 175 && i > 95 && (j == 8)) {
+        } else if (i < 175 && i > 95 && (j == 8)) {
             System.out.println("MIDTOPRIGHT:  i = " + i + "   j = " + j);
             return MAP_START.MIDTOPRIGHT;
-        }else if (i < 175 && i > 95 && (j == 0)) {
+        } else if (i < 175 && i > 95 && (j == 0)) {
             System.out.println("MIDTOPLEFT:  i = " + i + "   j = " + j);
             return MAP_START.MIDTOPLEFT;
-        }else if (i < 175  && i > 100 && (j == 9)) {
+        } else if (i < 175 && i > 100 && (j == 9)) {
             System.out.println("TOPLEFT:  i = " + i + "   j = " + j);
             return MAP_START.TOPLEFT;
-        }else if (i < 110 && i > 95 && (j == 9)) {
+        } else if (i < 110 && i > 95 && (j == 9)) {
             System.out.println("MIDTOPLEFT:  i = " + i + "   j = " + j);
             return MAP_START.MIDTOPLEFT;
-        }else if (i > 175 && i < 255 &&  (j == 0)) {
+        } else if (i > 175 && i < 255 && (j == 0)) {
             System.out.println("MIDBOTTOMLEFT:  i = " + i + "   j = " + j);
             return MAP_START.MIDBOTTOMLEFT;
-        }else if (i > 175 && i < 215 &&  (j == 8)) {
+        } else if (i > 175 && i < 215 && (j == 8)) {
             System.out.println("MIDBOTTOMRIGHT:  i = " + i + "   j = " + j);
             return MAP_START.MIDBOTTOMRIGHT;
             //Orerift Right i=221 j=8
-        }else if (i > 215 && i < 255 &&  (j == 8)) {
+        } else if (i > 215 && i < 255 && (j == 8)) {
             System.out.println("BOTTOMRIGHT:  i = " + i + "   j = " + j);
             return MAP_START.BOTTOMRIGHT;
         }

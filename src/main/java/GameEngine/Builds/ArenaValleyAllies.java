@@ -73,11 +73,15 @@ public class ArenaValleyAllies {
         Thread.sleep(refineryBuildTime-defendBaseTime*2-2000);
         screenCommands.defendBase();
         buildCommands.buildRefinery(middleXScreenPos, middleYScreenPos);
-        buildCommands.sellConYard();
+        buildCommands.queuePillBox();
+        screenCommands.defendBase();
 
         buildCommands.buildInfs();
         buildCommands.buildLightTanks();
-        screenCommands.defendBase();
+        Thread.sleep(pillBuildTime);
+        buildCommands.buildPillBox(middleXScreenPos, middleYScreenPos);
+
+        buildCommands.sellConYard();
         //System.out.println("Trying to move THE SCREEN X=> " + attackDirection[0] + " Y=> " + attackDirection[1]);
         screenCommands.moveScreen(attackDirection);
         buildCommands.build99Infs();
