@@ -4,8 +4,8 @@ import java.io.IOException;
 import javax.swing.*;
 
 import static GameEngine.Game.startAlliesGame;
-import static GameEngine.GameActions.ObserverMode.lookForNext1v1;
-import static GameEngine.GameActions.ObserverMode.watchGame;
+import static GameEngine.ObserverMode.lookForNext1v1;
+import static GameEngine.ObserverMode.watchGame;
 import static Utilities.Constants.*;
 import static Utilities.Controller.*;
 
