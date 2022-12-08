@@ -22,7 +22,7 @@
                     <archive>
                         <manifest>
                             <mainClass>
-                                src/main/java/Bot.java
+                                src/main/java/Bot.Bot.java
                             </mainClass>
                         </manifest>
                     </archive>

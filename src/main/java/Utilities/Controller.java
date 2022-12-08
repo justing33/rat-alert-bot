@@ -15,6 +15,7 @@ import java.util.Random;
 import static GameEngine.Game.startAlliesGame;
 import static Utilities.BuildingFinder.Look_for_Building;
 import static Utilities.Constants.*;
+import static Utilities.Controller.determineMap;
 import static java.awt.event.KeyEvent.*;
 import static java.awt.event.KeyEvent.VK_1;
 import static java.lang.System.exit;
@@ -102,6 +103,13 @@ public class Controller {
         BufferedImage gameScreenBuffer = controller.createScreenCapture(playableScreenRect);
         return gameScreenBuffer;
     }
+
+    public static BufferedImage captureWinLoss() throws IOException {
+        //Grab the pixel at top right of screen
+        Rectangle playableScreenRect = new Rectangle(1148,319,1, 1);
+        BufferedImage gameScreenBuffer = controller.createScreenCapture(playableScreenRect);
+        return gameScreenBuffer;
+    }
     //check to see if game is over and stop bot if it is
 
     public static void Game_over() throws IOException, InterruptedException {
@@ -113,6 +121,18 @@ public class Controller {
         //System.out.println("TopRight pixel:  red = " + red + "   green = " + green + "    blue = " + blue);
         if (red > 90 && green < 2 && blue < 2) {
             System.out.println("GAME OVER");
+            //see if we won or lost
+            BufferedImage winlossPixel2 = captureWinLoss();
+            color = winlossPixel2.getRaster().getDataBuffer().getElem(0);
+            blue = color & 0xff;
+            green = (color & 0xff00) >> 8;
+            red = (color & 0xff0000) >> 16;
+            if (red == 65 && green == 154 && blue == 62) {
+                System.out.println("We've Won.  what no human could have done here.");
+            }
+
+
+
             //click on continue button
             Thread.sleep(gameStartWaitTime);
             controller.mouseMove(1000,1020);
@@ -125,7 +145,6 @@ public class Controller {
             controller.mouseRelease(LEFT_MOUSE_CLICK);
             //recurse
             startAlliesGame(determineMap());
-
             exit(0);
         }
     }
@@ -254,11 +273,11 @@ public class Controller {
         regroup();
     }
 
-    private static void fastGQ() throws InterruptedException, IOException {
+    public static void fastGQ() throws InterruptedException, IOException {
 
         Random random = new Random();
-        int cursor_x = random.nextInt(PLAYABLE_SCREEN_WIDTH_1920x1080 - 200);
-        int cursor_y = random.nextInt(PLAYABLE_SCREEN_HEIGHT_1920x1080 - 200);
+        int cursor_x = random.nextInt(PLAYABLE_SCREEN_WIDTH_1920x1080 - 250);
+        int cursor_y = random.nextInt(PLAYABLE_SCREEN_HEIGHT_1920x1080 - 250);
         //put cursor to designated spot of screen
         controller.mouseMove(cursor_x, cursor_y);
 
@@ -349,6 +368,7 @@ public class Controller {
                 Game_over();
             }
             controller.keyRelease(VK_Q);
+            fastGQ();
 
     }
 
@@ -422,14 +442,28 @@ public class Controller {
             exit(0);
         }
     }
+    public static void gotoF1Position() throws InterruptedException {
+        Thread.sleep(commandTextedInputBufferTime);
+        controller.keyPress(VK_F1);
+        controller.keyRelease(VK_F1);
+        Thread.sleep(commandTextedInputBufferTime);
+    }
+    public static void setF1Position() throws InterruptedException {
+        Thread.sleep(commandInputBufferTime);
+        controller.keyPress(VK_CONTROL);
+        Thread.sleep(commandTextedInputBufferTime);
+        controller.keyPress(VK_F1);
+        controller.keyRelease(VK_F1);
+        Thread.sleep(commandTextedInputBufferTime);
+        controller.keyRelease(VK_CONTROL);
+    }
+
     public static void gotoF2Position() throws InterruptedException {
         Thread.sleep(commandTextedInputBufferTime);
         controller.keyPress(VK_F2);
         controller.keyRelease(VK_F2);
         Thread.sleep(commandTextedInputBufferTime);
     }
-
-
 
     public static void setF2Position() throws InterruptedException {
         Thread.sleep(commandInputBufferTime);
@@ -500,6 +534,7 @@ public class Controller {
      * @return An enum denoting the map that is being played in the quickplay ladder match
      */
     public static Constants.MAP_START determineMap() throws IOException, InterruptedException {
+        System.out.println("We are trying to figure out if the games has started");
         boolean game_started = false;
         int blue = 0;
         int green = 0;
@@ -527,13 +562,13 @@ public class Controller {
                     //turquoise player color
                     if (red < 80 && green > 165 && green < 190 && blue > 215) {
                         game_started = true;
-                        System.out.println("i = " + i + "   j = " + j + "Color = Blue");
+                        System.out.println("Game has Started...And you are a Blue Rat");
                         break;
                     }
                     //yellow player color
                     if (red > 230 && green > 230 && blue < 70) {
                         game_started = true;
-                        System.out.println("i = " + i + "   j = " + j + "Color = Yellow");
+                        System.out.println("Game has Started...And you are a Yellow Rat");
                         break;
                     }
                 }
@@ -562,6 +597,359 @@ public class Controller {
         File file = new File("StartColum.jpg");
         ImageIO.write(loadScreenLeft, "jpg", file);
 
+        System.out.println("Looking for specific map");
+
+        int color = loadScreenLeft.getRaster().getDataBuffer().getElem(0);
+        blue = color & 0xff;
+        green = (color & 0xff00) >> 8;
+        red = (color & 0xff0000) >> 16;
+        if (i < 95 &&
+                j == 2 &&
+                red == 80 &&
+                green == 109 &&
+                blue == 127){
+            //yellow
+            return MAP_START.PATHBEYOND_TOPLEFT;
+        }
+
+        color = loadScreenLeft.getRaster().getDataBuffer().getElem(0);
+        blue = color & 0xff;
+        green = (color & 0xff00) >> 8;
+        red = (color & 0xff0000) >> 16;
+        if (i > 98 && i <108 &&
+                j == 2 &&
+                red == 0 &&
+                green == 0 &&
+                blue == 0){
+            //yellow
+            return MAP_START.TA_TOPLEFT;
+        }
+
+        color = loadScreenLeft.getRaster().getDataBuffer().getElem(0);
+        blue = color & 0xff;
+        green = (color & 0xff00) >> 8;
+        red = (color & 0xff0000) >> 16;
+        if (i > 98 && i <108 &&
+                j == 1 &&
+                red == 0 &&
+                green == 0 &&
+                blue == 0){
+            //yellow
+            return MAP_START.ORERIFT_TOPLEFT;
+        }
+
+
+        color = loadScreenLeft.getRaster().getDataBuffer().getElem(19);
+        //determine individual colors
+        blue = color & 0xff;
+        green = (color & 0xff00) >> 8;
+        red = (color & 0xff0000) >> 16;
+        if (i > 270 && i < 280 &&
+                j == 5 &&
+                red == 90 &&
+                green == 94 &&
+                blue == 71){
+            //BLUE
+            return MAP_START.KOTG_BOTTOMRIGHT;
+        }
+        color = loadScreenLeft.getRaster().getDataBuffer().getElem(0);
+        //determine individual colors
+        blue = color & 0xff;
+        green = (color & 0xff00) >> 8;
+        red = (color & 0xff0000) >> 16;
+        if (i > 45 && i < 55 &&
+                j == 5 &&
+                red == 80 &&
+                green == 109 &&
+                blue == 127){
+            //
+            return MAP_START.BULLSEYE_TOPRIGHT;
+        }
+        color = loadScreenLeft.getRaster().getDataBuffer().getElem(0);
+        blue = color & 0xff;
+        green = (color & 0xff00) >> 8;
+        red = (color & 0xff0000) >> 16;
+        if (i > 34 && i <44 &&
+                j == 6 &&
+                red == 81 &&
+                green == 106 &&
+                blue == 120){
+            //COLOR
+            return MAP_START.BULLSEYE_TOPRIGHT;
+        }
+
+
+
+        color = loadScreenLeft.getRaster().getDataBuffer().getElem(0);
+        //determine individual colors
+        blue = color & 0xff;
+        green = (color & 0xff00) >> 8;
+        red = (color & 0xff0000) >> 16;
+        if (i > 305 && i < 315 &&
+                j == 10 &&
+                red == 229 &&
+                green == 222 &&
+                blue == 229){
+            //BLUE
+            return MAP_START.NBNW_BOTTOMMIDLEFT;
+        }
+
+        color = loadScreenLeft.getRaster().getDataBuffer().getElem(0);
+        //determine individual colors
+        blue = color & 0xff;
+        green = (color & 0xff00) >> 8;
+        red = (color & 0xff0000) >> 16;
+        if (i > 50 && i < 55 &&
+                j == 2 &&
+                red == 80 &&
+                green == 109 &&
+                blue == 127){
+            //YELLOW
+            return MAP_START.PATHBEYOND_TOPLEFT;
+        }
+
+        color = loadScreenLeft.getRaster().getDataBuffer().getElem(0);
+        blue = color & 0xff;
+        green = (color & 0xff00) >> 8;
+        red = (color & 0xff0000) >> 16;
+        if (i > 212 && i <222 &&
+                j == 10 &&
+                red == 33 &&
+                green == 27 &&
+                blue == 24){
+            //BLUE
+            return MAP_START.CANYON_BOTTOMLEFT;
+        }
+        color = loadScreenLeft.getRaster().getDataBuffer().getElem(0);
+        blue = color & 0xff;
+        green = (color & 0xff00) >> 8;
+        red = (color & 0xff0000) >> 16;
+        if (i > 31 && i <41 &&
+                j == 1 &&
+                red == 43 &&
+                green == 54 &&
+                blue == 39){
+            //YELLOW
+            return MAP_START.KOTG_TOPLEFT;
+        }
+
+        color = loadScreenLeft.getRaster().getDataBuffer().getElem(0);
+        blue = color & 0xff;
+        green = (color & 0xff00) >> 8;
+        red = (color & 0xff0000) >> 16;
+        if (i > 16 && i <26 &&
+                j == 10 &&
+                red == 229 &&
+                green == 221 &&
+                blue == 229){
+            //YELLOW
+            return MAP_START.NBNW_TOPMIDLEFT;
+        }
+        color = loadScreenLeft.getRaster().getDataBuffer().getElem(0);
+        blue = color & 0xff;
+        green = (color & 0xff00) >> 8;
+        red = (color & 0xff0000) >> 16;
+        if (i > 212 && i <222 &&
+                j == 6 &&
+                red == 0 &&
+                green == 0 &&
+                blue == 0){
+            //BLUE
+            return MAP_START.ORERIFT_BOTTOMRIGHT;
+        }
+
+        color = loadScreenLeft.getRaster().getDataBuffer().getElem(0);
+        blue = color & 0xff;
+        green = (color & 0xff00) >> 8;
+        red = (color & 0xff0000) >> 16;
+        if (i > 99 && i <109 &&
+                j == 2 &&
+                red == 0 &&
+                green == 0 &&
+                blue == 0){
+            //YELLOW
+            return MAP_START.TA_TOPLEFT;
+        }
+
+        color = loadScreenLeft.getRaster().getDataBuffer().getElem(0);
+        blue = color & 0xff;
+        green = (color & 0xff00) >> 8;
+        red = (color & 0xff0000) >> 16;
+        if (i > 44 && i <54 &&
+                j == 5 &&
+                red == 80 &&
+                green == 106 &&
+                blue == 120){
+            //YELLOW
+            return MAP_START.BULLSEYE_TOPRIGHT;
+        }
+        color = loadScreenLeft.getRaster().getDataBuffer().getElem(0);
+        blue = color & 0xff;
+        green = (color & 0xff00) >> 8;
+        red = (color & 0xff0000) >> 16;
+        if (i > 93 && i <103 &&
+                j == 8 &&
+                red == 221 &&
+                green == 213 &&
+                blue == 208){
+            //YELLOW
+            return MAP_START.NBNW_MIDTOPRIGHT;
+        }
+
+        color = loadScreenLeft.getRaster().getDataBuffer().getElem(0);
+        blue = color & 0xff;
+        green = (color & 0xff00) >> 8;
+        red = (color & 0xff0000) >> 16;
+        if (i > 222 && i <232 &&
+                j == 3 &&
+                red == 88 &&
+                green == 79 &&
+                blue == 68){
+            //BLUE
+            return MAP_START.CANYON_BOTTOMLEFT;
+        }
+        if (i > 2 && i <12 &&
+                j == 9 &&
+                red == 46 &&
+                green == 56 &&
+                blue == 42){
+            //YELLOW
+            return MAP_START.AV_TOPLEFT;
+        }
+        if (i > 7 && i <17 &&
+                j == 0 &&
+                red == 44 &&
+                green == 55 &&
+                blue == 43){
+            //YELLOW
+            return MAP_START.AV_TOPLEFT;
+        }
+        if (i > 271 && i <281 &&
+                j == 5 &&
+                red == 40 &&
+                green == 56 &&
+                blue == 40){
+            //blue
+            return MAP_START.KOTG_BOTTOMRIGHT;
+        }
+        if (i > 47 && i <57 &&
+                j == 2 &&
+                red == 83 &&
+                green == 107 &&
+                blue == 122){
+            //yellow
+            return MAP_START.PATHBEYOND_TOPLEFT;
+        }
+        if (i > 304 && i <314 &&
+                j == 10 &&
+                red == 229 &&
+                green == 221 &&
+                blue == 229){
+            //blue
+            return MAP_START.NBNW_BOTTOMMIDLEFT;
+
+        }
+        if (i > 210 && i <220 &&
+                j == 5 &&
+                red == 0 &&
+                green == 0 &&
+                blue == 0){
+            //COLOR
+            return MAP_START.PATHBEYOND_BOTTOMRIGHT;
+        }
+        if (i > 105 && i <115 &&
+                j == 9 &&
+                red == 0 &&
+                green == 0 &&
+                blue == 0){
+            //Yellow
+            return MAP_START.ORERIFT_TOPLEFT;
+        }
+        if (i > 2 && i <12 &&
+                j == 1 &&
+                red == 60 &&
+                green == 60 &&
+                blue == 48){
+            //yellow
+            return MAP_START.AV_TOPLEFT;
+        }
+        if (i > 84 && i <94 &&
+                j == 4 &&
+                red == 37 &&
+                green == 50 &&
+                blue == 37){
+            //yellow
+            return MAP_START.CANYON_TOPRIGHT;
+        }
+        if (i > 309 && i <319 &&
+                j == 7 &&
+                red == 44 &&
+                green == 58 &&
+                blue == 42){
+            //BLUE
+            return MAP_START.AV_BOTTOMRIGHT;
+        }
+        if (i > 300 && i <310 &&
+                j == 11 &&
+                red == 228 &&
+                green == 222 &&
+                blue == 228){
+            //blue
+            return MAP_START.NBNW_BOTTOMMIDRIGHT;
+        }
+        if (i > 275 && i <285 &&
+                j == 2 &&
+                red == 83 &&
+                green == 107 &&
+                blue == 122){
+            //blue
+            return MAP_START.BULLSEYE_BOTTOMLEFT;
+        }
+        if (i > 213 && i <223 &&
+                j == 8 &&
+                red == 221 &&
+                green == 213 &&
+                blue == 208){
+            //yellow
+            return MAP_START.NBNW_MIDBOTTOMLEFT;
+        }
+        if (i > 93 && i <103 &&
+                j == 9 &&
+                red == 231 &&
+                green == 225 &&
+                blue == 231){
+            //blue
+            return MAP_START.NBNW_MIDTOPLEFT;
+        }
+        if (i > 216 && i <226 &&
+                j == 8 &&
+                red == 0 &&
+                green == 0 &&
+                blue == 0){
+            //BLUE
+            return MAP_START.ORERIFT_BOTTOMRIGHT;
+        }
+        if (i > 284 && i <294 &&
+                j == 5 &&
+                red == 80 &&
+                green == 106 &&
+                blue == 120){
+            //BLUE
+            return MAP_START.PATHBEYOND_BOTTOMRIGHT;
+        }
+
+        System.out.println("color = loadScreenLeft.getRaster().getDataBuffer().getElem(0);");
+        System.out.println("blue = color & 0xff;");
+        System.out.println("green = (color & 0xff00) >> 8;");
+        System.out.println("red = (color & 0xff0000) >> 16;");
+        System.out.println("if (i > " + (i - 5) + " && i <" + (i + 5) + " && ");
+        System.out.println("        j == " + j + " &&");
+        System.out.println("        red == " + red + " &&");
+        System.out.println("        green == " + green + " &&");
+        System.out.println("        blue == " + blue + "){");
+        System.out.println("    //COLOR ");
+        System.out.println("    return MAP_START.??.??");
+        System.out.println("}");
 
         if (i < 95 && ((j == 0) || (j == 1) || (j == 2) || (j == 3) || (j == 9))) {
             System.out.println("TOPLEFT:  i = " + i + "   j = " + j);

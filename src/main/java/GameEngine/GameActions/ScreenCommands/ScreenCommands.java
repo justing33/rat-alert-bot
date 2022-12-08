@@ -1,10 +1,7 @@
 package GameEngine.GameActions.ScreenCommands;
 
-import Utilities.BuildingFinder;
-
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -13,7 +10,6 @@ import static Utilities.BuildingFinder.Look_for_the_Blackness;
 import static Utilities.Constants.*;
 import static Utilities.Controller.*;
 import static java.awt.event.KeyEvent.*;
-import static java.lang.System.exit;
 
 
 public class ScreenCommands {
@@ -21,6 +17,7 @@ public class ScreenCommands {
     public void moveScreen(int[] attackDirection) {
         try {
             //Initiate cursor position
+            System.out.println("Initalizing Rat Attack");
             int cursor_x = PLAYABLE_SCREEN_WIDTH_1920x1080/2;
             int cursor_y = PLAYABLE_SCREEN_HEIGHT_1920x1080/2;
             controller.mouseMove(cursor_x, cursor_y);
@@ -40,7 +37,12 @@ public class ScreenCommands {
             controller.mousePress(RIGHT_MOUSE_CLICK);
             Thread.sleep(commandInputBufferTime);
             //PROLLY NEED TO CLEAN THIS UP buildDirection[] WHERE 0 INDEX IS X AND 1 INDEX IS Y
-            mouseLineMove(cursor_x, cursor_y, 25 * attackDirection[2] * -1, 25 * attackDirection[3] * -1, 20);
+
+            int pixelsToMove = attackDirection[4];
+            System.out.println("Moved out from the side of the screen" + pixelsToMove);
+
+            mouseLineMove(cursor_x, cursor_y, pixelsToMove * attackDirection[2] * -1, pixelsToMove * attackDirection[3] * -1, 20);
+
             Thread.sleep(commandCursorPauseBufferTime);
             controller.mouseRelease(RIGHT_MOUSE_CLICK);
             selectAllMap();
@@ -59,11 +61,33 @@ public class ScreenCommands {
     }
 
 
+    public void moveBaseScreen(int[] attackDirection) throws InterruptedException {
+        //Move the screen a little
+        System.out.println("Moving home screen");
+        int cursor_x = PLAYABLE_SCREEN_WIDTH_1920x1080/2;
+        int cursor_y = PLAYABLE_SCREEN_HEIGHT_1920x1080/2;
+        controller.mouseMove(cursor_x, cursor_y);
+        controller.mousePress(RIGHT_MOUSE_CLICK);
+        Thread.sleep(commandInputBufferTime);
+        int pixelsToMove = -15;
+        mouseLineMove(cursor_x, cursor_y, pixelsToMove * attackDirection[0], pixelsToMove * attackDirection[1], 20);
+        Thread.sleep(commandCursorPauseBufferTime);
+        controller.mouseRelease(RIGHT_MOUSE_CLICK);
+        setF1Position();
+
+
+
+    }
+
     public void defendBase() throws IOException, InterruptedException {
         //make ctrl group 1
         selectAllScreen();
         makeCtrlGroup1();
         cursorGQdefend(100,30,-1);
+        controller.keyPress(VK_S);
+        Thread.sleep(commandTextedInputBufferTime);
+        controller.keyRelease(VK_S);
+        Thread.sleep(commandTextedInputBufferTime);
         Game_over();
 
     }
@@ -95,7 +119,7 @@ public class ScreenCommands {
                 int random_Building = random.nextInt(Building_locs.size()/2);
                 int shoot_x = (int) Building_locs.get(random_Building * 2);
                 int shoot_y = (int) Building_locs.get(random_Building * 2 + 1);
-                if (cycle_number > 2){
+                if (cycle_number > 0){
                     shootBuilding(shoot_x,shoot_y);
                 }
             }else{
@@ -365,10 +389,12 @@ public class ScreenCommands {
             Game_over();
         }
         controller.keyRelease(VK_Q);
+        fastGQ();
     }
 
     public void mouseLineMove(int start_x, int start_y, int length_x, int length_y, int steps) throws InterruptedException {
-
+        //
+        //System.out.println("Mouse Line Move  x = " + start_x + " y = " + start_y + "x_length = " + length_x + "y_length = " + length_y);
         for( int i = 0; i < steps ; i++) {
             Thread.sleep(commandCursorLineBufferTime);
             controller.mouseMove(start_x + ((i * length_x )/ steps) , start_y + ((i * length_y) / steps));

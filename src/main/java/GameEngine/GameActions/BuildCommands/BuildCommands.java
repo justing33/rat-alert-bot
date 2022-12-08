@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Random;
 
 
+import static GameEngine.Builds.DefaultMap.screenCommands;
 import static Utilities.Constants.*;
 import static Utilities.Controller.*;
 import static java.awt.event.KeyEvent.*;
@@ -22,6 +23,7 @@ public class BuildCommands {
             int startY = SCREEN_HEIGHT_1920x1080/2;
             controller.keyPress(VK_H);
             controller.keyRelease(VK_H);
+            setF1Position();
             //select MCV
 
             //need to make sure the MCV is in the middle of the screen, move if not
@@ -29,8 +31,7 @@ public class BuildCommands {
                 controller.keyPress(VK_A); //key down
                 controller.keyRelease(VK_A); //key up
                 Thread.sleep(commandInputBufferTime);
-                controller.keyPress(VK_H);
-                controller.keyRelease(VK_H);
+                gotoF1Position();
                 Thread.sleep(commandInputBufferTime);
                 controller.mouseMove(startX,startY);
                 BufferedImage cursorSquareBuffer = captureCursorBuildSquare(startX + 32, startY - 128);
@@ -68,8 +69,7 @@ public class BuildCommands {
     public void buildPowerPlant(int xCoords, int yCoords) {
         try {
             //Select power plant to be placed
-            controller.keyPress(VK_H);
-            controller.keyRelease(VK_H);
+            gotoF1Position();
             Thread.sleep(commandInputBufferTime);
             controller.keyPress(VK_D);
             controller.keyRelease(VK_D);
@@ -391,6 +391,7 @@ public class BuildCommands {
             Thread.sleep(commandInputBufferTime);
             Thread.sleep(commandInputBufferTime);
             Thread.sleep(commandInputBufferTime);
+            Thread.sleep(commandInputBufferTime);
 
             //Capture a piece of the screen to the right of the cursor
             cursorSquareBuffer = captureCursorPlaceBuildingSquare(x + 10, y - 36);
@@ -435,8 +436,20 @@ public class BuildCommands {
                 queuePillBox();
                 //return;
             }
+            if ( numberOfTries%25 == 1 ) {
+                rightMouseClick();
+                screenCommands.defendBase();
+                rightMouseClick();
+                queuePowerPlant();
+                queueWarFactory();
+                queueRefinery();
+                queueBarracks();
+                queuePillBox();
+            }
+            if ( numberOfTries%77 != 1 ) {
+                placeBuildingDownAtCoordinates(newX, newY, iterate, numberOfTries);
+            }
 
-            placeBuildingDownAtCoordinates(newX, newY, iterate, numberOfTries);
         } else {
             //Building was placed, break out of recursive loop
             return ;
@@ -545,14 +558,6 @@ public class BuildCommands {
         return false;
     }
 
-
-    private void mouseLineMove(int start_x, int start_y, int length_x, int length_y, int steps) throws InterruptedException {
-
-        for( int i = 0; i < steps ; i++) {
-            Thread.sleep(commandCursorLineBufferTime);
-            controller.mouseMove(start_x + ((i * length_x )/ steps) , start_y + ((i * length_y) / steps));
-        }
-    }
 
 
 }

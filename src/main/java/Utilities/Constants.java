@@ -9,7 +9,7 @@ public class Constants {
 
     public static final String SOVIETS = "SOVIETS";
     public static final String ALLIES = "ALLIES";
-
+    public static final String OBSERVE = "OBSERVE";
     public static final Integer LEFT_MOUSE_CLICK = InputEvent.BUTTON1_DOWN_MASK;
     public static final Integer RIGHT_MOUSE_CLICK = InputEvent.BUTTON2_DOWN_MASK;
 
@@ -35,16 +35,16 @@ public class Constants {
     //TODO: Revisit these build times to see if can optimize further
     //BUILD TIMES
     //The time it takes for the MCV to complete deploying before another input can be sent
-    public static final int mcvDeployingTime = 1500;
-    public static final int powerPlantBuildTime = 6100;
+    public static final int mcvDeployingTime = 1250;
+    public static final int powerPlantBuildTime = 5500;
     //The input buffer time in-between commands
-    public static final int refineryBuildTime = 32000;
+    public static final int refineryBuildTime = 31000;
 
-    public static final int defendBaseTime = 7000;
+    public static final int defendBaseTime = 7500;
 
-    public static final int pillBuildTime = 5000;
-    public static final int barracksBuildTime = 6500;
-    public static final int warFactoryBuildTime = 32000;
+    public static final int pillBuildTime = 3000;
+    public static final int barracksBuildTime = 5500;
+    public static final int warFactoryBuildTime = 31000;
 
     //BUFFER TIMES
     public static final int commandInputBufferTime = 150;
@@ -63,7 +63,8 @@ public class Constants {
     // The buffer time in between moving the cursor for GQ cycles
     public static final int commandGQCyclePauseBufferTime = 1500;
 
-
+    //the width by which the building finder looks for building at
+    public static final int buildingPixelWidth = 150;
 
     //The directions that the GQ will scan the cursor
     public static final int [] cursorMaskGQx = { 1, 1, 1,-1,-1,-1, 1, 1, 1};
@@ -109,7 +110,7 @@ public class Constants {
         MIDTOPLEFT,
         MIDBOTTOMRIGHT,
         MIDBOTTOMLEFT,
-        NONE
+        NBNW, AV, CANYON, BULLSEYE, ORERIFT, TA, KOTG, PATHBEYOND, NBNW_BOTTOMMIDLEFT, PATHBEYOND_TOPLEFT, KOTG_BOTTOMRIGHT, AV_TOPLEFT, CANYON_BOTTOMLEFT, NBNW_MIDTOPRIGHT, BULLSEYE_TOPRIGHT, TA_TOPLEFT, NBNW_TOPMIDLEFT, KOTG_TOPLEFT, ORERIFT_TOPLEFT, ORERIFT_BOTTOMRIGHT, AV_BOTTOMRIGHT, BULLSEYE_BOTTOMLEFT, CANYON_TOPRIGHT, PATHBEYOND_BOTTOMRIGHT, NBNW_BOTTOMMIDRIGHT, NBNW_TOPMIDRIGHT, NBNW_MIDTOPLEFT, NBNW_MIDBOTTOMLEFT, NBNW_MIDBOTTOMRIGHT, TA_BOTTOMRIGHT, NONE
 
     }
 

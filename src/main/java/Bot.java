@@ -4,54 +4,75 @@ import java.io.IOException;
 import javax.swing.*;
 
 import static GameEngine.Game.startAlliesGame;
-import static GameEngine.Game.startSovietGame;
+import static GameEngine.GameActions.ObserverMode.lookForNext1v1;
+import static GameEngine.GameActions.ObserverMode.watchGame;
 import static Utilities.Constants.*;
 import static Utilities.Controller.*;
 
-public class Bot extends Frame implements ActionListener {
-    static JFrame frame;
 
-    public static void main(String args[]) {
-        Bot redAlertBot = new Bot();
-        frame = new JFrame("RAT ALERT B0T");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public class Bot extends Frame implements ActionListener {
+        static JFrame frame;
 
-        Button sovietsButton = new Button(SOVIETS);
-        Button alliesButton = new Button(ALLIES);
-        sovietsButton.addActionListener(redAlertBot);
-        alliesButton.addActionListener(redAlertBot);
+        public static void main(String args[]) {
+            Bot redAlertBot = new Bot();
+            frame = new JFrame("RAT ALERT B0T");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        Panel panel = new Panel();
-        panel.add(sovietsButton);
-        panel.add(alliesButton);
+            Button sovietsButton = new Button(SOVIETS);
+            Button alliesButton = new Button(ALLIES);
+            Button observeButton = new Button(OBSERVE);
+            sovietsButton.addActionListener(redAlertBot);
+            alliesButton.addActionListener(redAlertBot);
+            observeButton.addActionListener(redAlertBot);
 
-        frame.add(panel);
-        frame.setSize(300, 75);
-        frame.setVisible(true);
-    }
+            Panel panel = new Panel();
+            panel.add(sovietsButton);
+            panel.add(alliesButton);
+            panel.add(observeButton);
 
-    /***
-     * Determine what game to play based on faction chosen at game start
-     * @param event
-     */
-    public void actionPerformed(ActionEvent event) {
-        try {
-            findScreenResolution();
-            //altTabIntoGame();
+            frame.add(panel);
+            frame.setSize(300, 75);
+            frame.setVisible(true);
+        }
 
-            switch (event.getActionCommand()) {
-                case SOVIETS:
-                    break;
+        /***
+         * Determine what game to play based on faction chosen at game start
+         * @param event
+         */
+        public void actionPerformed(ActionEvent event) {
+            try {
+                findScreenResolution();
+                //altTabIntoGame();
+
+                switch (event.getActionCommand()) {
+                    case SOVIETS:
+                        System.out.println("RAT TESTING in five seconds:");
+                        Thread.sleep(5000);
+    /*                    ArrayList outputList = (ArrayList) Look_for_Building();
+                        System.out.println(outputList);*/
+                        lookForNext1v1(0,false);
+
+                        System.out.println("RAT TESTING complete:");
+                        break;
 
 
-                case ALLIES:
-                    startAlliesGame(determineMap());
-                    break;
+                    case ALLIES:
+                        System.out.println("RAT-BOT initializing");
+                        startAlliesGame(determineMap());
+                        break;
+
+                    case OBSERVE:
+                        System.out.println("RAT-BOT initializing OBSERVE mode");
+                        watchGame();
+                        break;
+                }
+            } catch (InterruptedException | IOException e) {
+                e.printStackTrace();
+            } catch (AWTException e) {
+                throw new RuntimeException(e);
             }
-        } catch (InterruptedException | IOException e) {
-            e.printStackTrace();
+
         }
 
     }
 
-}

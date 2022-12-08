@@ -9,12 +9,13 @@ import static Utilities.Constants.*;
 import static Utilities.Controller.middleXScreenPos;
 import static Utilities.Controller.middleYScreenPos;
 
-public class ArenaValleyAllies {
+public class DefaultMap {
 
     static BuildCommands buildCommands = new BuildCommands();
-    static ScreenCommands screenCommands = new ScreenCommands();
+    public static ScreenCommands screenCommands = new ScreenCommands();
 
     public static void WFx2SellBuild(int[] attackDirection) throws IOException, InterruptedException {
+        System.out.println("Executing 2WF All in");
         buildCommands.deployMCV();
         buildCommands.queuePowerPlant();
         Thread.sleep(powerPlantBuildTime);
@@ -41,6 +42,7 @@ public class ArenaValleyAllies {
     }
 
     public static void InfantryBuild(int[] attackDirection) throws IOException, InterruptedException {
+        System.out.println("Executing raxWF Build");
         System.out.println("attack direction = " + attackDirection[0] + " " + attackDirection[1] + " " + attackDirection[2] + " " + attackDirection[3] + " " + attackDirection[4] + " ");
         buildCommands.deployMCV();
         //Power Plant
@@ -73,7 +75,7 @@ public class ArenaValleyAllies {
         //Refinery
         buildCommands.queueRefinery();
         screenCommands.defendBase();
-        Thread.sleep(refineryBuildTime-defendBaseTime);
+        Thread.sleep(refineryBuildTime-defendBaseTime*2);
         screenCommands.defendBase();
         buildCommands.buildRefinery(middleXScreenPos, middleYScreenPos);
         buildCommands.queuePillBox();

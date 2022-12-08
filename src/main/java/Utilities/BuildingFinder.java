@@ -33,17 +33,17 @@ public class BuildingFinder {
             }
 
         }
-        System.out.println("number of Black Pixels:" + numberOfBlackPixels);
+        //System.out.println("number of Black Pixels:" + numberOfBlackPixels);
         return numberOfBlackPixels;
     }
 
     //this is looking for a building to shoot
     public static List Look_for_Building() throws IOException, InterruptedException {
        List<Integer> Building_Locations = new ArrayList<>();
-        for (int Colum_Num = 150; Colum_Num < PLAYABLE_SCREEN_WIDTH_1920x1080 - 120;  Colum_Num = Colum_Num+149){
+        for (int Colum_Num = 150; Colum_Num < PLAYABLE_SCREEN_WIDTH_1920x1080 - 120;  Colum_Num = Colum_Num+buildingPixelWidth-1){
             BufferedImage game_colum = captureGameScreenColum(Colum_Num);
             //only need to check every fourth pixel due to heighth of the health bar
-            for (int Row_Num = 1; Row_Num < PLAYABLE_SCREEN_HEIGHT_1920x1080 - 128; Row_Num = Row_Num + 4){
+            for (int Row_Num = 1; Row_Num < PLAYABLE_SCREEN_HEIGHT_1920x1080 - 128; Row_Num = Row_Num + 3){
                 int numberOfGreenPixels = 0;
                 int color = game_colum.getRaster().getDataBuffer().getElem(Row_Num);
                 int blue = color & 0xff;
@@ -51,8 +51,8 @@ public class BuildingFinder {
                 int red = (color & 0xff0000) >> 16;
                 if (red < 20 && green > 240 && blue < 20) {
                     //System.out.println("Found GREEN at x = " + Colum_Num + " y = " + Row_Num);
-                    BufferedImage game_row = captureGameScreenRowBelow(Colum_Num-150,Row_Num, 299);
-                    for (int j = 1; j < 299; j++){
+                    BufferedImage game_row = captureGameScreenRowBelow(Colum_Num-buildingPixelWidth,Row_Num, buildingPixelWidth * 2 -1);
+                    for (int j = 1; j < buildingPixelWidth * 2 -1; j++){
                         color = game_row.getRaster().getDataBuffer().getElem(j);
                         blue = color & 0xff;
                         green = (color & 0xff00) >> 8;
@@ -60,15 +60,37 @@ public class BuildingFinder {
                         if (red < 20 && green > 240 && blue < 20) {
                             numberOfGreenPixels = numberOfGreenPixels + 1;
                             if (numberOfGreenPixels > 90){
+                                //look for enemy conyard...if found spam it out into the building list 4 more times
+                                BufferedImage buildingTypeColum = captureBuildingType(Colum_Num-buildingPixelWidth+j-90, Row_Num);
+                                for (int jj = 0; jj < 8; jj++){
+                                    color = buildingTypeColum.getRaster().getDataBuffer().getElem(jj);
+                                    blue = color & 0xff;
+                                    green = (color & 0xff00) >> 8;
+                                    red = (color & 0xff0000) >> 16;
+                                    //System.out.println("jj = " + jj + " Red = " + red + " Green = " + green + " blue = " + blue);
+                                    if (red > 120 && red < 140 &&
+                                            green > 120 && green < 140 &&
+                                            blue > 120 && blue < 140) {
+                                        System.out.println("System found likely enemy ConYard");
+                                        Building_Locations.add(Colum_Num-buildingPixelWidth+j-90);
+                                        Building_Locations.add(Row_Num);
+                                        Building_Locations.add(Colum_Num-buildingPixelWidth+j-90);
+                                        Building_Locations.add(Row_Num);
+                                        Building_Locations.add(Colum_Num-buildingPixelWidth+j-90);
+                                        Building_Locations.add(Row_Num);
+                                        Building_Locations.add(Colum_Num-buildingPixelWidth+j-90);
+                                        Building_Locations.add(Row_Num);
+                                    }
+
+                                }
+
                                 //we want to shoot the building near the left side so we can see white pop up if it is our building
                                 //System.out.println("Found Building at x = " + Colum_Num + "y = " + Row_Num);
-                                Building_Locations.add(Colum_Num-150+j-90);
+                                Building_Locations.add(Colum_Num-buildingPixelWidth+j-90);
                                 Building_Locations.add(Row_Num);
                                 //shootBuilding(Colum_Num - 120 + j - 64,Row_Num+75);
                                 numberOfGreenPixels = 0;
-                                Capture_Building_Image(Colum_Num-150+j-90,Row_Num);
-
-
+                                //Capture_Building_Image(Colum_Num-buildingPixelWidth+j-90,Row_Num);
                             }
                         }else{
                             numberOfGreenPixels = 0;
@@ -80,10 +102,16 @@ public class BuildingFinder {
             }
 
         }
-        System.out.println("found building at:" + Building_Locations);
+        //System.out.println("found building at:" + Building_Locations);
     return Building_Locations;
     }
 
+    public static BufferedImage captureBuildingType(int x, int y) throws IOException {
+        //Grab the screen near the cursor
+        Rectangle buildingTypeRect = new Rectangle(x + 60 ,y + 3 ,1, 8);
+        BufferedImage gameScreenBuffer = controller.createScreenCapture(buildingTypeRect);
+        return gameScreenBuffer;
+    }
     private static void Capture_Building_Image(int cursor_x,int cursor_y) throws IOException {
 
         //Grab the screen near the cursor
