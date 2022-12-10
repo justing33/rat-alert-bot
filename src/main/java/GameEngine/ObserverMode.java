@@ -109,17 +109,19 @@ public class ObserverMode {
 
                 //System.out.println((yellow_x.get(0) + minimapTopLeft_x) + "  " + (yellow_y.get(0) + minimapTopLeft_y));
                 //System.out.println((blue_x.get(0) + minimapTopLeft_x) + "  " + (blue_y.get(0) + minimapTopLeft_y));
-                System.out.println("avg x = " + (avg_x + minimapTopLeft_x) + "  avg y = " + (avg_y + minimapTopLeft_y));
-                System.out.println("Screen hasn't moved in " + hasNotMoved + " iterations");
+                //System.out.println("avg x = " + (avg_x + minimapTopLeft_x) + "  avg y = " + (avg_y + minimapTopLeft_y));
+                //System.out.println("Screen hasn't moved in " + hasNotMoved + " iterations");
                 //System.out.println((yellow_x.get(final_yellow_element) + minimapTopLeft_x) + "  " + (yellow_y.get(final_yellow_element) + minimapTopLeft_y));
                 //System.out.println((blue_x.get(final_blue_element) + minimapTopLeft_x) + "  " + (blue_y.get(final_blue_element) + minimapTopLeft_y));
-                System.out.println("dist squared = " + dist_square_min);
+                //System.out.println("dist squared = " + dist_square_min);
 
                 if (abs(cursor_x - (avg_x + minimapTopLeft_x)) > screen_move_accuity &&
                         abs(cursor_y - (avg_y + minimapTopLeft_y)) > screen_move_accuity) {
                     System.out.println("Moving Screen to the action");
+
                     cursor_x = (avg_x + minimapTopLeft_x);
                     cursor_y = (avg_y + minimapTopLeft_y);
+                    System.out.println("avg x = " + avg_x + "    avg y = " + cursor_y);
                     controller.mouseMove((avg_x + minimapTopLeft_x)+8, (avg_y + minimapTopLeft_y)-4);
                     leftMouseClick();
                     //we moved the screen so reset this counter
@@ -129,7 +131,7 @@ public class ObserverMode {
                 Boolean onLaunch = onTheLaunchScreen();
                 System.out.println("We on the launch screen? " + onLaunch);
                 if (onLaunch) {
-                    lookForNext1v1(0 , false);
+                    lookForNext1v1(0 , 0);
                 }
             }
             hasNotMoved = hasNotMoved + 1;
@@ -282,7 +284,7 @@ public class ObserverMode {
             System.out.println("Game has completed");
             return_to_menu();
             Thread.sleep(3000);
-            lookForNext1v1(0, false);
+            lookForNext1v1(0, 0);
             return true;
         }
 
@@ -308,19 +310,19 @@ public class ObserverMode {
         controller.mouseMove(835,600);
         Thread.sleep(20);
         leftMouseClick();
-        Thread.sleep(5000);
+        Thread.sleep(8000);
         //click continue
         System.out.println("click continue");
         controller.mouseMove(990,1020);
         Thread.sleep(20);
         leftMouseClick();
-        Thread.sleep(4000);
+        Thread.sleep(3000);
         //click replay/observe
         System.out.println("click replay/observe");
         controller.mouseMove(915,656);
         Thread.sleep(20);
         leftMouseClick();
-        Thread.sleep(2000);
+        Thread.sleep(1000);
         //click observe
         System.out.println("click observe");
         controller.mouseMove(615,231);
@@ -334,10 +336,16 @@ public class ObserverMode {
     }
 
     static void scrollToBottom() throws InterruptedException, AWTException {
+        //click observe
+        //System.out.println("click observe");
+        controller.mouseMove(615,231);
+        Thread.sleep(20);
+        leftMouseClick();
+
         //scroll to bottom of list
         controller.mouseMove(600,600);
         Thread.sleep(20);
-        System.out.println("scroll to bottom of list");
+        //System.out.println("scroll to bottom of list");
         Robot mouse = new Robot();
         mouse.mouseWheel(100);
         Thread.sleep(1000);
@@ -345,13 +353,13 @@ public class ObserverMode {
 
 
     }
-    public static void lookForNext1v1(int iteration, Boolean cycledSearch) throws InterruptedException, AWTException, IOException {
+    public static void lookForNext1v1(int iteration, int cycledSearch) throws InterruptedException, AWTException, IOException {
         //78 pixels between entries
         while(true) {
             scrollToBottom();
             Thread.sleep(500);
-            System.out.println("Looking for the next match");
-            System.out.println("ppl playing");
+            //System.out.println("Looking for the next match");
+            //System.out.println("ppl playing");
             int screenRowStart = 857 - (78*iteration);
 
 
@@ -368,12 +376,12 @@ public class ObserverMode {
                     captionScreen1v1[index] = String.format("0x%08X", color);
                 }
                 int ED = editDistance(captionScreen1v1, RASTER_caption1v1);
-                System.out.println("total edit difference = " + ED);
+                //System.out.println("total edit difference = " + ED);
                 ///sensitivity
                 if (ED < 200) {
                     controller.mouseMove(346, screenRow);
                     Thread.sleep(300);
-                    System.out.println("click on the game");
+                    //System.out.println("click on the game");
                     leftMouseClick();
 
                     //wait for player names to populate
@@ -394,21 +402,24 @@ public class ObserverMode {
                             playerMatched = true;
                         }
                     }
-
-
+                    if (cycledSearch > 35){
+                        playerMatched = true;
+                    }
+                    cycledSearch = cycledSearch+1;
+                    //System.out.println("cycledSearch = " + cycledSearch);
                     Thread.sleep(100);
-                    System.out.println("player matched? = " + playerMatched);
+                    //System.out.println("player matched? = " + playerMatched);
                     //if we don't have a player that matched on first cycle, reset and repeat
                     if (!playerMatched && iteration == 7){
-                        System.out.println("did not find good player looking for any playernow");
+                        System.out.println("did not find listed player looking for any player now");
                         //this is supposed to be true
-                        lookForNext1v1(0, false);
+                        lookForNext1v1(0, cycledSearch);
 
                     }
                     if (!playerMatched){
                         iteration = iteration + 1;
-                        System.out.println("did not find good player");
-                        lookForNext1v1(iteration, false);
+                        //System.out.println("did not find listed player");
+                        lookForNext1v1(iteration, cycledSearch);
                     }
 
                     //make a text file with the names of the players in them
@@ -424,12 +435,38 @@ public class ObserverMode {
                     watchGame();
                 } else if (inGame()) {
                     watchGame();
+                }else if (inConnectionError()){
+                    Thread.sleep(30000);
+                    controller.mouseMove(961,606);
+                    Thread.sleep(300);
+                    leftMouseClick();
+                    //click replay/observe
+                    System.out.println("click replay/observe");
+                    controller.mouseMove(915,656);
+                    Thread.sleep(20);
+                    leftMouseClick();
+                    Thread.sleep(1000);
+                    //click observe
+                    System.out.println("click observe");
+                    controller.mouseMove(615,231);
+                    Thread.sleep(20);
+                    leftMouseClick();
+
+                    //wait for the list to populate
+                    Thread.sleep(10000);
+                    //scroll to bottom of list
+                    scrollToBottom();
+                    watchGame();
                 }
 
 
             }
             //this needs to go away
-            lookForNext1v1(0, false);
+            cycledSearch = cycledSearch + 1;
+            if (cycledSearch < 40) {
+                //System.out.println("cycledSearch = " + cycledSearch);
+                lookForNext1v1(0, cycledSearch);
+            }
 
             System.out.println("not that many ppl playing");
             for (int screenRow = 813; screenRow > 360; screenRow = screenRow - 78) {
@@ -445,7 +482,7 @@ public class ObserverMode {
                     captionScreen1v1[index] = String.format("0x%08X", color);
                 }
                 int ED = editDistance(captionScreen1v1, RASTER_caption1v1);
-                System.out.println("total edit difference = " + ED);
+                //System.out.println("total edit difference = " + ED);
                 ///sensitivity
                 if (ED < 220) {
                     controller.mouseMove(346, screenRow);
@@ -462,6 +499,8 @@ public class ObserverMode {
                    }
                 }
             }
+            //System.out.println("cycledSearch = " + cycledSearch);
+            lookForNext1v1(0, 0);
         }
     }
 
@@ -472,13 +511,29 @@ public class ObserverMode {
         int blue = color & 0xff;
         int green = (color & 0xff00) >> 8;
         int red = (color & 0xff0000) >> 16;
-        System.out.println("ingame?");
-        System.out.println("red =" + red + "  green = " + green + "    blue = " + blue);
+        //System.out.println("red =" + red + "  green = " + green + "    blue = " + blue);
 
         if (red == 153 && green == 127 && blue == 66 ){
+            //System.out.println("ingame? true");
             return true;
         }
+        //System.out.println("ingame? false");
+        return false;
+    }
+    public static boolean inConnectionError() {
+        Rectangle minimapRect = new Rectangle(961,606,1,1);
+        BufferedImage gameScreenBuffer = controller.createScreenCapture(minimapRect);
+        int color = gameScreenBuffer.getRaster().getDataBuffer().getElem(0);
+        int blue = color & 0xff;
+        int green = (color & 0xff00) >> 8;
+        int red = (color & 0xff0000) >> 16;
+        //System.out.println("red =" + red + "  green = " + green + "    blue = " + blue);
 
+        if (red == 169 && green == 161 && blue == 161 ){
+            //System.out.println("onConnectionError? true");
+            return true;
+        }
+        //System.out.println("onConnectionError? false");
         return false;
     }
 

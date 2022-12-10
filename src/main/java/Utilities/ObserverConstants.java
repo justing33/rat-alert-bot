@@ -17,7 +17,24 @@ public class ObserverConstants {
             "LIKJHIEEEH" ,
             "nut-1",
             "SIunDEEk" ,
-            "Tun-31 Flt-user"
+            "Tun-31 Flt-user" ,
+            "Hulmjhddla" ,
+            "IanIZIuNanit" ,
+            "Hunnairﬁnral" ,
+            "43.1," ,
+            "MrVuHi" ,
+            "Scam-m" ,
+            "LEDZEF'PEUN",
+            "Sal-19m]" ,
+            "Imagajmam" ,
+            "Pull! LANE Dull" ,
+            "HadHEIiﬂit-n" ,
+            "TrailblazELEnIZ" ,
+            "HIExtEriEur" ,
+            "DELJum",
+            "saladrial" ,
+            "a" ,
+            "hut-11mm"
 
     };
     public static final String [] RASTER_caption1v1 = {"0xFF6C0507" ,

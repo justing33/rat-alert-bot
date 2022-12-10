@@ -4,8 +4,7 @@ import java.io.IOException;
 import javax.swing.*;
 
 import static GameEngine.Game.startAlliesGame;
-import static GameEngine.ObserverMode.lookForNext1v1;
-import static GameEngine.ObserverMode.watchGame;
+import static GameEngine.ObserverMode.*;
 import static Utilities.Constants.*;
 import static Utilities.Controller.*;
 
@@ -50,7 +49,7 @@ import static Utilities.Controller.*;
                         Thread.sleep(5000);
     /*                    ArrayList outputList = (ArrayList) Look_for_Building();
                         System.out.println(outputList);*/
-                        lookForNext1v1(0,false);
+                        lookForNext1v1(0,0);
 
                         System.out.println("RAT TESTING complete:");
                         break;
